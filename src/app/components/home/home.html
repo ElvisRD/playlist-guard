@@ -1,10 +1,37 @@
 <div class="flex h-screen items-center justify-center bg-zinc-900">
-  <div class="w-xl mx-6">
-    <input
-    type="text"
-    [(ngModel)]="playlistUrl"
-    placeholder="Paste YouTube playlist link here..."
-    class="w-full rounded-full border-1 border-zinc-700 bg-zinc-800 px-5 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
-    />
+  <div class="w-xl mx-6 mb-15">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-gray-100">
+        YouTube Playlist Guard
+      </h1>
+      <p class="mt-2 text-lg text-gray-400">
+        Enter a YouTube playlist URL to see if it's safe to watch.
+      </p>
+    </div>
+    <div class="mt-6">
+      <input
+      type="text"
+      [(ngModel)]="playlistUrl"
+      placeholder="Paste YouTube playlist link here..."
+      class="w-full rounded-full border-1 border-zinc-700 bg-zinc-800 px-6 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
+      />
+    </div>
+    <div class="w-full flex justify-center items-center mt-3">
+      <button
+        (click)="searchPlaylist()"
+        class="mt-4 cursor-pointer rounded-lg bg-green-500 px-4 py-3 text-base font-semibold text-white transition hover:bg-green-600"
+      >
+        Obtener playlist
+      </button>
+    </div>
   </div>
+
+  <app-dialog
+    [visible]="dialogVisible"
+    title="Playlist Found"
+    [trackCount]="0"
+    duration=""
+    thumbnail=""
+    (close)="dialogVisible = false"
+  />
 </div>
