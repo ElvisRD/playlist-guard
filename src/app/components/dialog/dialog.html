@@ -31,7 +31,8 @@
         @switch(optionSelected.type) {
           @case('download') {
             <div class="w-full flex flex-col gap-3">
-              <button class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center">
+              <button (click)="downloadExcel()"
+              class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center">
                 <span>Descargar en formato excel</span>
               </button>
               <button class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center">
