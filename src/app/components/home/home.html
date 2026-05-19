@@ -13,7 +13,7 @@
       type="text"
       [(ngModel)]="playlistUrl"
       placeholder="Paste YouTube playlist link here..."
-      class="w-full rounded-full border-1 border-zinc-700 bg-zinc-800 px-6 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
+      class="w-full rounded-full border-zinc-700 bg-zinc-800 px-6 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
       />
     </div>
     <div class="w-full flex justify-center items-center mt-3">
@@ -28,10 +28,6 @@
 
   <app-dialog
     [visible]="dialogVisible"
-    title="Playlist Found"
-    [trackCount]="0"
-    duration=""
-    thumbnail=""
     (close)="dialogVisible = false"
   />
 </div>

@@ -15,7 +15,7 @@ export class Home {
 
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1];
-  
+    this.dialogVisible = true;
     if (idList) {
       this.dialogVisible = true;
     }
