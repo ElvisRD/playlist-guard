@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class Youtube {
 
   private apiUrl = 'http://localhost:3000/youtube/playlist/';
+  
   constructor(
     private http: HttpClient
   ) {}
@@ -17,6 +18,10 @@ export class Youtube {
   }
 
   getPlaylistText(){
+    
+  }
 
+  verifyPlaylist(idList: string): Observable<any> {
+    return this.http.get(this.apiUrl + idList + '/access');
   }
 }

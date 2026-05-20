@@ -27,6 +27,8 @@
   </div>
 
   <app-dialog
+    [title]="authRequiredPlaylist ? 'Opciones Playlist': 'Auntenticar'"
+    [authRequired]="authRequiredPlaylist"
     [visible]="dialogVisible"
     (close)="dialogVisible = false"
   />
