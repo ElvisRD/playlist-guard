@@ -10,7 +10,7 @@
     "serve:ssr:playlist-guard": "node dist/playlist-guard/server/server.mjs"
   },
   "private": true,
-  "packageManager": "npm@11.12.1",
+  "packageManager": "pnpm@9.15.0",
   "dependencies": {
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
