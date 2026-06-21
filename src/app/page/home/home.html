@@ -28,8 +28,9 @@
   </div>
 
   <app-dialog
-    [dataDialog]="dataDialog"
-    [visible]="dialogVisible"
-    (close)="dialogVisible = false"
+    [visible]="dialogVisible()"
+    [type]="dialogType()"
+    [data]="dialogData()"
+    (close)="onDialogClose()"
   />
 </div>

@@ -8,7 +8,7 @@
       (click)="$event.stopPropagation()"
     >
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-zinc-100">{{ title }}</h2>
+        <h2 class="text-lg font-bold text-zinc-100">{{ data.title }}</h2>
         <button
           class="cursor-pointer text-xl text-zinc-400 transition hover:text-zinc-100"
           (click)="onClose()"
@@ -17,53 +17,83 @@
         </button>
       </div>
 
-      @if (authRequired) {
-        <div class="w-full flex flex-col items-center justify-center">
-          <p class="text-zinc-400 mb-4">
-            Esta playlist es privada. Por favor, inicia sesión en Google para acceder.
-          </p>
-          <button
-            class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
-            (click)="authenticateWithGoogle()"
-          >
-            <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
-            <span>Autenticarse</span>
-          </button>
-        </div>
-      } @else {
-        @if (!viewDataOption) {
-          <div class="w-full grid grid-cols-3 gap-3">
-            @for (option of options; track option) {
+      @switch (type) {
+        @case ('playlist-options') {
+          @if (data.authRequired) {
+            <div class="w-full flex flex-col items-center justify-center">
+              <p class="text-zinc-400 mb-4">
+                Esta playlist es privada. Por favor, inicia sesión en Google para acceder.
+              </p>
               <button
-                (click)="openOption(option)"
-                class="rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-[100px] h-[100px] text-base text-gray-100 transition flex items-center justify-center flex-col gap-3"
+                class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
+                (click)="authenticateWithGoogle()"
               >
-                <span>{{ option.icon }}</span>
-                <span>{{ option.name }}</span>
+                <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
+                <span>Autenticarse</span>
               </button>
-            }
-          </div>
-        } @else {
-          @switch (optionSelected.type) {
-            @case ('download') {
-              <div class="w-full flex flex-col gap-3">
+            </div>
+          } @else if (!viewDataOption) {
+            <div class="w-full grid grid-cols-3 gap-3">
+              @for (option of options; track option) {
                 <button
-                  (click)="downloadExcel()"
-                  class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center"
+                  (click)="openOption(option)"
+                  class="rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-[100px] h-[100px] text-base text-gray-100 transition flex items-center justify-center flex-col gap-3"
                 >
-                  <span>Descargar en formato excel</span>
+                  <span>{{ option.icon }}</span>
+                  <span>{{ option.name }}</span>
                 </button>
-                <button
-                  class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center"
-                >
-                  <span>Descargar en formato text</span>
-                </button>
-              </div>
-            }
-            @default {
-              <p class="text-zinc-400">No hay opciones disponibles</p>
+              }
+            </div>
+          } @else {
+            @switch (optionSelected.type) {
+              @case ('download') {
+                <div class="w-full flex flex-col gap-3">
+                  <button
+                    (click)="downloadExcel()"
+                    class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center"
+                  >
+                    <span>Descargar en formato excel</span>
+                  </button>
+                  <button
+                    class="py-4 px-4 rounded-lg border-1 border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center"
+                  >
+                    <span>Descargar en formato text</span>
+                  </button>
+                </div>
+              }
+              @default {
+                <p class="text-zinc-400">No hay opciones disponibles</p>
+              }
             }
           }
+        }
+        @case ('error') {
+          <div class="w-full flex flex-col items-center gap-4">
+            <span class="pi pi-exclamation-triangle text-red-400 text-4xl"></span>
+            <p class="text-zinc-300 text-center">
+              {{ data.text || 'Ha ocurrido un error inesperado.' }}
+            </p>
+            <button
+              (click)="onClose()"
+              class="py-2 px-6 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-zinc-100 transition hover:bg-zinc-700"
+            >
+              Cerrar
+            </button>
+          </div>
+        }
+        @case ('not-found') {
+          <div class="w-full flex flex-col items-center gap-4">
+            <span class="pi pi-exclamation-triangle text-yellow-400 text-4xl"></span>
+            <p class="text-zinc-300 text-center">
+              {{ data.text || 'La playlist no fue encontrada. Verifica la URL e intenta de nuevo.' }}
+            </p>
+            <button
+              (click)="onClose()"
+              class="py-2 px-6 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-zinc-100 transition hover:bg-zinc-700"
+            >
+              Cerrar
+            </button>
+          </div>
         }
       }
     </div>
