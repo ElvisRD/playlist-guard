@@ -23,10 +23,6 @@ export class Home {
 
     if (!idList) {
       this.dialogType.set('not-found');
-      this.dialogData.set({
-        title: 'Playlist no encontrada',
-        text: 'No se encontró un ID de playlist en la URL proporcionada.'
-      });
       this.dialogVisible.set(true);
       return;
     }
@@ -34,33 +30,49 @@ export class Home {
     this.verifyPlaylist(idList);
   }
 
-  verifyPlaylist(idList: string) {
-    this.youtube.verifyPlaylist(idList).subscribe({
-      next: (res) => {
-        if (res.authRequired) {
-          this.dialogType.set('playlist-options');
-          this.dialogData.set({
-            title: 'Opciones Playlist',
-            authRequired: true
-          });
-          this.dialogVisible.set(true);
-        } else {
-          this.dialogType.set('not-found');
-          this.dialogData.set({
-            title: 'Playlist no encontrada',
-            text: 'La playlist no existe o no es accesible.'
-          });
-          this.dialogVisible.set(true);
-        }
-      },
-      error: (error) => {
-        console.error('Error verifying playlist:', error);
+  createDialog(type: string){
+    switch(type){
+      case 'options':
+        this.dialogType.set('playlist-options');
+        this.dialogData.set({
+          title: 'Opciones Playlist',
+        });
+        break;
+      case 'not-found':
+        this.dialogType.set('not-found');
+        this.dialogData.set({
+          title: 'Playlist no encontrada',
+          text: 'No se encontró un ID de playlist en la URL proporcionada.'
+        });
+        break;
+      case 'private':
+        this.dialogType.set('private-playlist');
+        this.dialogData.set({
+          title: 'La playlist es privada',
+          text: 'Para acceder a esta playlist, es necesario autenticarse con Google.',
+        });
+        break;
+      case 'error':
         this.dialogType.set('error');
         this.dialogData.set({
           title: 'Error',
           text: 'Ocurrió un error al verificar la playlist. Intenta de nuevo más tarde.'
         });
-        this.dialogVisible.set(true);
+        break;
+      default:
+        break;
+    }
+    this.dialogVisible.set(true);
+  }
+
+  verifyPlaylist(idList: string) {
+    this.youtube.verifyPlaylist(idList).subscribe({
+      next: (res) => {
+        res.authRequired ? this.createDialog('private') : this.createDialog('options');
+      },
+      error: (error) => {
+        console.error('Error verifying playlist:', error);
+        this.createDialog('error');
       }
     });
   }

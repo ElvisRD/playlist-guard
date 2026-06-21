@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 
-export type DialogType = 'playlist-options' | 'error' | 'not-found';
+export type DialogType = 'playlist-options' | 'error' | 'not-found' | 'private-playlist';
 
 export interface DialogData {
   title: string;
