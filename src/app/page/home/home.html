@@ -1,5 +1,5 @@
 <div class="flex h-screen items-center justify-center bg-zinc-900">
-  <div class="w-xl mx-6 mb-15">
+  <div class="w-xl mx-6 mb-20">
     <div class="text-center">
       <h1 class="text-4xl font-bold text-gray-100">
         YouTube Playlist Guard
@@ -11,7 +11,8 @@
     <div class="mt-6">
       <input
       type="text"
-      [(ngModel)]="playlistUrl"
+      [value]="playlistUrl"
+      (input)="playlistUrl = $event.target.value"
       placeholder="Paste YouTube playlist link here..."
       class="w-full rounded-full border-zinc-700 bg-zinc-800 px-6 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
       />
@@ -19,16 +20,15 @@
     <div class="w-full flex justify-center items-center mt-3">
       <button
         (click)="searchPlaylist()"
-        class="mt-4 cursor-pointer rounded-lg bg-green-500 px-4 py-3 text-base font-semibold text-white transition hover:bg-green-600"
+        class="mt-4 cursor-pointer rounded-full bg-white px-5 py-2.5 text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
       >
-        Obtener playlist
+        Buscar Playlist
       </button>
     </div>
   </div>
 
   <app-dialog
-    [title]="authRequiredPlaylist ? 'Opciones Playlist': 'Auntenticar'"
-    [authRequired]="authRequiredPlaylist"
+    [dataDialog]="dataDialog"
     [visible]="dialogVisible"
     (close)="dialogVisible = false"
   />

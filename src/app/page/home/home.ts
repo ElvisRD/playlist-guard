@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Dialog } from '../dialog/dialog';
+import { Dialog } from '../../components/dialog/dialog';
 import { Youtube } from '../../services/youtube';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, Dialog],
+  imports: [Dialog],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -13,7 +12,12 @@ export class Home {
   playlistUrl = '';
   notFoundPlaylist = false;
   dialogVisible = false;
-  authRequiredPlaylist = true;
+  dataDialog: any = {
+    type: 'playlist-not-found',
+    title: 'Playlist no encontrada',
+    text: '',
+    authetication: false
+  };
 
   constructor(
     private youtube: Youtube
@@ -22,13 +26,30 @@ export class Home {
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1];
 
-    this.dialogVisible = true;
-    if (!idList) return;
+    if (!idList) {
+      this.notFoundPlaylist = true;
+      this.createDialog();
+      this.dialogVisible = true;
+      return;
+    }
    
     this.verifyPlaylist(idList);
+  }
 
 
+  createDialog(){
+    if(this.notFoundPlaylist){
+      this.dataDialog = {
+        type: 'playlist-not-found',
+        title: 'No existe la playlist'
+      };
+      return;
+    }
 
+    this.dataDialog = {
+      type: 'playlist-options',
+      title: 'Opciones Playlist'
+    };
   }
 
   verifyPlaylist(idList: string) {
@@ -36,9 +57,7 @@ export class Home {
       next: (res) => {
         if (res.authRequired) {
           this.dialogVisible = true;
-          this.authRequiredPlaylist = true;
         } else {
-          this.authRequiredPlaylist = false;
           this.notFoundPlaylist = true;
         }
       },
