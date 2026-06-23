@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { Dialog, DialogData, DialogType } from '../../components/dialog/dialog';
+import { Dialog } from '../../components/dialog/dialog';
 import { Youtube } from '../../services/youtube';
 
 @Component({
@@ -11,8 +11,7 @@ import { Youtube } from '../../services/youtube';
 export class Home {
   playlistUrl = '';
   dialogVisible = signal(false);
-  dialogType = signal<DialogType>('playlist-options');
-  dialogData = signal<DialogData>({ title: 'Opciones Playlist' });
+  dialogData = signal<any>({ type: 'options', title: 'Opciones Playlist'});
 
   constructor(
     private youtube: Youtube
@@ -22,7 +21,7 @@ export class Home {
     const idList = this.playlistUrl.split('list=')[1];
 
     if (!idList) {
-      this.dialogType.set('not-found');
+      this.createDialog('not-found');
       this.dialogVisible.set(true);
       return;
     }
@@ -33,28 +32,29 @@ export class Home {
   createDialog(type: string){
     switch(type){
       case 'options':
-        this.dialogType.set('playlist-options');
         this.dialogData.set({
+          type: 'options',
           title: 'Opciones Playlist',
         });
         break;
       case 'not-found':
-        this.dialogType.set('not-found');
         this.dialogData.set({
+          type: 'not-found',
           title: 'Playlist no encontrada',
           text: 'No se encontró un ID de playlist en la URL proporcionada.'
         });
         break;
       case 'private':
-        this.dialogType.set('private-playlist');
         this.dialogData.set({
+          type: 'private',
           title: 'La playlist es privada',
           text: 'Para acceder a esta playlist, es necesario autenticarse con Google.',
         });
+        console.log(this.dialogData());
         break;
       case 'error':
-        this.dialogType.set('error');
         this.dialogData.set({
+          type: 'error',
           title: 'Error',
           text: 'Ocurrió un error al verificar la playlist. Intenta de nuevo más tarde.'
         });

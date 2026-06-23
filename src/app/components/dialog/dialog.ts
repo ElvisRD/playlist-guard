@@ -1,15 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 
-export type DialogType = 'playlist-options' | 'error' | 'not-found' | 'private-playlist';
-
-export interface DialogData {
+interface dataDialog {
+  type: string;
   title: string;
   text?: string;
-  playlistId?: string;
-  authRequired?: boolean;
 }
+
 
 @Component({
   selector: 'app-dialog',
@@ -19,8 +17,7 @@ export interface DialogData {
 })
 export class Dialog {
   @Input() visible = false;
-  @Input() type: DialogType = 'playlist-options';
-  @Input() data: DialogData = { title: 'Opciones Playlist' };
+  data = input.required<dataDialog>();
   @Output() close = new EventEmitter<void>();
   viewDataOption = false;
   optionSelected: any = null;
