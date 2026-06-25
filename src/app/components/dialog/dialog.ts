@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
+import { AuthService } from '../../services/auth';
 
 interface dataDialog {
   type: string;
@@ -29,7 +30,8 @@ export class Dialog {
 
   constructor(
     private youtubeService: Youtube,
-    private googleService: Google
+    private googleService: Google,
+    private auth: AuthService,
   ){}
 
   downloadExcel(){
@@ -55,42 +57,13 @@ export class Dialog {
   }
 
   authenticateWithGoogle(){
-    this.googleService.authenticateUser().subscribe({
-      next: (res: any) => {
-        this.openGoogleAuth(res.url);
+    this.googleService.authenticateWithGoogle().subscribe({
+      next: (payload) => {
+        this.auth.login(payload.access_token);
+        this.onClose();
       },
-      error: (err) => {
-        console.error('Error al obtener la URL de autenticación:', err);
-      }
+      error: (err) => console.error(err.message),
     });
-  }
-
-  openGoogleAuth(url: string){
-    const windowFeatures = {
-      width: 500,
-      height: 500,
-      left: (window.screen.width - 500) / 2,
-      top: (window.screen.height - 500) / 2,
-    };
-
-    const authWindow = window.open(url, 'GoogleAuth', `width=${windowFeatures.width},height=${windowFeatures.height},left=${windowFeatures.left},top=${windowFeatures.top}`);
-
-    if (!authWindow) {
-      console.error('El navegador bloqueó el popup. Por favor, permite las ventanas emergentes.');
-      return;
-    }
-
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-
-      if (event.data?.type === 'GOOGLE_AUTH_SUCCESS') {
-        console.log('¡Usuario autenticado con éxito!', event.data.payload);
-        authWindow.close();
-        window.removeEventListener('message', handleMessage);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
   }
 
   openOption(option: any) {

@@ -2,11 +2,22 @@
   <span class="text-xl font-bold tracking-tight">PlaylistGuard</span>
 
   <div class="flex items-center gap-3">
-    <button
-      (click)="login()"
-      class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300/30 bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/20"
-    >
-      Iniciar Sesión
-    </button>
+    @if (auth.isLoggedIn()) {
+      <span class="text-sm text-zinc-300">{{ auth.user()?.name }}</span>
+      <button
+        (click)="logout()"
+        class="cursor-pointer rounded-lg border border-zinc-300/30 bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/20"
+      >
+        Cerrar Sesión
+      </button>
+    } @else {
+      <button
+        (click)="loginWithGoogle()"
+        class="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300/30 bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/20"
+      >
+        <img src="/google-icon.svg" alt="Google" class="h-5 w-5" />
+        Iniciar Sesión
+      </button>
+    }
   </div>
 </nav>

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Google } from '../../services/google';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -7,12 +9,19 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  openDialogLogin = false;
+  constructor(
+    private googleService: Google,
+    protected auth: AuthService,
+  ) {}
 
-  constructor() {}
-
-  login() {
-    this.openDialogLogin = true;
+  loginWithGoogle() {
+    this.googleService.authenticateWithGoogle().subscribe({
+      next: (payload) => console.log(payload),
+      error: (err) => console.error(err.message),
+    });
   }
-  
+
+  logout() {
+    this.auth.logout();
+  }
 }
