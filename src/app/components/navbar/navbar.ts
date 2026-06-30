@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Google } from '../../services/google';
-import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -9,19 +8,33 @@ import { AuthService } from '../../services/auth';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  profile = null;
   constructor(
-    private googleService: Google,
-    protected auth: AuthService,
+    private googleService: Google
   ) {}
+
+  ngOnInit(){
+    this.googleService.profile$.subscribe({
+      next: (profile) => {
+        if(profile){
+          this.profile = profile;
+          console.log(profile)
+        }
+      },
+      error: (err) => console.error(err.message)
+    })
+  }
 
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({
-      next: (payload) => console.log(payload),
+      next: () => {
+        this.googleService.loadProfile()
+      },
       error: (err) => console.error(err.message),
     });
   }
 
   logout() {
-    this.auth.logout();
+
   }
 }

@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
-import { AuthService } from '../../services/auth';
 
 interface dataDialog {
   type: string;
@@ -31,7 +30,6 @@ export class Dialog {
   constructor(
     private youtubeService: Youtube,
     private googleService: Google,
-    private auth: AuthService,
   ){}
 
   downloadExcel(){
@@ -59,7 +57,6 @@ export class Dialog {
   authenticateWithGoogle(){
     this.googleService.authenticateWithGoogle().subscribe({
       next: (payload) => {
-        this.auth.login(payload.access_token);
         this.onClose();
       },
       error: (err) => console.error(err.message),

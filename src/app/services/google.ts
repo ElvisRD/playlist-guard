@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Injectable({
@@ -8,8 +8,12 @@ import { switchMap } from 'rxjs/operators';
 })
 export class Google {
   private apiUrl = 'http://localhost:3000/google-auth/';
+  private profileSource = new BehaviorSubject<any>(null);
+  profile$ = this.profileSource.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.loadProfile();
+  }
 
   authenticateUser(): Observable<any> {
     return this.http.get(this.apiUrl + 'auth-url');
@@ -17,6 +21,24 @@ export class Google {
 
   authenticateWithGoogle(): Observable<any> {
     return this.authenticateUser().pipe(switchMap((res: any) => this.openAuthPopup(res.url)));
+  }
+
+  getProfile(): Observable<any> {
+    return this.http.get(this.apiUrl + 'profile', { withCredentials: true });
+  }
+
+  loadProfile(){
+    this.http.get(this.apiUrl + 'profile', { withCredentials: true }).pipe(
+      tap(profile => this.profileSource.next(profile)),
+      catchError(() => {
+        this.profileSource.next(null);
+        return of(null);
+      })
+    ).subscribe()
+  }  
+
+  cleanProfile(){
+    this.profileSource.next(null);
   }
 
   private openAuthPopup(url: string): Observable<any> {
@@ -40,10 +62,9 @@ export class Google {
       }
 
       const handleMessage = (event: MessageEvent) => {
-        if (event.data?.payload?.access_token) {
+        if (event.data?.type === 'auth_complete') {
           window.removeEventListener('message', handleMessage);
-
-          observer.next(event.data.payload);
+          observer.next(event.data);
           observer.complete();
         }
       };
