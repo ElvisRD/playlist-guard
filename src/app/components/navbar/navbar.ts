@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 
 @Component({
@@ -8,21 +9,16 @@ import { Google } from '../../services/google';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  profile = null;
-  constructor(
-    private googleService: Google
-  ) {}
+  loadUser = signal(false);
+  private googleService = inject(Google);
+  protected profile = toSignal(this.googleService.profile$, { initialValue: null });
 
-  ngOnInit(){
-    this.googleService.profile$.subscribe({
-      next: (profile) => {
-        if(profile){
-          this.profile = profile;
-          console.log(profile)
-        }
-      },
-      error: (err) => console.error(err.message)
-    })
+  constructor() {
+    effect(() => {
+      const p = this.profile();
+      if (p) this.loadUser.set(false);
+      else this.loadUser.set(true);
+    });
   }
 
   loginWithGoogle() {
@@ -35,6 +31,6 @@ export class Navbar {
   }
 
   logout() {
-
+    console.log(this.profile());
   }
 }
