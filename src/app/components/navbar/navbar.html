@@ -2,6 +2,21 @@
   <span class="text-lg sm:text-xl font-bold tracking-tight shrink-0">PlaylistGuard</span>
 
   <div class="flex items-center gap-2.5 shrink-0">
+    <a
+      href="/"
+      class="cursor-pointer rounded-lg bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
+    >
+      Inicio
+    </a>
+    <a
+      href="/playlists"
+      class="cursor-pointer rounded-lg bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
+    >
+      Mis playlists
+    </a>
+  </div>
+
+  <div class="flex items-center gap-2.5 shrink-0">
     @if(profile()) {
       <div class="rounded-full border size-8 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0">
         <img src="{{profile().picture}}" alt="Profile" class="size-full rounded-full" />
