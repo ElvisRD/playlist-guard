@@ -1,6 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Dialog } from '../../components/dialog/dialog';
 import { Youtube } from '../../services/youtube';
+import { Google } from '../../services/google';
 
 @Component({
   selector: 'app-home',
@@ -9,6 +11,9 @@ import { Youtube } from '../../services/youtube';
   styleUrl: './home.css',
 })
 export class Home {
+  private googleService = inject(Google);
+  protected profile = toSignal(this.googleService.profile$, { initialValue: null });
+
   playlistUrl = '';
   dialogVisible = signal(false);
   dialogData = signal<any>({ type: 'options', title: 'Opciones Playlist'});
@@ -44,11 +49,11 @@ export class Home {
           text: 'No se encontró un ID de playlist en la URL proporcionada.'
         });
         break;
-      case 'private':
+      case 'not-access':
         this.dialogData.set({
-          type: 'private',
-          title: 'La playlist es privada',
-          text: 'Para acceder a esta playlist, es necesario autenticarse con Google.',
+          type: 'not-access',
+          title: 'No tienes acceso a esta playlist',
+          text: 'La playlist a la que intentas acceder es privada y le pertenece a otro usuario.',
         });
         console.log(this.dialogData());
         break;
@@ -68,7 +73,11 @@ export class Home {
   verifyPlaylist(idList: string) {
     this.youtube.verifyPlaylist(idList).subscribe({
       next: (res) => {
-        res.authRequired ? this.createDialog('private') : this.createDialog('options');
+        if(res.hasAccess){
+          this.createDialog('options');
+        }else{
+          this.createDialog('not-access');
+        }
       },
       error: (error) => {
         console.error('Error verifying playlist:', error);

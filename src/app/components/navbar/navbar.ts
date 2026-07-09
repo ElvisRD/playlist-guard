@@ -9,6 +9,7 @@ import { Google } from '../../services/google';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  
   loadUser = signal(false);
   private googleService = inject(Google);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
@@ -31,6 +32,6 @@ export class Navbar {
   }
 
   logout() {
-    console.log(this.profile());
+    this.googleService.logout().subscribe();
   }
 }

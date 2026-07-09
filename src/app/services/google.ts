@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, tap, catchError, of, fromEvent, timeout } from 'rxjs';
+import { switchMap, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +41,16 @@ export class Google {
     this.profileSource.next(null);
   }
 
+  logout(): Observable<any> {
+    return this.http.get(this.apiUrl + 'logout', { withCredentials: true }).pipe(
+      tap(() => this.cleanProfile()),
+      catchError((err) => {
+        this.cleanProfile();
+        return of(err);
+      })
+    );
+  }
+
   private openAuthPopup(url: string): Observable<any> {
     return new Observable<any>((observer) => {
       const w = 500;
@@ -48,31 +58,33 @@ export class Google {
       const left = (window.screen.width - w) / 2;
       const top = (window.screen.height - h) / 2;
 
-      const authWindow = window.open(
+      const popup = window.open(
         url,
         'GoogleAuth',
         `width=${w},height=${h},left=${left},top=${top}`,
       );
 
-      if (!authWindow) {
-        observer.error(
-          new Error('El navegador bloqueó el popup. Permite las ventanas emergentes.'),
-        );
-        return;
-      }
-
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data?.type === 'auth_complete') {
-          window.removeEventListener('message', handleMessage);
-          observer.next(event.data);
-          observer.complete();
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
+      const messageSub = fromEvent<MessageEvent>(window, 'message')
+        .pipe(
+          filter(
+            (event) =>
+              event.data?.type === 'auth-success' &&
+              event.origin === window.location.origin,
+          ),
+          timeout({ first: 120_000 }),
+          switchMap(() => this.getProfile()),
+        )
+        .subscribe({
+          next: (profile) => {
+            this.profileSource.next(profile);
+            observer.next(profile);
+            observer.complete();
+          },
+          error: (err) => observer.error(err),
+        });
 
       return () => {
-        window.removeEventListener('message', handleMessage);
+        messageSub.unsubscribe();
       };
     });
   }
