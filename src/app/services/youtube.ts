@@ -7,21 +7,25 @@ import { Observable } from 'rxjs';
 })
 export class Youtube {
 
-  private apiUrl = 'http://localhost:3000/youtube/playlist/';
+  private apiUrl = '/youtube/';
   
   constructor(
     private http: HttpClient
   ) {}
 
   getPlaylistExcel(idList: string): Observable<Blob> {
-    return this.http.get(this.apiUrl + idList + 'videos/excel', { responseType: 'blob' });
+    return this.http.get(this.apiUrl + idList + 'playlist/videos/excel', { responseType: 'blob' });
   }
 
   getPlaylistText(){
     
   }
 
+  getPlaylists(): Observable<any> {
+    return this.http.get(this.apiUrl + 'playlists', { withCredentials: true });
+  }
+
   verifyPlaylist(idList: string): Observable<any> {
-    return this.http.get(this.apiUrl + idList + '/access', { withCredentials: true });
+    return this.http.get(this.apiUrl + idList + 'playlist/access', { withCredentials: true });
   }
 }

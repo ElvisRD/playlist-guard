@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, catchError, of, fromEvent, timeout } from 'rxjs';
 import { switchMap, filter } from 'rxjs/operators';
@@ -7,12 +8,15 @@ import { switchMap, filter } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class Google {
-  private apiUrl = 'http://localhost:3000/google-auth/';
+  private apiUrl = '/google-auth/';
   private profileSource = new BehaviorSubject<any>(null);
   profile$ = this.profileSource.asObservable();
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) {
-    this.loadProfile();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadProfile();
+    }
   }
 
   authenticateUser(): Observable<any> {

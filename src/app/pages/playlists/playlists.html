@@ -1,1 +1,42 @@
-<p>playlists works!</p>
+<div class="flex h-full justify-center bg-zinc-900">
+  <div class="w-full max-w-4xl mx-6 mb-20">
+    <div class="flex flex-col gap-4 mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Mis playlists</h1>
+      <p class="text-sm sm:text-base text-zinc-400">Aquí puedes ver todas tus playlists de YouTube y verificar si están protegidas.</p>
+    </div>
+
+    <!-- @if (!profile()) {
+      <div class="flex flex-col items-center justify-center py-20 text-zinc-500">
+        <p class="text-lg">Inicia sesión para ver tus playlists</p>
+      </div>
+    } @else if (playlists.length === 0) {
+      <div class="flex flex-col items-center justify-center py-20 text-zinc-500">
+        <p class="text-lg">No se encontraron playlists</p>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (playlist of playlists; track playlist.id) {
+        <div class="rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden transition hover:scale-[1.02] hover:border-zinc-500">
+          <img
+            [src]="playlist.snippet?.thumbnails?.medium?.url || playlist.snippet?.thumbnails?.default?.url"
+            [alt]="playlist.snippet?.title"
+            class="w-full aspect-video object-cover"
+          />
+          <div class="p-4 flex flex-col gap-2">
+            <h2 class="text-base font-semibold text-gray-100 line-clamp-2">{{ playlist.snippet?.title }}</h2>
+            <p class="text-sm text-zinc-400 line-clamp-2">{{ playlist.snippet?.description || 'Sin descripción' }}</p>
+            <div class="flex items-center justify-between mt-2">
+              <span class="text-xs text-zinc-500">{{ playlist.contentDetails?.itemCount || 0 }} videos</span>
+              <button
+                class="cursor-pointer rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-zinc-900 transition hover:bg-gray-200"
+              >
+                Verificar
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div> -->
+  </div>
+</div>

@@ -12,15 +12,12 @@ import { Google } from '../../services/google';
 })
 export class Home {
   private googleService = inject(Google);
+  private youtubeService = inject(Youtube);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
 
   playlistUrl = '';
   dialogVisible = signal(false);
   dialogData = signal<any>({ type: 'options', title: 'Opciones Playlist'});
-
-  constructor(
-    private youtube: Youtube
-  ){}
 
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1];
@@ -71,7 +68,7 @@ export class Home {
   }
 
   verifyPlaylist(idList: string) {
-    this.youtube.verifyPlaylist(idList).subscribe({
+    this.youtubeService.verifyPlaylist(idList).subscribe({
       next: (res) => {
         if(res.hasAccess){
           this.createDialog('options');

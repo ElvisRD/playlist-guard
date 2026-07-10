@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, effect, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 
@@ -10,18 +10,10 @@ import { Google } from '../../services/google';
 })
 export class Navbar {
   
-  loadUser = signal(false);
+  loadUser = computed(() => !this.profile());
   private googleService = inject(Google);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
-
-  constructor() {
-    effect(() => {
-      const p = this.profile();
-      if (p) this.loadUser.set(false);
-      else this.loadUser.set(true);
-    });
-  }
-
+  
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({
       next: () => {
