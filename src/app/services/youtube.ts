@@ -26,6 +26,6 @@ export class Youtube {
   }
 
   verifyPlaylist(idList: string): Observable<any> {
-    return this.http.get(this.apiUrl + idList + 'playlist/access', { withCredentials: true });
+    return this.http.get(this.apiUrl + 'playlist/' + idList + '/access', { withCredentials: true });
   }
 }

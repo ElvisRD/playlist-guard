@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 import { Youtube } from '../../services/youtube';
@@ -15,7 +15,7 @@ export class Playlists {
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
-  playlists: any[] = [];
+  playlists = signal<any[]>([]);
 
   ngOnInit() {
     this.getPlaylists();
@@ -24,7 +24,8 @@ export class Playlists {
   getPlaylists() {
     this.youtubeService.getPlaylists().subscribe({
       next: (res) => {
-        console.log(res);
+        this.playlists.set(res.playlists);
+        console.log(this.playlists);
       },
       error: (error) => {
         console.error('Error al obtener las playlists:', error);

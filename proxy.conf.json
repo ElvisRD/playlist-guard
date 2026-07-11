@@ -1,12 +1,14 @@
 {
-  "/youtube/*": {
+  "/youtube": {
     "target": "http://localhost:3000",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "logLevel": "debug"
   },
-  "/google-auth/*": {
+  "/google-auth": {
     "target": "http://localhost:3000",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
