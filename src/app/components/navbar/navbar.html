@@ -4,17 +4,20 @@
   <div class="flex items-center gap-2.5 shrink-0">
     @if(profile()){
        <a
-      href="/"
+      routerLink=""
       class="cursor-pointer rounded-lg bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
     >
       Inicio
     </a>
       <a
-      href="/playlists"
+      routerLink="playlists"
       class="cursor-pointer rounded-lg bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
     >
       Mis playlists
     </a>
+    } @else if (loading()) {
+      <div class="h-8 w-16 rounded-lg bg-white/15 animate-pulse"></div>
+      <div class="h-8 w-24 rounded-lg bg-white/15 animate-pulse"></div>
     }
   </div>
 
@@ -29,16 +32,14 @@
       >
         Cerrar Sesión
       </button> 
-    } @else {
-        @if(loadUser()){
-          <button
-          (click)="loginWithGoogle()"
-          class="flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-lg border border-zinc-300/30 bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
-        >
-          <img src="/google-icon.svg" alt="Google" class="size-4 sm:size-5" />
-          Iniciar Sesión
-        </button>
-        }
-    } 
+    } @else if (!loading()) {
+        <button
+        (click)="loginWithGoogle()"
+        class="flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-lg border border-zinc-300/30 bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
+      >
+        <img src="/google-icon.svg" alt="Google" class="size-4 sm:size-5" />
+        Iniciar Sesión
+      </button>
+    }
   </div>
 </nav>

@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 import { Router } from '@angular/router';
@@ -12,37 +12,34 @@ import { Youtube } from '../../services/youtube';
 })
 export class Playlists {
 
-  loadUser = computed(() => !this.profile());
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
   private router = inject(Router);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
+  private loading = this.googleService.loading;
   playlists = signal<any[]>([]);
 
-  ngOnInit() {
-    if(!this.profile()){
-      this.router.navigate(['']);
-    }
-
-    this.getPlaylists();
+  constructor() {
+    effect(() => {
+      if (!this.loading()) {
+        if (!this.profile()) {
+          this.router.navigate(['']);
+        } else {
+          this.getPlaylists();
+        }
+      }
+    });
   }
 
   getPlaylists() {
     this.youtubeService.getPlaylists().subscribe({
       next: (res) => {
         this.playlists.set(res.playlists);
-        console.log(this.playlists);
       },
       error: (error) => {
         console.error('Error al obtener las playlists:', error);
       }
     });
   }
-  
-  authenticateWithGoogle(){
-
-  }
-
-
 
 }

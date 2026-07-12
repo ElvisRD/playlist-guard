@@ -1,18 +1,19 @@
-import { Component, inject, effect, signal, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class Navbar {
   
-  loadUser = computed(() => !this.profile());
   private googleService = inject(Google);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
+  protected loading = this.googleService.loading;
   
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({

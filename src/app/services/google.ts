@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, catchError, of, fromEvent, timeout } from 'rxjs';
@@ -12,6 +12,7 @@ export class Google {
   private profileSource = new BehaviorSubject<any>(null);
   profile$ = this.profileSource.asObservable();
   private platformId = inject(PLATFORM_ID);
+  loading = signal(true);
 
   constructor(private http: HttpClient) {
     if (isPlatformBrowser(this.platformId)) {
@@ -38,7 +39,9 @@ export class Google {
         this.profileSource.next(null);
         return of(null);
       })
-    ).subscribe()
+    ).subscribe({
+      complete: () => this.loading.set(false)
+    })
   }  
 
   cleanProfile(){
