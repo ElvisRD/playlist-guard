@@ -6,5 +6,6 @@ import { Playlists } from './pages/playlists/playlists';
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'auth/callback', component: OauthCallback },
-  { path: 'playlists', component: Playlists }
+  { path: 'playlists', component: Playlists },
+  { path: '**', redirectTo: '' }
 ];
