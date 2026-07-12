@@ -11,9 +11,10 @@ import { Google } from '../../services/google';
 })
 export class Dialog implements OnInit {
   @Input() visible = false;
-  @Input() playlistData: any = null;
+  playlist = input<any>(null);
   type = input.required<string>();
   @Output() close = new EventEmitter<void>();
+  @Output() save = new EventEmitter<void>();
 
   private http = inject(HttpClient);
   private youtubeService = inject(Youtube);
@@ -21,7 +22,6 @@ export class Dialog implements OnInit {
 
   private dialogTexts: Record<string, any> = {};
   dialogConfig = signal<any>(null);
-  viewDataOption = false;
   optionSelected: any = null;
 
   constructor() {
@@ -77,19 +77,11 @@ export class Dialog implements OnInit {
     });
   }
 
-  openOption(option: any) {
-    this.optionSelected = option;
-    this.viewDataOption = true;
-  }
-
-  resetDialog() {
-    this.viewDataOption = false;
-    this.optionSelected = null;
+  savePlaylist() {
+    this.save.emit();
   }
 
   onClose() {
-    this.visible = false;
-    this.resetDialog();
     this.close.emit();
   }
 }

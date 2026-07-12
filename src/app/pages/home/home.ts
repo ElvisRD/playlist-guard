@@ -66,5 +66,10 @@ export class Home {
 
   onDialogClose() {
     this.dialogVisible.set(false);
+    this.playlistData.set(null);
+  }
+
+  savePlaylist() {
+    console.log('buenas')
   }
 }
