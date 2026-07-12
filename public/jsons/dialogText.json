@@ -25,8 +25,8 @@
     "button": "Cerrar"
   },
   "unauthorized": {
-    "title": "No autorizado",
-    "text": "No tienes autorización para acceder a este recurso.",
-    "button": "Cerrar"
+    "title": "Autenticación",
+    "text": "Es necesario que inicies sesión con tu cuenta de Google en la que se encuentra la playlist.",
+    "button": "Iniciar sesión"
   }
 }

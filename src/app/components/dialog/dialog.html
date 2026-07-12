@@ -107,18 +107,18 @@
           </div>
         }
         @case ('unauthorized') {
-          <div class="w-full flex flex-col items-center gap-4">
-            <span class="pi pi-exclamation-triangle text-red-400 text-4xl"></span>
-            <p class="text-zinc-300 text-center">
-              {{ dialogConfig()?.text }}
-            </p>
-            <button
-              (click)="onClose()"
-              class="py-2 px-6 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-zinc-100 transition hover:bg-zinc-700"
-            >
-              {{ dialogConfig()?.button }}
-            </button>
-          </div>
+          <div class="w-full flex flex-col items-center justify-center">
+              <p class="text-zinc-400 mb-4">
+                {{ dialogConfig()?.text }}
+              </p>
+              <button
+                class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
+                (click)="authenticateWithGoogle()"
+              >
+                <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
+                <span>{{ dialogConfig()?.button }}</span>
+              </button>
+            </div>
         }
       }
     </div>

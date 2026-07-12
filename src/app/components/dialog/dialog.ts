@@ -69,9 +69,10 @@ export class Dialog implements OnInit {
   }
 
   authenticateWithGoogle() {
+    this.onClose();
     this.googleService.authenticateWithGoogle().subscribe({
       next: (payload) => {
-        this.onClose();
+        this.googleService.loadProfile();
       },
       error: (err) => console.error(err.message),
     });
