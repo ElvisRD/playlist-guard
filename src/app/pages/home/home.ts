@@ -17,69 +17,50 @@ export class Home {
 
   playlistUrl = '';
   dialogVisible = signal(false);
-  dialogData = signal<any>({ type: 'options', title: 'Opciones Playlist'});
+  playlistData = signal<any>(null);
+  dialogType = signal<string>('options');
 
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1];
 
     if (!idList) {
       this.createDialog('not-found');
-      this.dialogVisible.set(true);
       return;
     }
 
     this.verifyPlaylist(idList);
   }
 
-  createDialog(type: string){
-    switch(type){
-      case 'options':
-        this.dialogData.set({
-          type: 'options',
-          title: 'Opciones Playlist',
-        });
-        break;
-      case 'not-found':
-        this.dialogData.set({
-          type: 'not-found',
-          title: 'Playlist no encontrada',
-          text: 'No se encontró un ID de playlist en la URL proporcionada.'
-        });
-        break;
-      case 'not-access':
-        this.dialogData.set({
-          type: 'not-access',
-          title: 'No tienes acceso a esta playlist',
-          text: 'La playlist a la que intentas acceder es privada y le pertenece a otro usuario.',
-        });
-        console.log(this.dialogData());
-        break;
-      case 'error':
-        this.dialogData.set({
-          type: 'error',
-          title: 'Error',
-          text: 'Ocurrió un error al verificar la playlist. Intenta de nuevo más tarde.'
-        });
-        break;
-      default:
-        break;
-    }
+  createDialog(type: string) {
+    this.dialogType.set(type);
     this.dialogVisible.set(true);
   }
 
   verifyPlaylist(idList: string) {
     this.youtubeService.verifyPlaylist(idList).subscribe({
       next: (res) => {
-        if(res.hasAccess){
-          this.createDialog('options');
-        }else{
+        if (res.hasAccess) {
+          this.playlistData.set(res.playlist);
+          this.createDialog('success-playlist');
+        } else {
           this.createDialog('not-access');
         }
+        console.log(res);
       },
       error: (error) => {
         console.error('Error verifying playlist:', error);
-        this.createDialog('error');
-      }
+        switch (error.status) {
+          case 401:
+            this.createDialog('unauthorized');
+            break;
+          case 404:
+            this.createDialog('not-found');
+            break;
+          default:
+            this.createDialog('error');
+            break;
+        }
+      },
     });
   }
 

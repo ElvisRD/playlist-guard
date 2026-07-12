@@ -1,0 +1,32 @@
+{
+  "success-playlist": {
+    "title": "Playlist encontrada",
+    "text": "La playlist fue encontrada exitosamente.",
+    "button": "Cerrar"
+  },
+  "not-found": {
+    "title": "Playlist no encontrada",
+    "text": "No se encontró un ID de playlist en la URL proporcionada.",
+    "button": "Cerrar"
+  },
+  "not-access": {
+    "title": "No tienes acceso a esta playlist",
+    "text": "La playlist a la que intentas acceder es privada y le pertenece a otro usuario.",
+    "button": "Cerrar"
+  },
+  "private": {
+    "title": "Playlist Privada",
+    "text": "Esta playlist es privada. Por favor, inicia sesión en Google para acceder.",
+    "button": "Autenticarse"
+  },
+  "error": {
+    "title": "Error",
+    "text": "Ocurrió un error al verificar la playlist. Intenta de nuevo más tarde.",
+    "button": "Cerrar"
+  },
+  "unauthorized": {
+    "title": "No autorizado",
+    "text": "No tienes autorización para acceder a este recurso.",
+    "button": "Cerrar"
+  }
+}

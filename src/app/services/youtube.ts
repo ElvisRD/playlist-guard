@@ -17,8 +17,8 @@ export class Youtube {
     return this.http.get(this.apiUrl + idList + 'playlist/videos/excel', { responseType: 'blob' });
   }
 
-  getPlaylistText(){
-    
+  getPlaylistYoutube(idList: string): Observable<any> {
+    return this.http.get(this.apiUrl + 'playlist/' + idList, { withCredentials: true }); 
   }
 
   getPlaylists(): Observable<any> {

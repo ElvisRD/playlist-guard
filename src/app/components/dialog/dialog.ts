@@ -1,13 +1,7 @@
-import { Component, Input, Output, EventEmitter, input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, input, signal, effect, OnInit, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
-
-interface dataDialog {
-  type: string;
-  title: string;
-  text?: string;
-}
-
 
 @Component({
   selector: 'app-dialog',
@@ -15,24 +9,44 @@ interface dataDialog {
   templateUrl: './dialog.html',
   styleUrl: './dialog.css',
 })
-export class Dialog {
+export class Dialog implements OnInit {
   @Input() visible = false;
-  data = input.required<dataDialog>();
+  @Input() playlistData: any = null;
+  type = input.required<string>();
   @Output() close = new EventEmitter<void>();
+
+  private http = inject(HttpClient);
+  private youtubeService = inject(Youtube);
+  private googleService = inject(Google);
+
+  private dialogTexts: Record<string, any> = {};
+  dialogConfig = signal<any>(null);
   viewDataOption = false;
   optionSelected: any = null;
-  options = [
-    { title: 'Descargar Archivo', icon: '', type: 'download', name: 'Descargar', value: 'option1' },
-    { title: '', icon: '', type: 'compare', name: 'Comparar', value: 'option2' },
-    { title: '', icon: '', type: 'reload', name: 'Actualizar', value: 'option3' },
-  ];
 
-  constructor(
-    private youtubeService: Youtube,
-    private googleService: Google,
-  ){}
+  constructor() {
+    effect(() => {
+      const currentType = this.type();
+      if (currentType && this.dialogTexts[currentType]) {
+        this.dialogConfig.set(this.dialogTexts[currentType]);
+      }
+    });
+  }
 
-  downloadExcel(){
+  ngOnInit() {
+    this.http.get<Record<string, any>>('/jsons/dialogText.json').subscribe({
+      next: (data) => {
+        this.dialogTexts = data;
+        const currentType = this.type();
+        if (currentType && data[currentType]) {
+          this.dialogConfig.set(data[currentType]);
+        }
+      },
+      error: (err) => console.error('Error loading dialog texts:', err),
+    });
+  }
+
+  downloadExcel() {
     const list = 'PLzfpPpqZplBa5jzeRWM6-gkTpdlgbEecr/';
     this.youtubeService.getPlaylistExcel(list).subscribe({
       next: (blob: Blob) => {
@@ -54,7 +68,7 @@ export class Dialog {
     });
   }
 
-  authenticateWithGoogle(){
+  authenticateWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({
       next: (payload) => {
         this.onClose();
@@ -68,7 +82,7 @@ export class Dialog {
     this.viewDataOption = true;
   }
 
-  resetDialog(){
+  resetDialog() {
     this.viewDataOption = false;
     this.optionSelected = null;
   }
