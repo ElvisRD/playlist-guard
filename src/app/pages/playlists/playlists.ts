@@ -18,6 +18,7 @@ export class Playlists {
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   private loading = this.googleService.loading;
   playlists = signal<any[]>([]);
+  playlistsLoading = signal(true);
 
   constructor() {
     effect(() => {
@@ -38,7 +39,8 @@ export class Playlists {
       },
       error: (error) => {
         console.error('Error al obtener las playlists:', error);
-      }
+      },
+      complete: () => this.playlistsLoading.set(false),
     });
   }
 

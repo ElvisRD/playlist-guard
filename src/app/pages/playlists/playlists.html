@@ -3,31 +3,46 @@
       <div class="flex flex-col gap-4 mb-14 mt-20 text-center">
         <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Mis Playlists Protegidas</h1>
       </div>
-      @if (playlists().length === 0) {
+      @if (playlistsLoading()) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden">
+              <div class="w-full aspect-video bg-zinc-700 animate-pulse"></div>
+              <div class="p-4 flex flex-col gap-2">
+                <div class="h-4 w-3/4 rounded bg-zinc-700 animate-pulse"></div>
+                <div class="flex items-center justify-between mt-2">
+                  <div class="h-3 w-16 rounded bg-zinc-700 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (playlists().length === 0) {
         <div class="flex flex-col items-center justify-center py-20 text-zinc-500">
           <p class="text-lg">No se encontraron playlists</p>
         </div>
-      }
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      @for (playlist of playlists(); track playlist.id) {
-        <div
-          class="rounded-xl cursor-pointer bg-zinc-800 border border-zinc-700 overflow-hidden transition hover:scale-[1.05] hover:border-zinc-500"
-        >
-          <img
-            [src]="playlist.thumbnail"
-            [alt]="playlist.snippet?.title"
-            class="w-full aspect-video object-cover"
-          />
-          <div class="p-4 flex flex-col gap-2">
-            <span class="text-sm text-zinc-400 line-clamp-2">{{
-              playlist.title || 'Sin titulo'
-            }}</span>
-            <div class="flex items-center justify-between mt-2">
-              <span class="text-xs text-zinc-500">{{ playlist.totalVideos || 0 }} videos</span>
+      } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          @for (playlist of playlists(); track playlist.id) {
+            <div
+              class="rounded-xl cursor-pointer bg-zinc-800 border border-zinc-700 overflow-hidden transition hover:scale-[1.05] hover:border-zinc-500"
+            >
+              <img
+                [src]="playlist.thumbnail"
+                [alt]="playlist.snippet?.title"
+                class="w-full aspect-video object-cover"
+              />
+              <div class="p-4 flex flex-col gap-2">
+                <span class="text-sm text-zinc-400 line-clamp-2">{{
+                  playlist.title || 'Sin titulo'
+                }}</span>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="text-xs text-zinc-500">{{ playlist.totalVideos || 0 }} videos</span>
+                </div>
+              </div>
             </div>
-          </div>
+          }
         </div>
       }
-    </div>
   </div>
 </div>

@@ -24,12 +24,13 @@
   <div class="flex items-center gap-2.5 shrink-0">
     @if(profile()) {
       <div class="rounded-full border size-8 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0">
-        <img src="{{profile().picture}}" alt="Profile" class="size-full rounded-full" />
+        <img [src]="profile().picture" [alt]="profile().name || 'Profile'" referrerpolicy="no-referrer" (error)="onImageError($event)" class="size-full rounded-full" />
       </div>
       <button
         (click)="logout()"
         class="cursor-pointer rounded-lg bg-white/10 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
       >
+      
         Cerrar Sesión
       </button> 
     } @else if (!loading()) {
