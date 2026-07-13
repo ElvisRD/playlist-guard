@@ -1,0 +1,11 @@
+{
+  "success": {
+    "text": "Acción realizada exitosamente."
+  },
+  "error": {
+    "text": "Ocurrió un error. Intenta de nuevo más tarde."
+  },
+  "warning": {
+    "text": "Advertencia: revisa la información ingresada."
+  }
+}

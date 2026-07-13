@@ -1,0 +1,27 @@
+@if (visible()) {
+  <div class="fixed top-4 right-4 z-50 animate-slide-down">
+    <div
+      class="flex items-center gap-3 rounded-lg border px-4 py-3 shadow-xl max-w-sm"
+      [class]="borderClass() + ' ' + bgClass()"
+    >
+      @switch (type()) {
+        @case ('success') {
+          <span class="pi pi-check-circle text-green-400 text-lg"></span>
+        }
+        @case ('error') {
+          <span class="pi pi-times-circle text-red-400 text-lg"></span>
+        }
+        @case ('warning') {
+          <span class="pi pi-exclamation-triangle text-yellow-400 text-lg"></span>
+        }
+      }
+      <p class="text-sm text-zinc-100 flex-1">{{ displayMessage() }}</p>
+      <button
+        class="cursor-pointer text-zinc-400 transition hover:text-zinc-100"
+        (click)="onClose()"
+      >
+        <span class="pi pi-times text-sm"></span>
+      </button>
+    </div>
+  </div>
+}
