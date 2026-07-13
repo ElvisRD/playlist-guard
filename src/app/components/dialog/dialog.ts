@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, input, signal, effect, OnInit, inject } from '@angular/core';
+import { Component, signal, effect, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
+import { Dialog as DialogService } from '../../services/dialog';
 
 @Component({
   selector: 'app-dialog',
@@ -10,19 +11,17 @@ import { Google } from '../../services/google';
   styleUrl: './dialog.css',
 })
 export class Dialog implements OnInit {
-  @Input() visible = false;
-  playlist = input<any>(null);
-  type = input.required<string>();
-  @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<void>();
-
+  private dialogService = inject(DialogService);
   private http = inject(HttpClient);
   private youtubeService = inject(Youtube);
   private googleService = inject(Google);
 
+  visible = this.dialogService.visible;
+  type = this.dialogService.type;
+  playlist = this.dialogService.playlist;
+
   private dialogTexts: Record<string, any> = {};
   dialogConfig = signal<any>(null);
-  optionSelected: any = null;
 
   constructor() {
     effect(() => {
@@ -71,7 +70,7 @@ export class Dialog implements OnInit {
   authenticateWithGoogle() {
     this.onClose();
     this.googleService.authenticateWithGoogle().subscribe({
-      next: (payload) => {
+      next: () => {
         this.googleService.loadProfile();
       },
       error: (err) => console.error(err.message),
@@ -79,10 +78,10 @@ export class Dialog implements OnInit {
   }
 
   savePlaylist() {
-    this.save.emit();
+    this.dialogService.save();
   }
 
   onClose() {
-    this.close.emit();
+    this.dialogService.close();
   }
 }

@@ -1,75 +1,63 @@
 import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Dialog } from '../../components/dialog/dialog';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
+import { Toast } from '../../services/toast';
+import { Dialog as DialogService } from '../../services/dialog';
 
 @Component({
   selector: 'app-home',
-  imports: [Dialog],
+  imports: [],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class Home {
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
+  private toast = inject(Toast);
+  private dialogService = inject(DialogService);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
 
   playlistUrl = '';
-  dialogVisible = signal(false);
-  playlistData = signal<any>(null);
-  dialogType = signal<string>('options');
 
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1];
 
     if (!idList) {
-      this.createDialog('not-found');
+      this.dialogService.open('not-found');
       return;
     }
 
     this.verifyPlaylist(idList);
   }
 
-  createDialog(type: string) {
-    this.dialogType.set(type);
-    this.dialogVisible.set(true);
-  }
-
   verifyPlaylist(idList: string) {
     this.youtubeService.verifyPlaylist(idList).subscribe({
       next: (res) => {
         if (res.hasAccess) {
-          this.playlistData.set(res.playlist);
-          this.createDialog('success-playlist');
+          this.dialogService.open('success-playlist', res.playlist, () => this.savePlaylist());
         } else {
-          this.createDialog('not-access');
+          this.dialogService.open('not-access');
         }
-        console.log(res);
       },
       error: (error) => {
         console.error('Error verifying playlist:', error);
         switch (error.status) {
           case 401:
-            this.createDialog('unauthorized');
+            this.dialogService.open('unauthorized');
             break;
           case 404:
-            this.createDialog('not-found');
+            this.dialogService.open('not-found');
             break;
           default:
-            this.createDialog('error');
+            this.dialogService.open('error');
             break;
         }
       },
     });
   }
 
-  onDialogClose() {
-    this.dialogVisible.set(false);
-    this.playlistData.set(null);
-  }
-
   savePlaylist() {
-    console.log('buenas')
+    this.toast.show('success', 'Playlist saved successfully!');
   }
 }

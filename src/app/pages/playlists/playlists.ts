@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 import { Router } from '@angular/router';
 import { Youtube } from '../../services/youtube';
+import { Dialog } from '../../services/dialog';
 
 @Component({
   selector: 'app-playlists',
@@ -14,6 +15,7 @@ export class Playlists {
 
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
+  private dialog = inject(Dialog);
   private router = inject(Router);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   private loading = this.googleService.loading;
@@ -41,6 +43,11 @@ export class Playlists {
         console.error('Error al obtener las playlists:', error);
       },
       complete: () => this.playlistsLoading.set(false),
+    });
+  }
+
+  openOptions(){
+    this.dialog.open('options', null, () => {
     });
   }
 
