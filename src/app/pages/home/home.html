@@ -1,29 +1,68 @@
-<div class="flex h-full items-center justify-center bg-zinc-900">
-  <div class="w-xl mx-6 mb-20">
+<div class="flex h-full flex-col items-center justify-center bg-zinc-900">
+  <div class="w-xl mx-6 mb-8">
     <div class="text-center">
-      <h1 class="text-4xl font-bold text-gray-100">
-        YouTube Playlist Guard
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-100">YouTube Playlist Guard</h1>
       <p class="mt-2 text-lg text-gray-400">
         Enter a YouTube playlist URL to see if it's safe to watch.
       </p>
     </div>
     <div class="mt-6">
       <input
-      type="text"
-      [value]="playlistUrl"
-      (input)="playlistUrl = $event.target.value"
-      placeholder="Paste YouTube playlist link here..."
-      class="w-full rounded-full border-zinc-700 bg-zinc-800 px-6 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
+        type="text"
+        [value]="playlistUrl"
+        (input)="playlistUrl = $event.target.value"
+        placeholder="Paste YouTube playlist link here..."
+        class="w-full rounded-full border-zinc-700 bg-zinc-800 px-6 py-3 text-base text-gray-100 placeholder-gray-500 outline-none transition"
       />
     </div>
-    <div class="w-full flex justify-center items-center mt-3">
+    <div class="w-full flex justify-center items-center">
       <button
         (click)="searchPlaylist()"
-        class="mt-4 cursor-pointer rounded-full bg-white px-5 py-2.5 text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
+        class="mt-4 cursor-pointer rounded-full border bg-lime-600 px-10 py-2.5 text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
       >
         Buscar Playlist
       </button>
     </div>
   </div>
+  @if (playlist()) {
+    <div class="w-full flex mt-4 flex-col items-center justify-center">
+      <div class="flex flex-col border border-zinc-800 p-4 rounded-2xl gap-2">
+        <img
+          [src]="playlist().thumbnail"
+          alt="Playlist Thumbnail"
+          class="w-full rounded-lg object-cover"
+        />
+        <div class="flex w-full items-center justify-between">
+          <h3 class="text-xl font-semibold text-zinc-100">
+            {{ playlist().title }}
+          </h3>
+          <div 
+            [ngClass]="playlist()?.protect ? 'bg-green-600/20 text-green-200/80' : 'bg-red-600/20 text-red-200/80'"
+            class="px-2.5 py-0.5 items-center flex gap-1.5 rounded-full ">
+            @if(playlist().protect){
+              <span class="pi pi-check-circle"></span>
+              <span>Protegida</span>
+            } @else {
+              <span class="pi pi-times-circle"></span>
+              <span>Vulnerable</span>
+            }
+            
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <span class="text-zinc-400  pi pi-objects-column"></span>
+          <span class="text-zinc-400 text-sm">{{ playlist().totalVideos }} videos</span>
+        </div>
+        <div class="w-full flex justify-center items-center mt-3">
+          <button
+            (click)="savePlaylist()"
+            class="cursor-pointer rounded-full bg-white w-full py-2.5 text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
+          >
+
+            <span>{{playlist().protect ? 'Actualizar playlist':'Guardar playlist'}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
