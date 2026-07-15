@@ -26,7 +26,8 @@ export class Home {
     const idList = this.playlistUrl.split('list=')[1];
 
     if (!idList) {
-      this.dialogService.open('not-found');
+      this.toast.show('not-found');
+      /* this.dialogService.open('not-found'); */
       return;
     }
 

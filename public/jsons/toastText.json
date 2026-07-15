@@ -2,6 +2,9 @@
   "success": {
     "text": "Acción realizada exitosamente."
   },
+  "not-found": {
+    "text": "La playlist no fue encontrada"
+  },
   "error": {
     "text": "Ocurrió un error. Intenta de nuevo más tarde."
   },

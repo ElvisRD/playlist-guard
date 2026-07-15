@@ -6,6 +6,7 @@ import { Injectable, signal } from '@angular/core';
 export class Toast {
   visible = signal(false);
   type = signal<string>('');
+  title = signal<string>('');
   message = signal<string>('');
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 

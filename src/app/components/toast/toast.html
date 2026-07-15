@@ -1,12 +1,15 @@
 @if (visible()) {
-  <div class="fixed top-4 right-4 z-50 animate-slide-down">
+  <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-slide-down">
     <div
       class="flex items-center gap-3 rounded-lg border px-4 py-3 shadow-xl max-w-sm"
-      [class]="borderClass() + ' ' + bgClass()"
+      [ngClass]="classes()"
     >
       @switch (type()) {
         @case ('success') {
           <span class="pi pi-check-circle text-green-400 text-lg"></span>
+        }
+        @case ('not-found') {
+          <span class="pi pi-exclamation-circle text-red-400 text-xl"></span>
         }
         @case ('error') {
           <span class="pi pi-times-circle text-red-400 text-lg"></span>
@@ -15,7 +18,9 @@
           <span class="pi pi-exclamation-triangle text-yellow-400 text-lg"></span>
         }
       }
-      <p class="text-sm text-zinc-100 flex-1">{{ displayMessage() }}</p>
+      <div class="flex flex-col">
+        <p class="text-sm text-zinc-100 flex-1">{{ displayMessage()}}</p>
+      </div>
       <button
         class="cursor-pointer text-zinc-400 transition hover:text-zinc-100"
         (click)="onClose()"
