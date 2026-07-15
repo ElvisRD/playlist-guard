@@ -61,7 +61,14 @@ export class Home {
     });
   }
 
-  savePlaylist() {
-    
+  savePlaylist(playlistId: string) {
+    this.youtubeService.savePlaylist(playlistId).subscribe({
+      next: (res) => {
+        console.log(res)
+      },
+      error: (error) => {
+        console.error(error)
+      }
+    })
   }
 }

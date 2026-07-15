@@ -25,7 +25,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           @for (playlist of playlists(); track playlist.id) {
             <button
-              (click)="openOptions()"
+              (click)="openPlaylist(playlist)"
               class="rounded-xl cursor-pointer bg-zinc-800 border border-zinc-700 overflow-hidden transition hover:scale-[1.05] hover:border-zinc-500"
             >
               <img

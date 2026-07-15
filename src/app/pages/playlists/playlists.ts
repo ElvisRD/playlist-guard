@@ -46,9 +46,9 @@ export class Playlists {
     });
   }
 
-  openOptions(){
-    this.dialog.open('options', null, () => {
-    });
+  openPlaylist(playlistId: string){
+    console.log(playlistId)
+    /* this.router.navigate(['/playlist/']) */
   }
 
 }

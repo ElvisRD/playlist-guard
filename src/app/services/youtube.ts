@@ -17,6 +17,10 @@ export class Youtube {
     return this.http.get(this.apiUrl + idList + 'playlist/videos/excel', { responseType: 'blob' });
   }
 
+  savePlaylist(idPlaylist: string): Observable<any> {
+    return this.http.post(this.apiUrl + 'playlist/' +  idPlaylist, { withCredentials: true })
+  }
+
   getPlaylistYoutube(idList: string): Observable<any> {
     return this.http.get(this.apiUrl + 'playlist/' + idList, { withCredentials: true }); 
   }
