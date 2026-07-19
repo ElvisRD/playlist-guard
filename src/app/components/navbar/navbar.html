@@ -1,42 +1,54 @@
-<nav class="fixed top-0 left-0 w-full h-16 z-10 flex items-center justify-between gap-2 px-4 sm:px-6 bg-zinc-800 text-white shadow-lg">
+<nav
+  class="fixed top-0 left-0 w-full h-16 z-10 flex items-center justify-between gap-2 px-4 sm:px-6 bg-zinc-800 text-white shadow-lg"
+>
   <span class="text-lg sm:text-xl font-bold tracking-tight shrink-0">PlaylistGuard</span>
 
   <div class="flex items-center gap-2.5 shrink-0">
-    @if(profile()){
-       <a
-      routerLink=""
-      class="cursor-pointer rounded-lg bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
-    >
-      Inicio
-    </a>
+    @if (profile()) {
       <a
-      routerLink="playlists"
-      class="cursor-pointer rounded-lg bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
-    >
-      Mis playlists
-    </a>
+        routerLink=""
+        class="cursor-pointer rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap"
+      >
+        Inicio
+      </a>
+      <a
+        routerLink="playlists"
+        class="cursor-pointer rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap "
+      >
+        Mis playlists
+      </a>
     } @else if (loading()) {
       <div class="h-8 w-16 rounded-lg bg-white/15 animate-pulse"></div>
       <div class="h-8 w-24 rounded-lg bg-white/15 animate-pulse"></div>
     }
   </div>
 
-  <div class="flex items-center gap-2.5 shrink-0">
-    @if(profile()) {
-      <div class="rounded-full border size-8 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0">
-        <img [src]="profile().picture" [alt]="profile().name || 'Profile'" referrerpolicy="no-referrer" (error)="onImageError($event)" class="size-full rounded-full" />
-      </div>
-      <button
+  <div class="flex items-center shrink-0">
+    @if (profile()) {
+      <button 
+        class="flex gap-2 items-center cursor-pointer"
         (click)="logout()"
-        class="cursor-pointer rounded-lg bg-white/10 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
-      >
-      
-        Cerrar Sesión
-      </button> 
+        >
+        <div
+          class="rounded-full border size-8 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
+        >
+          <img
+            [src]="profile().picture"
+            [alt]="profile().name || 'Profile'"
+            referrerpolicy="no-referrer"
+            (error)="onImageError($event)"
+            class="size-full rounded-full"
+          />
+        </div>
+        <span class="text-sm"
+        >
+          Cerrar Sesión
+        </span>
+      </button>
     } @else if (!loading()) {
-        <button
+      <button
         (click)="loginWithGoogle()"
-        class="flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-lg border border-zinc-300/30 bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/20"
+        class="flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-lg border border-zinc-300/30 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition hover:bg-white/10"
       >
         <img src="/google-icon.svg" alt="Google" class="size-4 sm:size-5" />
         Iniciar Sesión
