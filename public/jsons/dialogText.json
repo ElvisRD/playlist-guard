@@ -4,10 +4,10 @@
     "text": "La playlist fue encontrada exitosamente.",
     "button": "Cerrar"
   },
-  "not-found": {
-    "title": "Playlist no encontrada",
-    "text": "No se encontró un ID de playlist en la URL proporcionada.",
-    "button": "Cerrar"
+  "logout": {
+    "title": "Cerrar sesión",
+    "text": "¿Estás seguro de que deseas cerrar sesión?",
+    "button": "Volver"
   },
   "not-access": {
     "title": "No tienes acceso a esta playlist",

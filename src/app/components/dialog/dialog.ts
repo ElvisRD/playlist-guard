@@ -45,26 +45,8 @@ export class Dialog implements OnInit {
     });
   }
 
-  downloadExcel() {
-    const list = 'PLzfpPpqZplBa5jzeRWM6-gkTpdlgbEecr/';
-    this.youtubeService.getPlaylistExcel(list).subscribe({
-      next: (blob: Blob) => {
-        const blobExcel = new Blob([blob], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        });
-        const url = window.URL.createObjectURL(blobExcel);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'reporte_generado.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('Error al descargar el archivo:', err);
-      }
-    });
+  logout() {
+    this.googleService.logout().subscribe();
   }
 
   authenticateWithGoogle() {
@@ -77,9 +59,6 @@ export class Dialog implements OnInit {
     });
   }
 
-  savePlaylist() {
-    this.dialogService.save();
-  }
 
   onClose() {
     this.dialogService.close();

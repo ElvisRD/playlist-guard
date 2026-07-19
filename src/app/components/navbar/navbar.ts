@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
+import { Dialog } from '../../services/dialog'
 import { RouterLink } from "@angular/router";
 
 @Component({
@@ -12,6 +13,7 @@ import { RouterLink } from "@angular/router";
 export class Navbar {
   
   private googleService = inject(Google);
+  private dialogService = inject(Dialog);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   protected loading = this.googleService.loading;
   
@@ -24,8 +26,8 @@ export class Navbar {
     });
   }
 
-  logout() {
-    this.googleService.logout().subscribe();
+  openDialogLogout(){
+    this.dialogService.open('logout'); 
   }
 
   onImageError(event: Event) {

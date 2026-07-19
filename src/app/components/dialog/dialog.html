@@ -18,51 +18,46 @@
       </div>
 
       @switch (type()) {
-        @case ('success-playlist') {
-          <div class="w-full flex flex-col items-center justify-center">
-             @if(playlist()){
-                <div class="w-full flex flex-col items-center justify-center">
-                  <div class="flex flex-col items-center gap-2">
-                    <img
-                      [src]="playlist().thumbnail"
-                      alt="Playlist Thumbnail"
-                      class="w-full rounded-lg object-cover"
-                    />
-                    <h3 class="text-lg font-semibold text-zinc-100">
-                      {{ playlist().title }}
-                    </h3>
-                    <p class="text-zinc-400 text-sm">
-                      {{ playlist().totalVideos }} videos
-                    </p>
-                    
-                    <div class="w-full flex justify-center items-center mt-3">
-                      <button
-                        (click)="savePlaylist()"
-                        class="cursor-pointer rounded-full bg-white px-5 py-2.5 text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
-                      >
-                        Guardar playlist
-                      </button>
-                    </div>
-                  </div>
-
-
-                </div>
-             }
-          </div>
-        }
         @case ('private') {
           <div class="w-full flex flex-col items-center justify-center">
-              <p class="text-zinc-400 mb-4">
-                {{ dialogConfig()?.text }}
-              </p>
+            <p class="text-zinc-400 mb-4">
+              {{ dialogConfig()?.text }}
+            </p>
+            <button
+              class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
+              (click)="authenticateWithGoogle()"
+            >
+              <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
+              <span>{{ dialogConfig()?.button }}</span>
+            </button>
+          </div>
+        }
+        @case ('logout') {
+          <div class="w-full flex flex-col items-center p-2 text-center">
+
+            <h3 class="text-zinc-100 font-semibold text-lg mb-1"></h3>
+            <p class="text-zinc-400 text-lg max-w-xs mb-6">
+              {{dialogConfig().text}}
+            </p>
+
+            <div class="flex gap-3 w-full justify-center">
               <button
-                class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
-                (click)="authenticateWithGoogle()"
+                type="button"
+                (click)="onClose()"
+                class="flex-1 sm:flex-none min-w-[100px] py-2 px-5 rounded-lg border border-zinc-700 bg-zinc-800 text-zinc-400 font-medium text-sm transition-colors hover:bg-zinc-800 hover:text-zinc-200 cursor-pointer focus:outline-none"
               >
-                <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
-                <span>{{ dialogConfig()?.button }}</span>
+                {{dialogConfig().button}}
+              </button>
+
+              <button
+                type="button"
+                (click)="logout()"
+                class=" sm:flex-none px-2 rounded-lg border border-zinc-700 bg-red-700 text-white font-medium text-sm transition-colors hover:bg-red-700 cursor-pointer"
+              >
+                Cerrar sesión
               </button>
             </div>
+          </div>
         }
         @case ('error') {
           <div class="w-full flex flex-col items-center gap-4">
@@ -108,17 +103,17 @@
         }
         @case ('unauthorized') {
           <div class="w-full flex flex-col items-center justify-center">
-              <p class="text-zinc-400 mb-4">
-                {{ dialogConfig()?.text }}
-              </p>
-              <button
-                class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
-                (click)="authenticateWithGoogle()"
-              >
-                <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
-                <span>{{ dialogConfig()?.button }}</span>
-              </button>
-            </div>
+            <p class="text-zinc-400 mb-4">
+              {{ dialogConfig()?.text }}
+            </p>
+            <button
+              class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
+              (click)="authenticateWithGoogle()"
+            >
+              <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
+              <span>{{ dialogConfig()?.button }}</span>
+            </button>
+          </div>
         }
       }
     </div>
