@@ -47,8 +47,7 @@ export class Playlists {
   }
 
   openPlaylist(playlistId: string){
-    console.log(playlistId)
-    /* this.router.navigate(['/playlist/']) */
+    this.router.navigate(['/playlist/', playlistId]) 
   }
 
 }

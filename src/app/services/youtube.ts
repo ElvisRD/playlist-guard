@@ -13,23 +13,23 @@ export class Youtube {
     private http: HttpClient
   ) {}
 
-  getPlaylistExcel(idList: string): Observable<Blob> {
-    return this.http.get(this.apiUrl + idList + 'playlist/videos/excel', { responseType: 'blob' });
+  getPlaylistExcel(listId: string): Observable<Blob> {
+    return this.http.get(this.apiUrl + listId + 'playlist/videos/excel', { responseType: 'blob' });
   }
 
-  savePlaylist(idPlaylist: string): Observable<any> {
-    return this.http.post(this.apiUrl + 'playlist/' +  idPlaylist, { withCredentials: true })
+  savePlaylist(playlistId: string): Observable<any> {
+    return this.http.post(this.apiUrl + 'playlist/' +  playlistId, { withCredentials: true })
   }
 
-  getPlaylistYoutube(idList: string): Observable<any> {
-    return this.http.get(this.apiUrl + 'playlist/' + idList, { withCredentials: true }); 
+  getPlaylistData(playlistId: string){
+    return this.http.get(this.apiUrl + 'playlist/' + playlistId, { withCredentials: true})
   }
 
   getPlaylists(): Observable<any> {
     return this.http.get(this.apiUrl + 'playlists', { withCredentials: true });
   }
 
-  verifyPlaylist(idList: string): Observable<any> {
-    return this.http.get(this.apiUrl + 'playlist/' + idList + '/access', { withCredentials: true });
+  verifyPlaylist(listId: string): Observable<any> {
+    return this.http.get(this.apiUrl + 'playlist/' + listId + '/access', { withCredentials: true });
   }
 }
