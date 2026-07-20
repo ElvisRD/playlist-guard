@@ -23,7 +23,6 @@ export class Playlist {
   private authLoading = this.googleService.loading;
 
   playlist = signal<any>(null);
-  search: string = ''
   searchQuery = signal('')
   isOpenSelect = signal(false);
   selectFilter = signal('fecha');
