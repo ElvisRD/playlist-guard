@@ -22,6 +22,25 @@ export class Home {
   playlistUrl = '';
   loaderPlaylist = false;
 
+  benefits = [
+  {
+    icon: 'pi pi-history',
+    title: 'Historial e Identificación',
+    description: 'Descubre al instante el nombre de los videos privados o borrados de tu playlist.'
+  },
+  {
+    icon: 'pi pi-bell',
+    title: 'Alertas de Cambios',
+    description: 'Recibe notificaciones automáticas cuando YouTube modifique o elimine contenido de tus playlists.'
+  },
+  {
+    icon: 'pi pi-save',
+    title: 'Respaldo Seguro',
+    description: 'Guarda una copia fija del estado original de tu playlist para consultar la lista exacta cuando la necesites.'
+  }
+];
+
+
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1];
 
