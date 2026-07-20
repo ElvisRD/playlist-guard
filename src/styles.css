@@ -5,6 +5,9 @@
   --animate-fade-in: fadeIn 0.2s ease;
   --animate-slide-up: slideUp 0.25s ease;
   --animate-slide-down: slideDown 0.3s ease;
+
+  --color-custom-purple: #A755F7;
+  --color-zinc-850: #1F1F22;
 }
 
 @keyframes fadeIn {
