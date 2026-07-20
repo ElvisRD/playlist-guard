@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog'
+import { Toast } from '../../services/toast'
 import { RouterLink } from "@angular/router";
 
 @Component({
@@ -14,6 +15,7 @@ export class Navbar {
   
   private googleService = inject(Google);
   private dialogService = inject(Dialog);
+  private toastService = inject(Toast)
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   protected loading = this.googleService.loading;
   
@@ -21,10 +23,13 @@ export class Navbar {
     this.googleService.authenticateWithGoogle().subscribe({
       next: () => {
         this.googleService.loadProfile()
+        this.toastService.show('success', 'Sesión iniciada correctamente.')
       },
       error: (err) => console.error(err.message),
     });
   }
+
+
 
   openDialogLogout(){
     this.dialogService.open('logout'); 

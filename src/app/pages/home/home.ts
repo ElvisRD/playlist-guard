@@ -15,7 +15,7 @@ import { NgClass } from '@angular/common';
 export class Home {
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
-  private toast = inject(Toast);
+  private toastService = inject(Toast);
   private dialogService = inject(Dialog);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   playlist = signal<any>(null);
@@ -26,8 +26,7 @@ export class Home {
     const idList = this.playlistUrl.split('list=')[1];
 
     if (!idList) {
-      this.toast.show('not-found');
-      /* this.dialogService.open('not-found'); */
+      this.toastService.show('not-found');
       return;
     }
 
@@ -48,10 +47,10 @@ export class Home {
         console.error('Error verifying playlist:', error);
         switch (error.status) {
           case 401:
-            this.dialogService.open('unauthorized');
+            this.toastService.show('unauthorized');
             break;
           case 404:
-            this.dialogService.open('not-found');
+            this.toastService.show('not-found');
             break;
           default:
             this.dialogService.open('error');
@@ -64,7 +63,8 @@ export class Home {
   savePlaylist(playlistId: string) {
     this.youtubeService.savePlaylist(playlistId).subscribe({
       next: (res) => {
-        console.log(res)
+        this.toastService.show('success', 'La playlist fue guardada exitosamente.');
+        this.playlist.set(null);
       },
       error: (error) => {
         console.error(error)
