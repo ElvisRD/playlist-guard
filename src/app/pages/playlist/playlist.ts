@@ -24,13 +24,14 @@ export class Playlist {
 
   playlist = signal<any>(null);
   search: string = ''
+  searchQuery = signal('')
   isOpenSelect = signal(false);
   selectFilter = signal('fecha');
   loading = signal(true);
   options: Record<string, string> = {
     fecha: 'Fecha',
-    vistas: 'Más vistos',
-    duracion: 'Duración'
+    ascendente: 'Asc',
+    descendente: 'Desc',
   };
   error: string | null = null;
 
@@ -90,6 +91,37 @@ export class Playlist {
     });
   }
 
+  filteredVideos = computed(() => {
+    const videos = this.playlist()?.videos || [];
+    const query = this.searchQuery().toLowerCase().trim();
+    const filter = this.selectFilter();
+
+    const filtered = query
+      ? videos.filter((video: any) => video.title.toLowerCase().includes(query))
+      : videos;
+
+    const sorted = [...filtered];
+
+    switch (filter) {
+      case 'fecha':
+        sorted.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        break;
+      case 'ascendente':
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'descendente':
+        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+    }
+
+    return sorted;
+  });
+
+  filterName(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+  }
+
   toggleDropdown() {
     this.isOpenSelect.update(v => !v);
   }
@@ -97,12 +129,6 @@ export class Playlist {
   seleccionar(valor: string) {
     this.selectFilter.set(valor);
     this.isOpenSelect.set(false);
-    
-    this.ejecutarOrdenamiento(valor);
-  }
-
-  ejecutarOrdenamiento(filtro: string) {
-    console.log('Filtrando por:', filtro);
   }
 
   openVideo(videoId: string) {
