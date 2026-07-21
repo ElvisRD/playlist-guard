@@ -26,7 +26,7 @@ export class Home {
   {
     icon: 'pi pi-history',
     title: 'Historial e Identificación',
-    description: 'Descubre al instante el nombre de los videos privados o borrados de tu playlist.'
+    description: 'Descubre al instante el nombre de los videos privados o borrados de tu lista de reproducción.'
   },
   {
     icon: 'pi pi-bell',

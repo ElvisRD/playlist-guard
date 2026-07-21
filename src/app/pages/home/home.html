@@ -1,19 +1,19 @@
 <div class="flex h-full flex-col justify-between items-center bg-zinc-900">
-  <div class="flex flex-col">
-    <div class="flex flex-col gap-4 w-full mt-16 items-center text-center">
+  <div class="flex flex-col w-full px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-4 w-full mt-10 sm:mt-16 items-center text-center max-w-2xl mx-auto">
       <div
-        class="flex items-center gap-2 px-4 py-2 bg-custom-purple/10 rounded-full text-custom-purple"
+        class="flex items-center gap-2 px-4 py-2 bg-custom-purple/10 rounded-full text-custom-purple text-sm sm:text-base"
         >
         <span class="pi pi-verified"></span>
         <span>VERIFICACIÓN INTELIGENTE</span>
       </div>
-      <div class="text-center mt-4">
-        <h1 class="text-6xl font-bold text-gray-100">YouTube Playlist Guard</h1>
-        <p class="mt-4 text-lg text-zinc-500">
+      <div class="text-center mt-2 sm:mt-4">
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-gray-100 leading-tight">YouTube Playlist Guard</h1>
+        <p class="mt-3 sm:mt-4 text-base sm:text-lg text-zinc-500">
           Introduce la URL de la playlist para buscar sus datos.
         </p>
       </div>
-      <div class="flex relative mt-6 w-full">
+      <div class="flex relative mt-4 sm:mt-6 w-full max-w-xl">
         <span class="pi pi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400"></span>
 
         <input
@@ -21,43 +21,43 @@
           [value]="playlistUrl"
           (input)="playlistUrl = $event.target.value"
           placeholder="Paste YouTube playlist link here..."
-          class="w-full rounded-xl border-zinc-700 bg-zinc-800 pl-10 py-4 text-base text-gray-100 placeholder-gray-500 outline-none transition"
+          class="w-full rounded-xl border-zinc-700 bg-zinc-800 pl-10 py-3.5 sm:py-4 text-base text-gray-100 placeholder-gray-500 outline-none transition"
         />
       </div>
       <div class="w-full flex mt-2 justify-center items-center">
         <button
           (click)="searchPlaylist()"
-          class="mt-4 cursor-pointer rounded-full bg-custom-purple px-10 py-2.5 text-base font-semibold text-white transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
+          class="mt-2 sm:mt-4 cursor-pointer rounded-full bg-custom-purple px-8 sm:px-10 py-2.5 text-sm sm:text-base font-semibold text-white transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
         >
           Buscar Playlist
         </button>
       </div>
 
-      <div class="flex justify-center gap-6 mt-6">
+      <div class="flex flex-wrap justify-center gap-3 sm:gap-6 mt-4 sm:mt-6">
         <div class="flex gap-1.5 items-center">
           <span class="pi pi-bolt text-custom-purple"></span>
-          <span class="text-white">Respuestas inmediatas</span>
+          <span class="text-zinc-500 text-sm sm:text-base">Detección al instante</span>
         </div>
         <div class="flex gap-1.5 items-center">
           <span class="pi pi-shield text-custom-purple"></span>
-          <span class="text-white">Seguridad garantizada</span>
+          <span class="text-zinc-500 text-sm sm:text-base">Conexión 100% segura</span>
         </div>
         <div class="flex gap-1.5 items-center">
           <span class="pi pi-check-circle text-custom-purple"></span>
-          <span class="text-white">Acceso ...</span>
+          <span class="text-zinc-500 text-sm sm:text-base">Acceso gratuito</span>
         </div>
       </div>
     </div>
     @if (playlist()) {
-      <div class="w-full flex mt-4 flex-col items-center justify-center">
+      <div class="w-full flex mt-4 flex-col items-center justify-center max-w-md mx-auto">
         <div class="flex flex-col border border-zinc-800 p-4 rounded-2xl gap-2">
           <img
             [src]="playlist().thumbnail"
             alt="Playlist Thumbnail"
             class="w-full rounded-lg object-cover"
           />
-          <div class="flex w-full items-center justify-between">
-            <h3 class="text-xl font-semibold text-zinc-100">
+          <div class="flex w-full items-center justify-between gap-2">
+            <h3 class="text-lg sm:text-xl font-semibold text-zinc-100 truncate">
               {{ playlist().title }}
             </h3>
             <div
@@ -66,14 +66,14 @@
                   ? 'bg-green-600/20 text-green-200/80'
                   : 'bg-red-600/20 text-red-200/80'
               "
-              class="px-2.5 py-0.5 items-center flex gap-1.5 rounded-full"
+              class="px-2.5 py-0.5 items-center flex gap-1.5 rounded-full shrink-0"
             >
               @if (playlist().protect) {
                 <span class="pi pi-check-circle"></span>
-                <span>Protegida</span>
+                <span class="hidden sm:inline">Protegida</span>
               } @else {
                 <span class="pi pi-times-circle"></span>
-                <span>Vulnerable</span>
+                <span class="hidden sm:inline">Vulnerable</span>
               }
             </div>
           </div>
@@ -84,7 +84,7 @@
           <div class="w-full flex justify-center items-center mt-3">
             <button
               (click)="savePlaylist(playlist().id)"
-              class="cursor-pointer rounded-full bg-white w-full py-2.5 text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
+              class="cursor-pointer rounded-full bg-white w-full py-2.5 text-sm sm:text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
             >
               <span>{{ playlist().protect ? 'Actualizar playlist' : 'Guardar playlist' }}</span>
             </button>
@@ -93,20 +93,20 @@
       </div>
     }
   </div>
-  <div class="flex flex-col w-full py-24 bg-zinc-850 items-center">
-    <div class="flex flex-col gap-5 text-white text-center max-w-[700px]">
-      <h2 class="text-white text-4xl">¿Por qué usar PlaylistGuard?</h2>
-      <p class="text-zinc-500">No vuelvas a preguntarte qué canción o video desapareció de tu lista. Mantenemos el control y registro total de tus playlists de YouTube en un solo lugar.</p>
+  <div class="flex flex-col w-full py-16 sm:py-24 bg-zinc-850 items-center px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-3 sm:gap-5 text-white text-center max-w-[700px]">
+      <h2 class="text-white text-2xl sm:text-3xl lg:text-4xl">¿Por qué usar PlaylistGuard?</h2>
+      <p class="text-zinc-500 text-sm sm:text-base">No vuelvas a preguntarte qué canción o video desapareció de tu lista. Mantenemos el control y registro total de tus playlists de YouTube en un solo lugar.</p>
     </div>
-    <div class="flex w-full justify-center gap-5 mt-20">
+    <div class="flex flex-col sm:flex-row sm:flex-wrap w-full justify-center gap-8 sm:gap-5 mt-12 sm:mt-20">
       @for (benefit of benefits; track $index) {
-      <div class="flex w-full items-center px-4 flex-col max-w-[400px]">
+      <div class="flex w-full sm:w-auto items-center px-4 flex-col max-w-[400px] mx-auto sm:mx-0">
         <div class="flex p-3.5 rounded-xl bg-custom-purple/10 text-custom-purple">
           <span [class]="benefit.icon"></span>
         </div>
         <div class="flex flex-col gap-2 text-center mt-3">
-          <span class="text-xl text-white">{{benefit.title}}</span>
-          <p class="text-md text-zinc-500">{{benefit.description}}</p>
+          <span class="text-lg sm:text-xl text-white">{{benefit.title}}</span>
+          <p class="text-sm sm:text-md text-zinc-500">{{benefit.description}}</p>
         </div>
       </div>
     }

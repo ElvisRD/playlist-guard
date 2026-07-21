@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog'
@@ -18,6 +18,7 @@ export class Navbar {
   private toastService = inject(Toast)
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   protected loading = this.googleService.loading;
+  hasNotification = signal(false);
   
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({

@@ -27,14 +27,22 @@
     }
   </div>
 
-  <div class="flex items-center shrink-0">
+  <div class="flex gap-4 items-center shrink-0">
     @if (profile()) {
+      <button class="flex cursor-pointer relative p-2 rounded-full">
+        @if(hasNotification()){
+           <div class="w-2 h-2 absolute right-2 rounded-full bg-red-300">
+          </div>
+        }
+       
+        <span class="pi pi-bell text-xl"></span>
+      </button>
       <button 
         class="flex gap-2 items-center cursor-pointer"
         (click)="openDialogLogout()"
         >
         <div
-          class="rounded-full border size-6 sm:size-8 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
+          class="rounded-full border size-6 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
         >
           <img
             [src]="profile().picture"
