@@ -19,6 +19,15 @@ export class Navbar {
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   protected loading = this.googleService.loading;
   hasNotification = signal(false);
+  mobileMenuOpen = signal(false);
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen.update(v => !v);
+  }
+
+  closeMobileMenu() {
+    this.mobileMenuOpen.set(false);
+  }
   
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({

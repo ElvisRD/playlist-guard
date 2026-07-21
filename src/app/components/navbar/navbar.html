@@ -5,9 +5,8 @@
     <img class="w-6 h-6" src="./shield-check.svg" alt="shield">
     <span class="text-lg sm:text-xl font-bold tracking-tight shrink-0">PlaylistGuard</span>
   </div>
-  
 
-  <div class="flex items-center gap-2.5 shrink-0">
+  <div class="hidden sm:flex items-center gap-2.5 shrink-0">
     @if (profile()) {
       <a
         routerLink=""
@@ -17,7 +16,7 @@
       </a>
       <a
         routerLink="playlists"
-        class="cursor-pointer rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap "
+        class="cursor-pointer rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap"
       >
         Mis playlists
       </a>
@@ -27,20 +26,19 @@
     }
   </div>
 
-  <div class="flex gap-4 items-center shrink-0">
+  <div class="flex gap-2 sm:gap-4 items-center shrink-0">
     @if (profile()) {
       <button class="flex cursor-pointer relative p-2 rounded-full">
         @if(hasNotification()){
            <div class="w-2 h-2 absolute right-2 rounded-full bg-red-300">
           </div>
         }
-       
         <span class="pi pi-bell text-xl"></span>
       </button>
-      <button 
-        class="flex gap-2 items-center cursor-pointer"
+      <button
+        class="hidden sm:flex gap-2 items-center cursor-pointer"
         (click)="openDialogLogout()"
-        >
+      >
         <div
           class="rounded-full border size-6 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
         >
@@ -52,10 +50,29 @@
             class="size-full rounded-full"
           />
         </div>
-        <span class="text-sm"
+        <span class="text-sm">Cerrar Sesión</span>
+      </button>
+      <button
+        class="sm:hidden flex items-center cursor-pointer p-1"
+        (click)="openDialogLogout()"
+      >
+        <div
+          class="rounded-full border size-8 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
         >
-          Cerrar Sesión
-        </span>
+          <img
+            [src]="profile().picture"
+            [alt]="profile().name || 'Profile'"
+            referrerpolicy="no-referrer"
+            (error)="onImageError($event)"
+            class="size-full rounded-full"
+          />
+        </div>
+      </button>
+      <button
+        class="sm:hidden flex items-center justify-center cursor-pointer p-2 rounded-lg hover:bg-white/10 transition"
+        (click)="toggleMobileMenu()"
+      >
+        <span class="pi pi-bars text-xl"></span>
       </button>
     } @else if (!loading()) {
       <button
@@ -68,3 +85,42 @@
     }
   </div>
 </nav>
+
+@if (mobileMenuOpen()) {
+  <div
+    class="fixed inset-0 z-20 bg-black/40 sm:hidden"
+    (click)="closeMobileMenu()"
+  ></div>
+  <div
+    class="fixed top-16 right-4 z-30 sm:hidden w-56 rounded-xl bg-zinc-800 border border-zinc-700 shadow-2xl overflow-hidden animate-slide-down"
+  >
+    <div class="flex flex-col p-2">
+      <a
+        routerLink=""
+        (click)="closeMobileMenu()"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition cursor-pointer"
+      >
+        <span class="pi pi-home"></span>
+        Inicio
+      </a>
+      <a
+        routerLink="playlists"
+        (click)="closeMobileMenu()"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition cursor-pointer"
+      >
+        <span class="pi pi-list"></span>
+        Mis playlists
+      </a>
+    </div>
+    <div class="border-t border-zinc-700"></div>
+    <div class="flex flex-col p-2">
+      <button
+        (click)="closeMobileMenu(); openDialogLogout()"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition cursor-pointer w-full text-left"
+      >
+        <span class="pi pi-sign-out"></span>
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+}
