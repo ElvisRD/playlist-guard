@@ -8,6 +8,9 @@
 
   --color-custom-purple: #A755F7;
   --color-zinc-850: #1F1F22;
+
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 140rem;
 }
 
 @keyframes fadeIn {

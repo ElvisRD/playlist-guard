@@ -11,6 +11,9 @@ import { NgClass } from '@angular/common';
   imports: [NgClass],
   templateUrl: './home.html',
   styleUrl: './home.css',
+  host: {
+    class: 'flex flex-1 flex-col w-full h-full'
+  }
 })
 export class Home {
   private googleService = inject(Google);

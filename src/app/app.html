@@ -1,9 +1,16 @@
-<div class="flex w-full h-screen flex-col bg-zinc-900">
-  <app-navbar></app-navbar>
-  <div class="h-full mt-16">
+<div class="flex flex-col min-h-screen text-white">
+  <div class="h-16 shrink-0">
+    <app-navbar class="h-full w-full"></app-navbar>
+  </div>
+
+  <div class="flex flex-1 flex-col">
     <router-outlet></router-outlet>
   </div>
+
+  <div class=" py-5 4xl:py-10 shrink-0 bg-zinc-900">
+    <app-footer />
+  </div>
+
   <app-dialog />
   <app-toast />
-  <app-footer/>
 </div>

@@ -11,6 +11,9 @@ import { Dialog } from '../../services/dialog';
   imports: [FormsModule],
   templateUrl: './playlist.html',
   styleUrl: './playlist.css',
+  host: {
+    class: 'flex flex-1 flex-col w-full h-full'
+  }
 })
 export class Playlist {
   private route = inject(ActivatedRoute);
