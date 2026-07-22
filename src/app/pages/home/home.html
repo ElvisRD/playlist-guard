@@ -1,6 +1,7 @@
 <div class="flex-1 w-full bg-zinc-900 flex items-center justify-between flex-col">
   <div
     class="flex flex-1 flex-col px-4 sm:px-6 lg:px-16 py-10 4xl:py-20 items-center justify-center text-center max-w-4xl"
+    [style.padding-bottom.px]="playlist() ? 0 : null"
   >
     <div
       class="flex items-center gap-2 px-3 py-1 4xl:py-2 bg-custom-purple/10 rounded-full text-custom-purple text-xs sm:text-md 4xl:text-base"
@@ -58,8 +59,8 @@
     </div>
   </div>
   @if (playlist()) {
-    <div class="w-full flex mt-4 flex-col items-center justify-center max-w-md mx-auto">
-      <div class="flex flex-col border border-zinc-800 p-4 rounded-2xl gap-2">
+    <div class="w-full flex-1 flex flex-col  max-w-md mx-auto">
+      <div class="flex flex-col bg-zinc-800 p-4 rounded-2xl gap-2">
         <img
           [src]="playlist().thumbnail"
           alt="Playlist Thumbnail"
@@ -88,21 +89,21 @@
         </div>
         <div class="flex gap-2 items-center">
           <span class="text-zinc-400 pi pi-objects-column"></span>
-          <span class="text-zinc-400 text-sm">{{ playlist().totalVideos }} videos</span>
+          <span class="text-zinc-400 text-sm">{{ playlist().totalVideos }} Videos</span>
         </div>
-        <div class="w-full flex justify-center items-center mt-3">
+        <div class="w-full flex justify-center items-center">
           <button
             (click)="savePlaylist(playlist().id)"
-            class="cursor-pointer rounded-full bg-white w-full py-2.5 text-sm sm:text-base font-semibold text-zinc-900 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-white/5"
+            class="cursor-pointer rounded-full bg-custom-purple px-6 py-2.5 text-sm sm:text-base text-white font-semibold transition-all duration-200 hover:bg-custom-purple/80 hover:scale-[1.02] active:scale-[0.98] "
           >
-            <span>{{ playlist().protect ? 'Actualizar playlist' : 'Guardar playlist' }}</span>
+            <span class="transition-all duration-200 group-hover:text-white group-hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)]">{{ playlist().protect ? 'Actualizar Playlist' : 'Guardar Playlist' }}</span>
           </button>
         </div>
       </div>
     </div>
   } @else {
     <div
-      class="hidden sm:flex flex-col w-full bg-zinc-850 py-14 md:py-8 4xl:py-20 items-center px-4 sm:px-6 lg:px-16"
+      class="hidden sm:flex flex-col w-full bg-zinc-850 py-14 md:py-15 4xl:py-20 items-center px-4 sm:px-6 lg:px-16"
     >
       <div class="flex flex-col gap-3 sm:gap-5 text-white text-center max-w-175">
         <h2 class="text-white text-2xl sm:text-3xl 4xl:text-4xl">¿Por qué usar PlaylistGuard?</h2>
