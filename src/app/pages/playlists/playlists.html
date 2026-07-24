@@ -114,7 +114,7 @@
           @for (playlist of filteredPlaylist(); track playlist.id) {
             <button
               (click)="openPlaylist(playlist.id)"
-              class="rounded-xl cursor-pointer bg-zinc-900 border border-zinc-700 overflow-hidden transition hover:scale-[1.08]"
+              class="rounded-xl cursor-pointer bg-zinc-800 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 duration-300 border border-zinc-700 hover:border-custom-purple hover:bg-zinc-900 overflow-hidden transition"
             >
               <img
                 [src]="playlist.thumbnail"
@@ -132,9 +132,9 @@
             </button>
           } @empty {
             <div
-              class="flex col-span-1 sm:col-span-2 lg:col-span-3 flex-col items-center justify-center py-12 sm:py-16 text-zinc-500"
+              class="flex col-span-1 sm:col-span-3 flex-col items-center justify-center py-12 sm:py-16 text-zinc-500"
             >
-              <p class="text-base sm:text-lg font-medium">Sin resultados para esta búsqueda</p>
+              <p class="text-lg sm:text-xl text-center font-medium">Sin resultados para esta búsqueda</p>
             </div>
           }
         </div>
