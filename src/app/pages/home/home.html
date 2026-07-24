@@ -1,21 +1,21 @@
 <div class="flex-1 w-full bg-zinc-900 flex items-center justify-between flex-col">
   <div
-    class="flex flex-1 flex-col px-4 sm:px-6 lg:px-16 py-10 4xl:py-20 items-center justify-center text-center max-w-4xl"
+    class="flex flex-1 flex-col px-4 sm:px-6 lg:px-16 py-6 sm:py-8 lg:py-10 items-center justify-center text-center max-w-4xl"
     [style.padding-bottom.px]="playlist() ? 0 : null"
   >
     <div
-      class="flex items-center gap-2 px-3 py-1 4xl:py-2 bg-custom-purple/10 rounded-full text-custom-purple text-xs sm:text-md 4xl:text-base"
+      class="flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 bg-custom-purple/10 rounded-full text-custom-purple text-xs sm:text-sm"
     >
       <span class="pi pi-verified"></span>
       <span>VERIFICACIÓN INTELIGENTE</span>
     </div>
-    <div class="text-center mt-5">
+    <div class="text-center mt-4 sm:mt-5">
       <h1
-        class="text-3xl sm:text-5xl lg:text-4xl 3xl:text-6xl font-bold text-gray-100 leading-tight"
+        class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-100 leading-tight"
       >
         YouTube PlaylistGuard
       </h1>
-      <p class="mt-3 sm:mt-4 text-base px-4 md:px-0 sm:text-lg text-zinc-500">
+      <p class="mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg px-4 sm:px-0 text-zinc-500">
         Introduce la URL de la playlist para buscar sus datos.
       </p>
     </div>
@@ -43,7 +43,7 @@
       </button>
     </div>
 
-    <div class="flex flex-wrap justify-center gap-4 sm:gap-10 mt-6 sm:mt-10">
+    <div class="flex flex-wrap justify-center gap-3 sm:gap-6 mt-4 sm:mt-6">
       <div class="flex gap-1.5 items-center">
         <span class="pi pi-bolt text-custom-purple"></span>
         <span class="text-zinc-500 text-sm">Detección al instante</span>
@@ -60,7 +60,7 @@
   </div>
   @if (playlist()) {
     <div class="w-full flex-1 flex flex-col  max-w-md mx-auto">
-      <div class="flex flex-col bg-zinc-800 p-4 rounded-2xl gap-2">
+      <div class="flex flex-col bg-zinc-800 p-3 rounded-2xl gap-2">
         <img
           [src]="playlist().thumbnail"
           alt="Playlist Thumbnail"
@@ -103,26 +103,26 @@
     </div>
   } @else {
     <div
-      class="hidden sm:flex flex-col w-full bg-zinc-850 py-14 md:py-15 4xl:py-20 items-center px-4 sm:px-6 lg:px-16"
+      class="flex flex-col w-full bg-zinc-850 py-8 sm:py-10 lg:py-12 4xl:py-24 items-center px-4 sm:px-6 lg:px-16"
     >
-      <div class="flex flex-col gap-3 sm:gap-5 text-white text-center max-w-175">
-        <h2 class="text-white text-2xl sm:text-3xl 4xl:text-4xl">¿Por qué usar PlaylistGuard?</h2>
-        <p class="text-zinc-500 px-4 md:px-0 text-base leading-tight 4xl:text-lg">
+      <div class="flex flex-col gap-3 sm:gap-4 text-white text-center max-w-3xl">
+        <h2 class="text-xl sm:text-2xl lg:text-3xl font-semibold">¿Por qué usar PlaylistGuard?</h2>
+        <p class="text-zinc-500 text-sm sm:text-base px-8 4xl:px-14 leading-relaxed">
           No vuelvas a preguntarte qué canción o video desapareció de tu lista. Mantenemos el
           control y registro total de tus playlists de YouTube en un solo lugar.
         </p>
       </div>
       <div
-        class="flex flex-col sm:flex-row sm:flex-wrap w-full justify-center gap-8 sm:gap-5 mt-8 sm:mt-10"
+        class="flex flex-col sm:flex-row sm:flex-wrap w-full justify-center gap-6 sm:gap-8 mt-6 sm:mt-8"
       >
         @for (benefit of benefits; track $index) {
-          <div class="flex w-full sm:w-auto items-center px-4 flex-col max-w-90 mx-auto sm:mx-0">
-            <div class="flex p-3.5 rounded-xl bg-custom-purple/10 text-custom-purple">
+          <div class="flex w-full sm:w-auto items-center px-4 flex-col max-w-sm sm:max-w-xs mx-auto sm:mx-0">
+            <div class="flex p-3 sm:p-3.5 rounded-xl bg-custom-purple/10 text-custom-purple">
               <span [class]="benefit.icon"></span>
             </div>
             <div class="flex flex-col gap-1 text-center mt-3">
-              <span class="text-lg 4xl:text-xl text-white">{{ benefit.title }}</span>
-              <p class="text-sm sm:text-md 4xl:text-lg leading-tight text-zinc-500">
+              <span class="text-base sm:text-lg text-white">{{ benefit.title }}</span>
+              <p class="text-sm sm:text-sm lg:text-base leading-snug text-zinc-500">
                 {{ benefit.description }}
               </p>
             </div>

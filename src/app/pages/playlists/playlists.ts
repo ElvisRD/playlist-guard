@@ -10,6 +10,9 @@ import { Dialog } from '../../services/dialog';
   imports: [],
   templateUrl: './playlists.html',
   styleUrl: './playlists.css',
+  host: {
+    class: 'flex flex-1 flex-col w-full h-full'
+  }
 })
 export class Playlists {
 

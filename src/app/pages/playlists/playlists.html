@@ -1,48 +1,57 @@
-<div class="flex flex-col w-full items-center h-full bg-zinc-850">
-  <div class="flex flex-col gap-4 w-full py-26 bg-zinc-900 items-center text-center">
+<div class="flex flex-1 flex-col w-full items-center h-full bg-zinc-850">
+  <div
+    class="flex flex-col gap-3 sm:gap-4 w-full py-10 sm:py-12 lg:py-16 bg-zinc-900 items-center text-center px-4"
+  >
     <div
-      class="flex items-center gap-2 px-4 py-2 bg-custom-purple/10 rounded-full text-custom-purple"
+      class="flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 bg-custom-purple/10 rounded-full text-custom-purple text-xs sm:text-sm"
     >
       <span class="pi pi-shield"></span>
       <span>PROTECCIÓN ACTIVA</span>
     </div>
-    <div class="flex max-w-5xl gap-5 flex-col">
-      <h1 class="text-5xl mt-2 text-white font-bold tracking-tight">Mis Playlists Protegidas</h1>
-      <p class="text-zinc-400 text-xl text-center">
+    <div class="flex max-w-2xl gap-3 sm:gap-5 flex-col">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl mt-2 text-white font-bold tracking-tight">
+        Mis Playlists Protegidas
+      </h1>
+      <p class="text-zinc-400 text-sm sm:text-base lg:text-lg text-center">
         Gestiona y asegura tus listas de reproduccion multmedia. Tu contendo está cifrado y
         organizado para un acceso rápido y privado
       </p>
     </div>
   </div>
-  <div class="flex w-full max-w-5xl mt-12">
-    <div class="flex w-full justify-between">
-      <div class="flex relative w-full max-w-lg ">
+  <div class="flex w-full flex-col max-w-5xl mt-8 sm:mt-10lg:mt-12 px-10">
+    <div class="flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-4">
+      <div class="flex relative w-full max-w-lg">
         <span class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"></span>
         <input
           type="text"
           (input)="filterName($event)"
-          placeholder="Buscar video"
-          class="w-full bg-zinc-850 text-zinc-100 placeholder-zinc-500 pl-10 pr-4 py-2 rounded-xl border border-zinc-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+          placeholder="Buscar playlist..."
+          class="w-full bg-zinc-900 text-zinc-100 placeholder-zinc-500 pl-10 pr-4 py-2.5 sm:py-2 rounded-xl border border-zinc-850 focus:outline-none focus:border-custom-purple hover:border-custom-purple  focus:ring-1 focus:ring-custom-purple transition-all text-sm sm:text-base"
         />
       </div>
       <div class="flex gap-2.5">
-         <button 
+        <button
           (click)="newPlaylist()"
-          class="flex h-full cursor-pointer gap-2.5 items-center px-5 text-white bg-custom-purple rounded-xl">
+          class="hidden lg:flex flex-1 sm:flex-none h-full cursor-pointer gap-1.5 items-center justify-center px-4 sm:px-5 bg-custom-purple rounded-xl text-sm  font-semibold text-white/90 transition-all duration-200 hover:bg-custom-purple/80 hover:scale-[1.02] active:scale-[0.98] group"
+        >
           <span class="pi pi-plus"></span>
-          <span>Nueva playlist</span>
+          <span
+          class="transition-all duration-200 group-hover:text-white group-hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)]"
+        >
+          Nueva Playlist
+        </span>
         </button>
 
         <!-- select -->
-        <div class="relative w-full md:w-50">
+        <div class="relative w-full">
           <button
             type="button"
             (click)="toggleDropdown()"
-            class="w-full bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-200 px-4 py-3 text-sm flex items-center justify-between cursor-pointer transition-all hover:border-zinc-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            class="w-full bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-200 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between cursor-pointer transition-all hover:border-custom-purple focus:outline-none focus:border-custom-purple focus:ring-1 focus:ring-custom-purple"
           >
-            <span>
-              <span class="text-zinc-500 font-medium">Ordenar por:</span>
-              <span class="ml-1 text-zinc-300">{{ options[selectFilter()] }}</span>
+            <span class="text-sm sm:text-base">
+              <span class=" text-zinc-500">Ordenar:</span>
+              <span class="mx-2 text-zinc-300">{{ options[selectFilter()] }}</span>
             </span>
 
             <span
@@ -53,26 +62,26 @@
 
           @if (isOpenSelect()) {
             <div
-              class="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden py-1"
+              class="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden"
             >
               <button
                 type="button"
                 (click)="seleccionar('fecha')"
-                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-indigo-400 transition-colors cursor-pointer"
+                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-custom-purple transition-colors cursor-pointer"
               >
                 Fecha
               </button>
               <button
                 type="button"
                 (click)="seleccionar('ascendente')"
-                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-indigo-400 transition-colors cursor-pointer"
+                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-custom-purple transition-colors cursor-pointer"
               >
                 Asc
               </button>
               <button
                 type="button"
                 (click)="seleccionar('descendente')"
-                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-indigo-400 transition-colors cursor-pointer"
+                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-custom-purple transition-colors cursor-pointer"
               >
                 Desc
               </button>
@@ -81,54 +90,55 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="flex mt-10 w-full justify-center max-w-5xl mx-6">
-    @if (playlistsLoading()) {
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @for (i of [1, 2, 3]; track i) {
-          <div class="rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden">
-            <div class="w-full aspect-video bg-zinc-700 animate-pulse"></div>
-            <div class="p-4 flex flex-col gap-2">
-              <div class="h-4 w-3/4 rounded bg-zinc-700 animate-pulse"></div>
-              <div class="flex items-center justify-between mt-2">
-                <div class="h-3 w-16 rounded bg-zinc-700 animate-pulse"></div>
+    <div class="flex mt-8 sm:mt-10 lg:mt-12 w-full justify-center max-w-5xl">
+      @if (playlistsLoading()) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden">
+              <div class="w-full aspect-video bg-zinc-700 animate-pulse"></div>
+              <div class="p-3 sm:p-4 flex flex-col gap-2">
+                <div class="h-4 w-3/4 rounded bg-zinc-700 animate-pulse"></div>
+                <div class="flex items-center justify-between mt-2">
+                  <div class="h-3 w-16 rounded bg-zinc-700 animate-pulse"></div>
+                </div>
               </div>
             </div>
-          </div>
-        }
-      </div>
-    } @else if (playlists().length === 0) {
-      <div class="flex flex-col items-center justify-center py-20 text-zinc-500">
-        <p class="text-lg">No se encontraron playlists</p>
-      </div>
-    } @else {
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        @for (playlist of filteredPlaylist(); track playlist.id) {
-          <button
-            (click)="openPlaylist(playlist.id)"
-            class="rounded-xl cursor-pointer bg-zinc-800 border border-zinc-700 overflow-hidden transition hover:scale-[1.05] hover:border-zinc-500"
-          >
-            <img
-              [src]="playlist.thumbnail"
-              [alt]="playlist.snippet?.title"
-              class="w-full aspect-video object-cover"
-            />
-            <div class="p-4 text-start flex flex-col gap-2">
-              <span class="text-sm text-zinc-400 line-clamp-2">{{
-                playlist.title || 'Sin titulo'
-              }}</span>
-              <div class="flex items-center justify-between mt-2">
-                <span class="text-xs text-zinc-500">{{ playlist.totalVideos || 0 }} videos</span>
+          }
+        </div>
+      } @else if (playlists().length === 0) {
+        <div class="flex flex-col items-center justify-center py-12 sm:py-16 text-zinc-500">
+          <p class="text-base sm:text-lg">No se encontraron playlists</p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
+          @for (playlist of filteredPlaylist(); track playlist.id) {
+            <button
+              (click)="openPlaylist(playlist.id)"
+              class="rounded-xl cursor-pointer bg-zinc-900 border border-zinc-700 overflow-hidden transition hover:scale-[1.08]"
+            >
+              <img
+                [src]="playlist.thumbnail"
+                [alt]="playlist.snippet?.title"
+                class="w-full aspect-video object-cover"
+              />
+              <div class="p-3 sm:p-4 text-start flex flex-col gap-2">
+                <span class=" text-white line-clamp-2">{{
+                  playlist.title || 'Sin titulo'
+                }}</span>
+                <div class="flex items-center justify-between mt-1 sm:mt-2">
+                  <span class="text-sm text-zinc-500">{{ playlist.totalVideos || 0 }} videos</span>
+                </div>
               </div>
+            </button>
+          } @empty {
+            <div
+              class="flex col-span-1 sm:col-span-2 lg:col-span-3 flex-col items-center justify-center py-12 sm:py-16 text-zinc-500"
+            >
+              <p class="text-base sm:text-lg font-medium">Sin resultados para esta búsqueda</p>
             </div>
-          </button>
-        }
-        @empty {
-          <div class="flex col-span-3 flex-col items-center justify-center py-20 text-zinc-500">
-            <p class="text-lg font-medium">Sin resultados para esta búsqueda</p>
-          </div>
-        }
-      </div>
-    }
+          }
+        </div>
+      }
+    </div>
   </div>
 </div>
