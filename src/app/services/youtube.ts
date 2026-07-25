@@ -18,7 +18,7 @@ export class Youtube {
   }
 
   savePlaylist(playlistId: string): Observable<any> {
-    return this.http.post(this.apiUrl + 'playlist/' +  playlistId, { withCredentials: true })
+    return this.http.post(this.apiUrl + 'playlist/save/' +  playlistId, { withCredentials: true })
   }
 
   getPlaylistData(playlistId: string){
@@ -29,7 +29,11 @@ export class Youtube {
     return this.http.get(this.apiUrl + 'playlists', { withCredentials: true });
   }
 
-  verifyPlaylist(listId: string): Observable<any> {
+  verifyAccessPlaylist(listId: string): Observable<any> {
     return this.http.get(this.apiUrl + 'playlist/' + listId + '/access', { withCredentials: true });
+  }
+
+  getVerifyPlaylist(body: any){
+    return this.http.post(this.apiUrl + 'playlist/compare', body ,{ withCredentials: true} )
   }
 }

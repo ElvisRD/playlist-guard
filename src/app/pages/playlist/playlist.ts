@@ -1,19 +1,20 @@
 import { Component, inject, signal, effect, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-playlist',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './playlist.html',
   styleUrl: './playlist.css',
   host: {
-    class: 'flex flex-1 flex-col w-full h-full'
-  }
+    class: 'flex flex-1 flex-col w-full h-full',
+  },
 })
 export class Playlist {
   private route = inject(ActivatedRoute);
@@ -26,15 +27,18 @@ export class Playlist {
   private authLoading = this.googleService.loading;
 
   playlist = signal<any>(null);
-  searchQuery = signal('')
+  searchQuery = signal('');
   isOpenSelect = signal(false);
   selectFilter = signal('fecha');
+  showDetailsVerify = signal(true);
   loading = signal(true);
   options: Record<string, string> = {
     fecha: 'Fecha',
     ascendente: 'Asc',
     descendente: 'Desc',
   };
+  activeTab = signal('new');
+  differences = signal<any>(null);
   error: string | null = null;
 
   constructor() {
@@ -52,6 +56,10 @@ export class Playlist {
     });
   }
 
+  setTab(tab: string) {
+    this.activeTab.set(tab);
+  }
+
   timeAgo = computed(() => {
     const dateInput = new Date(this.playlist().updatedAt);
     const now = new Date();
@@ -66,7 +74,7 @@ export class Playlist {
     if (days > 0) return rtf.format(-days, 'day');
     if (hours > 0) return rtf.format(-hours, 'hour');
     if (minutes > 0) return rtf.format(-minutes, 'minute');
-    
+
     return 'hace unos instantes';
   });
 
@@ -74,7 +82,7 @@ export class Playlist {
     this.loading.set(true);
     this.youtube.getPlaylistData(playlistId).subscribe({
       next: (res) => {
-        console.log(res)
+        console.log(res);
         this.playlist.set(res);
         this.loading.set(false);
       },
@@ -106,7 +114,9 @@ export class Playlist {
 
     switch (filter) {
       case 'fecha':
-        sorted.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        sorted.sort(
+          (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+        );
         break;
       case 'ascendente':
         sorted.sort((a, b) => a.title.localeCompare(b.title));
@@ -119,13 +129,33 @@ export class Playlist {
     return sorted;
   });
 
+  verifyPlaylist() {
+    this.showDetailsVerify.set(true);
+
+    const body = {
+      playlistId: this.playlist().id,
+    };
+
+    this.youtube.getVerifyPlaylist(body).subscribe({
+      next: (res: any) => {
+        if (res.diff) {
+          this.differences.set(res.diff)
+        }
+        console.log(this.differences());
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
   filterName(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
   }
 
   toggleDropdown() {
-    this.isOpenSelect.update(v => !v);
+    this.isOpenSelect.update((v) => !v);
   }
 
   seleccionar(valor: string) {

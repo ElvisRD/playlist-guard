@@ -56,7 +56,7 @@ export class Home {
   }
 
   verifyPlaylist(idList: string) {
-    this.youtubeService.verifyPlaylist(idList).subscribe({
+    this.youtubeService.verifyAccessPlaylist(idList).subscribe({
       next: (res) => {
         if (res.hasAccess) {
           console.log(res)
