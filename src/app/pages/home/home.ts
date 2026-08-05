@@ -45,21 +45,24 @@ export class Home {
 
 
   searchPlaylist() {
-    const idList = this.playlistUrl.split('list=')[1];
+    const idList = this.playlistUrl.split('list=')[1]?.split('&')[0];
 
     if (!idList) {
       this.toastService.show('not-found');
       return;
     }
 
+    if(!this.profile()) return this.dialogService.open('unauthorized');
+    
     this.verifyPlaylist(idList);
+
   }
 
   verifyPlaylist(idList: string) {
     this.youtubeService.verifyAccessPlaylist(idList).subscribe({
       next: (res) => {
-        if (res.hasAccess) {
           console.log(res)
+        if (res.hasAccess) {
           this.playlist.set(res.playlist);
         } else {
           this.dialogService.open('not-access');
@@ -69,7 +72,7 @@ export class Home {
         console.error('Error verifying playlist:', error);
         switch (error.status) {
           case 401:
-            this.toastService.show('unauthorized');
+            this.dialogService.open('unauthorized');
             break;
           case 404:
             this.toastService.show('not-found');
