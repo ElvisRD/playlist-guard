@@ -26,7 +26,7 @@
   },
   "unauthorized": {
     "title": "Autenticación",
-    "text": "Es necesario que inicies sesión con tu cuenta de Google en la que se encuentra la playlist.",
+    "text": "Es necesario que inicies sesión con tu cuenta de Google para poder acceder a la playlist.",
     "button": "Iniciar sesión"
   }
 }
