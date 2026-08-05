@@ -31,15 +31,14 @@ export class Navbar {
   
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({
-      next: () => {
+      next: (res) => {
+        console.log(res)
         this.googleService.loadProfile()
         this.toastService.show('success', 'Sesión iniciada correctamente.')
       },
       error: (err) => console.error(err.message),
     });
   }
-
-
 
   openDialogLogout(){
     this.dialogService.open('logout'); 
