@@ -61,6 +61,7 @@ export class Playlist {
 
   setTab(tab: string) {
     this.activeTab.set(tab);
+    this.selectedIds.set(new Set());
   }
 
   timeAgo = computed(() => {
@@ -131,22 +132,34 @@ export class Playlist {
   }
 
   toggleSelectAll() {
-    const currentList = this.filteredVideosDiff();
+    const currentList = this.selectableVideos();
     const updated = new Set(this.selectedIds());
 
-    /* if (this.isAllSelected()) {
-      currentList.forEach((v) => updated.delete(v.id));
+    if (currentList.every((v: any) => updated.has(v.id))) {
+      currentList.forEach((v: any) => updated.delete(v.id));
     } else {
-      currentList.forEach((v) => updated.add(v.id));
-    } */
+      currentList.forEach((v: any) => updated.add(v.id));
+    }
 
     this.selectedIds.set(updated);
   }
 
   isAllSelected = computed(() => {
-    console.log('buenas');
-    /*  const currentList = this.filteredVideosDiff();
-    return currentList.length > 0 && currentList.every(v => this.selectedIds().has(v.id)); */
+    const currentList = this.selectableVideos();
+    return (
+      currentList.length > 0 &&
+      currentList.every((v: any) => this.selectedIds().has(v.id))
+    );
+  });
+
+  selectableVideos = computed(() => this.filteredVideosDiff());
+
+  diffStats = computed(() => {
+    const videos = this.differences() || [];
+    return {
+      new: videos.filter((v: any) => v.type === 'new').length,
+      removed: videos.filter((v: any) => v.type === 'removed').length,
+    };
   });
 
   filteredVideos = computed(() => {
@@ -201,12 +214,7 @@ export class Playlist {
     this.youtube.getVerifyPlaylist(body).subscribe({
       next: (res: any) => {
         if (res.diff) {
-          this.differences.set(
-            res.diff.allVideosDiff.map((v: any) => ({
-              ...v,
-              selected: false, 
-            })),
-          );
+          this.differences.set(res.diff.allVideosDiff);
         }
         console.log(this.differences());
       },
