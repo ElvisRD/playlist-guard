@@ -37,7 +37,9 @@ export class Playlist {
     ascendente: 'Asc',
     descendente: 'Desc',
   };
-  activeTab = signal('new');
+  activeTab = signal('all');
+  selectedIds = signal<Set<string>>(new Set());
+  selectedCount = computed(() => this.selectedIds().size);
   differences = signal<any>(null);
   error: string | null = null;
 
@@ -50,6 +52,7 @@ export class Playlist {
           const id = this.route.snapshot.paramMap.get('id');
           if (id) {
             this.getPlaylistData(id);
+            this.closeDiffs();
           }
         }
       }
@@ -101,6 +104,51 @@ export class Playlist {
     });
   }
 
+  closeDiffs() {
+    this.activeTab.set('all');
+    this.differences.set(null);
+    this.searchQuery.set('');
+    this.showDetailsVerify.set(false);
+  }
+
+  toggleSelect(id: string) {
+    const updated = new Set(this.selectedIds());
+    if (updated.has(id)) {
+      updated.delete(id);
+    } else {
+      updated.add(id);
+    }
+
+    this.selectedIds.set(updated);
+  }
+
+  addSelectedToPlaylist() {
+    console.log('Añadiendo a playlist:', Array.from(this.selectedIds()));
+  }
+
+  cancelSelection() {
+    this.selectedIds.set(new Set());
+  }
+
+  toggleSelectAll() {
+    const currentList = this.filteredVideosDiff();
+    const updated = new Set(this.selectedIds());
+
+    /* if (this.isAllSelected()) {
+      currentList.forEach((v) => updated.delete(v.id));
+    } else {
+      currentList.forEach((v) => updated.add(v.id));
+    } */
+
+    this.selectedIds.set(updated);
+  }
+
+  isAllSelected = computed(() => {
+    console.log('buenas');
+    /*  const currentList = this.filteredVideosDiff();
+    return currentList.length > 0 && currentList.every(v => this.selectedIds().has(v.id)); */
+  });
+
   filteredVideos = computed(() => {
     const videos = this.playlist()?.videos || [];
     const query = this.searchQuery().toLowerCase().trim();
@@ -129,6 +177,20 @@ export class Playlist {
     return sorted;
   });
 
+  filteredVideosDiff = computed(() => {
+    const videos = this.differences() || [];
+    const query = this.searchQuery().toLowerCase().trim();
+    const filter = this.activeTab();
+
+    const filtered = query
+      ? videos.filter((video: any) => video.title.toLowerCase().includes(query))
+      : videos;
+
+    const sorted = [...filtered];
+
+    return sorted.filter((item) => filter === 'all' || item.type === filter);
+  });
+
   verifyPlaylist() {
     this.showDetailsVerify.set(true);
 
@@ -139,7 +201,12 @@ export class Playlist {
     this.youtube.getVerifyPlaylist(body).subscribe({
       next: (res: any) => {
         if (res.diff) {
-          this.differences.set(res.diff)
+          this.differences.set(
+            res.diff.allVideosDiff.map((v: any) => ({
+              ...v,
+              selected: false, 
+            })),
+          );
         }
         console.log(this.differences());
       },
