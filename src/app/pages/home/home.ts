@@ -55,7 +55,6 @@ export class Home {
     if(!this.profile()) return this.dialogService.open('unauthorized');
     
     this.verifyPlaylist(idList);
-
   }
 
   verifyPlaylist(idList: string) {
