@@ -36,4 +36,8 @@ export class Youtube {
   getVerifyPlaylist(body: any){
     return this.http.post(this.apiUrl + 'playlist/compare', body ,{ withCredentials: true} )
   }
+
+  saveVideosToPlaylist(playlistId: string, videos: string[]): Observable<any> {
+    return this.http.post(this.apiUrl + 'playlist/' + playlistId + '/save/videos', { videos }, { withCredentials: true });
+  }
 }

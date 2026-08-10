@@ -6,6 +6,7 @@ import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
 import { CommonModule } from '@angular/common';
+import { Toast } from '../../services/toast';
 
 @Component({
   selector: 'app-playlist',
@@ -22,6 +23,7 @@ export class Playlist {
   private youtube = inject(Youtube);
   private googleService = inject(Google);
   private dialog = inject(Dialog);
+  private toast = inject(Toast);
 
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   private authLoading = this.googleService.loading;
@@ -123,8 +125,31 @@ export class Playlist {
     this.selectedIds.set(updated);
   }
 
+  selectedVideos = computed(() => {
+    const ids = this.selectedIds();
+    return (this.differences() || []).filter((video: any) => ids.has(video.id));
+  });
+
   addSelectedToPlaylist() {
-    console.log('Añadiendo a playlist:', Array.from(this.selectedIds()));
+    if (this.selectedCount() === 0) return;
+
+    const videosToAdd = this.selectedVideos().map(({ type, ...video }: { type: string; [key: string]: any }) => video);
+
+    this.youtube.saveVideosToPlaylist(this.playlist().id, videosToAdd).subscribe({
+      next: (res) => {
+        this.toast.show('success', 'Videos agregados a la playlist correctamente');
+        /* console.log(res);
+        this.dialog.open('success', null, () => {
+          this.getPlaylistData(this.playlist().id);
+          this.closeDiffs();
+        }); */
+      },
+      error: (error) => {
+        console.error(error);
+        this.toast.show('error', 'Los videos no se pudieron agregar a la playlist');
+      }
+    }) 
+
   }
 
   cancelSelection() {
