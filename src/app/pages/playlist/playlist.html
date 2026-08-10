@@ -22,7 +22,7 @@
   @if (playlist()) {
     <header class="bg-zinc-900">
       <div
-        class="max-w-7xl flex mx-auto px-4 gap-6 ms:gap-16 sm:px-6 lg:px-8 py-6 sm:py-8 flex-col sm:flex-row"
+        class="max-w-7xl flex mx-auto px-4 gap-6 sm:gap-16 sm:px-6 lg:px-8 py-6 sm:py-8 flex-col sm:flex-row"
       >
         <div class="w-full sm:w-md">
           <img
@@ -42,10 +42,10 @@
               <span>|</span>
               <span>{{ playlist().totalVideos }} VIDEOS</span>
             </div>
-            <h1 class="text-3xl mt-2 sm:text-4xl mx-8 sm:mx-0 font-bold text-white truncate">
+            <h1 class="text-3xl mt-2 sm:text-4xl mx-4 sm:mx-0 font-bold text-white truncate">
               {{ playlist().title }}
             </h1>
-            <p class="text-base sm:text-lg mt-4 mx-8 sm:mx-0 text-zinc-500">
+            <p class="text-base sm:text-lg mt-4 mx-4 sm:mx-0 text-zinc-500">
               {{
                 playlist().description ||
                   'Sin descripción proporcionada. Edita para añadir detalles de la colección.'
@@ -212,7 +212,9 @@
               <div
                 class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-2"
               >
-                <div class="flex w-full items-end gap-2 border-b border-zinc-800/80 rounded-xl">
+                <div
+                  class="flex flex-col sm:flex-row w-full items-stretch sm:items-end gap-2 border-b border-zinc-800/80 rounded-xl"
+                >
                   <div class="flex w-full">
                     <button
                       (click)="setTab('all')"
@@ -221,7 +223,7 @@
                           ? 'text-white border-b-2 border-purple-500 font-semibold bg-zinc-800/50'
                           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30'
                       "
-                      class="px-4 py-2 text-sm rounded-t-md transition-all duration-150 ease-in-out cursor-pointer focus:outline-none"
+                      class="px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-t-md transition-all duration-150 ease-in-out cursor-pointer focus:outline-none"
                     >
                       Todos
                     </button>
@@ -233,7 +235,7 @@
                           ? 'text-white border-b-2 border-purple-500 font-semibold bg-zinc-800/50'
                           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30'
                       "
-                      class="px-4 py-2 text-sm rounded-t-md transition-all duration-150 ease-in-out cursor-pointer flex items-center gap-1.5 focus:outline-none"
+                      class="px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-t-md transition-all duration-150 ease-in-out cursor-pointer flex items-center gap-1.5 focus:outline-none"
                     >
                       <span> Nuevos </span>
                       @if (diffStats().new > 0) {
@@ -252,20 +254,18 @@
                           ? 'text-white border-b-2 border-purple-500 font-semibold bg-zinc-800/50'
                           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30'
                       "
-                      class="px-4 py-2 text-sm rounded-t-md transition-all duration-150 ease-in-out cursor-pointer flex items-center gap-1.5 focus:outline-none"
+                      class="px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-t-md transition-all duration-150 ease-in-out cursor-pointer flex items-center gap-1.5 focus:outline-none"
                     >
                       <span>Eliminados </span>
                       @if (diffStats().removed > 0) {
-                        <span
-                          class="px-1.5 py-0.5 text-xs rounded-full bg-red-500/20 text-red-400"
-                        >
+                        <span class="px-1.5 py-0.5 text-xs rounded-full bg-red-500/20 text-red-400">
                           {{ diffStats().removed }}
                         </span>
                       }
                     </button>
                   </div>
 
-                  <div class="relative min-w-[220px]">
+                  <div class="relative w-full sm:w-auto sm:min-w-[220px]">
                     <div
                       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500"
                     >
@@ -284,7 +284,7 @@
                 </div>
               </div>
               <div
-                class="flex h-10 items-center justify-between rounded-lg mt-4"
+                class="flex flex-wrap h-auto sm:h-10 items-center justify-between gap-2 sm:gap-3 rounded-lg mt-4"
               >
                 <label
                   class="flex items-center gap-2.5 cursor-pointer text-sm text-slate-300 hover:text-white transition-colors"
@@ -299,10 +299,10 @@
                 </label>
 
                 @if (selectedCount() > 0) {
-                  <div class="flex items-center gap-3 animate-fade-in">
+                  <div class="flex items-center gap-2 sm:gap-3 animate-fade-in">
                     <button
                       (click)="addSelectedToPlaylist()"
-                      class="px-4 py-1.5 bg-custom-purple cursor-pointer hover:bg-custom-purple/80 text-white font-medium text-sm rounded-lg transition-all flex items-center gap-2 active:scale-95"
+                      class="px-3 sm:px-4 py-1.5 bg-custom-purple cursor-pointer hover:bg-custom-purple/80 text-white font-medium text-sm rounded-lg transition-all flex items-center gap-2 active:scale-95"
                     >
                       Añadir ({{ selectedCount() }}) a la Playlist
                     </button>
@@ -310,7 +310,7 @@
                       (click)="cancelSelection()"
                       class="text-sm font-medium text-red-500 bg-zinc-900 px-4 py-1.5 rounded-lg cursor-pointer transition-colors"
                     >
-                    Cancelar
+                      Cancelar
                     </button>
                   </div>
                 }
@@ -318,7 +318,7 @@
               <div class="flex flex-col mt-4 gap-4 w-full">
                 @for (videoDiff of filteredVideosDiff(); track videoDiff.id) {
                   <div
-                    class="flex border-2 items-center gap-4 rounded-xl border-zinc-800 p-3 cursor-pointer transition-all select-none"
+                    class="flex border-2 items-center gap-3 sm:gap-4 rounded-xl border-zinc-800 p-3 cursor-pointer transition-all select-none"
                     [ngClass]="
                       selectedIds().has(videoDiff.id)
                         ? 'border-purple-500/70 bg-purple-500/10'
@@ -334,7 +334,7 @@
                       class="checkbox-rounded"
                     />
                     <img
-                      class="w-32 h-20 rounded-lg object-cover shrink-0"
+                      class="w-24 h-16 sm:w-32 sm:h-20 rounded-lg object-cover shrink-0"
                       [src]="videoDiff.thumbnail"
                       [alt]="videoDiff.title"
                       loading="lazy"
