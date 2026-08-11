@@ -39,6 +39,7 @@ export class Playlist {
     ascendente: 'Asc',
     descendente: 'Desc',
   };
+  deleteVids = signal([]);
   activeTab = signal('all');
   selectedIds = signal<Set<string>>(new Set());
   selectedCount = computed(() => this.selectedIds().size);
@@ -136,13 +137,32 @@ export class Playlist {
     const videosToAdd = this.selectedVideos().map(({ type, ...video }: { type: string; [key: string]: any }) => video);
 
     this.youtube.saveVideosToPlaylist(this.playlist().id, videosToAdd).subscribe({
-      next: (res) => {
+      next: () => {
         this.toast.show('success', 'Videos agregados a la playlist correctamente');
-        /* console.log(res);
-        this.dialog.open('success', null, () => {
-          this.getPlaylistData(this.playlist().id);
-          this.closeDiffs();
-        }); */
+
+        const playlist = this.playlist();
+        const added = this.selectedVideos().map((video: any) => ({
+          id: video.id,
+          title: video.title,
+          channelTitle: video.channelTitle,
+          thumbnail: video.thumbnail,
+          publishedAt: new Date().toISOString(),
+        }));
+        const addedIds = new Set(added.map((video: any) => video.id));
+
+        this.playlist.set({
+          ...playlist,
+          totalVideos: playlist.totalVideos + added.length,
+          updatedAt: new Date().toISOString(),
+          videos: [...playlist.videos, ...added],
+        });
+
+        this.differences.set(
+          (this.differences() || []).filter((video: any) => !addedIds.has(video.id)),
+        );
+        this.selectedIds.set(new Set());
+
+        this.deleteVids.set(videosToAdd);
       },
       error: (error) => {
         console.error(error);
