@@ -147,7 +147,7 @@
           </div>
 
           <div class="grid mt-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            @for (video of filteredVideos(); track video.id; let i = $index) {
+            @for (video of paginatedVideos(); track video.id; let i = $index) {
               <article
                 class="bg-zinc-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-zinc-700 hover:border-custom-purple hover:bg-zinc-900"
                 (click)="openVideo(video.id)"
@@ -197,6 +197,43 @@
               </div>
             }
           </div>
+
+          @if (totalPages() > 1) {
+            <nav
+              class="flex items-center justify-center gap-2 mt-8 mb-4"
+              aria-label="Paginación de videos"
+            >
+              <button
+                (click)="prevPage()"
+                [disabled]="page() <= 1"
+                class="w-9 h-9 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 flex items-center justify-center cursor-pointer hover:text-white hover:border-custom-purple transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-zinc-800 disabled:hover:text-zinc-400"
+              >
+                <span class="pi pi-chevron-left text-xs"></span>
+              </button>
+
+              @for (num of pageNumbers(); track num) {
+                <button
+                  (click)="goToPage(num)"
+                  [class]="
+                    page() === num
+                      ? 'bg-custom-purple text-white border-custom-purple'
+                      : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white hover:border-custom-purple'
+                  "
+                  class="w-9 h-9 rounded-lg border text-sm font-medium flex items-center justify-center cursor-pointer transition-all"
+                >
+                  {{ num }}
+                </button>
+              }
+
+              <button
+                (click)="nextPage()"
+                [disabled]="page() >= totalPages()"
+                class="w-9 h-9 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 flex items-center justify-center cursor-pointer hover:text-white hover:border-custom-purple transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-zinc-800 disabled:hover:text-zinc-400"
+              >
+                <span class="pi pi-chevron-right text-xs"></span>
+              </button>
+            </nav>
+          }
         } @else {
           <div class="w-full">
             <button (click)="closeDiffs()" class="p-2 cursor-pointer rounded-full">
@@ -306,9 +343,15 @@
                     >
                       <span>
                         @switch (activeTab()) {
-                          @case ('new') { Añadir }
-                          @case ('removed') { Eliminar }
-                          @default { Añadir/Eliminar }
+                          @case ('new') {
+                            Añadir
+                          }
+                          @case ('removed') {
+                            Eliminar
+                          }
+                          @default {
+                            Añadir/Eliminar
+                          }
                         }
                         ({{ selectedCount() }}) a la Playlist
                       </span>

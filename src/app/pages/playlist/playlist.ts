@@ -45,6 +45,8 @@ export class Playlist {
   selectedCount = computed(() => this.selectedIds().size);
   differences = signal<any>(null);
   error: string | null = null;
+  page = signal(1);
+  pageSize = 6;
 
   constructor() {
     effect(() => {
@@ -91,6 +93,7 @@ export class Playlist {
       next: (res) => {
         console.log(res);
         this.playlist.set(res);
+        this.page.set(1);
         this.loading.set(false);
       },
       error: (error) => {
@@ -134,7 +137,9 @@ export class Playlist {
   addSelectedToPlaylist() {
     if (this.selectedCount() === 0) return;
 
-    const videosToAdd = this.selectedVideos().map(({ type, ...video }: { type: string; [key: string]: any }) => video);
+    const videosToAdd = this.selectedVideos().map(
+      ({ type, ...video }: { type: string; [key: string]: any }) => video,
+    );
 
     this.youtube.saveVideosToPlaylist(this.playlist().id, videosToAdd).subscribe({
       next: () => {
@@ -167,9 +172,8 @@ export class Playlist {
       error: (error) => {
         console.error(error);
         this.toast.show('error', 'Los videos no se pudieron agregar a la playlist');
-      }
-    }) 
-
+      },
+    });
   }
 
   cancelSelection() {
@@ -191,10 +195,7 @@ export class Playlist {
 
   isAllSelected = computed(() => {
     const currentList = this.selectableVideos();
-    return (
-      currentList.length > 0 &&
-      currentList.every((v: any) => this.selectedIds().has(v.id))
-    );
+    return currentList.length > 0 && currentList.every((v: any) => this.selectedIds().has(v.id));
   });
 
   selectableVideos = computed(() => this.filteredVideosDiff());
@@ -235,6 +236,34 @@ export class Playlist {
     return sorted;
   });
 
+  totalPages = computed(() => Math.max(1, Math.ceil(this.filteredVideos().length / this.pageSize)));
+
+  paginatedVideos = computed(() => {
+    const videos = this.filteredVideos();
+    const currentPage = Math.min(this.page(), this.totalPages());
+    const start = (currentPage - 1) * this.pageSize;
+    return videos.slice(start, start + this.pageSize);
+  });
+
+  pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages()) return;
+    this.page.set(page);
+  }
+
+  nextPage() {
+    if (this.page() < this.totalPages()) {
+      this.page.update((p) => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.page() > 1) {
+      this.page.update((p) => p - 1);
+    }
+  }
+
   filteredVideosDiff = computed(() => {
     const videos = this.differences() || [];
     const query = this.searchQuery().toLowerCase().trim();
@@ -272,6 +301,7 @@ export class Playlist {
   filterName(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
+    this.page.set(1);
   }
 
   toggleDropdown() {
@@ -281,6 +311,7 @@ export class Playlist {
   seleccionar(valor: string) {
     this.selectFilter.set(valor);
     this.isOpenSelect.set(false);
+    this.page.set(1);
   }
 
   openVideo(videoId: string) {
