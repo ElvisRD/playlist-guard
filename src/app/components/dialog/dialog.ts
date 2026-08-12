@@ -10,7 +10,7 @@ import { Dialog as DialogService } from '../../services/dialog';
   templateUrl: './dialog.html',
   styleUrl: './dialog.css',
 })
-export class Dialog implements OnInit {
+export class Dialog {
   private dialogService = inject(DialogService);
   private http = inject(HttpClient);
   private youtubeService = inject(Youtube);
@@ -32,21 +32,8 @@ export class Dialog implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.http.get<Record<string, any>>('/jsons/dialogText.json').subscribe({
-      next: (data) => {
-        this.dialogTexts = data;
-        const currentType = this.type();
-        if (currentType && data[currentType]) {
-          this.dialogConfig.set(data[currentType]);
-        }
-      },
-      error: (err) => console.error('Error loading dialog texts:', err),
-    });
-  }
+  onConfirm(){
 
-  logout() {
-    this.googleService.logout().subscribe();
   }
 
   authenticateWithGoogle() {

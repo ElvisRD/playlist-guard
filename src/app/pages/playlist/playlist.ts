@@ -39,7 +39,6 @@ export class Playlist {
     ascendente: 'Asc',
     descendente: 'Desc',
   };
-  deleteVids = signal([]);
   activeTab = signal('all');
   selectedIds = signal<Set<string>>(new Set());
   selectedCount = computed(() => this.selectedIds().size);
@@ -167,13 +166,16 @@ export class Playlist {
         );
         this.selectedIds.set(new Set());
 
-        this.deleteVids.set(videosToAdd);
       },
       error: (error) => {
         console.error(error);
         this.toast.show('error', 'Los videos no se pudieron agregar a la playlist');
       },
     });
+  }
+
+  deletePlaylist(){
+    this.dialog.open('delete-playlist');
   }
 
   cancelSelection() {

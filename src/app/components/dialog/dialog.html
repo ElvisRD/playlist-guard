@@ -8,7 +8,16 @@
       (click)="$event.stopPropagation()"
     >
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-zinc-100">{{ dialogConfig()?.title }}</h2>
+        <h2 class="text-lg font-bold text-zinc-100">
+          @switch (type()) {
+            @case ('delete-playlist') {
+              Eliminar Playlist
+            }
+            @case ('unauthorized') {
+              Iniciar sesión
+            }
+          }
+        </h2>
         <button
           class="cursor-pointer text-xl text-zinc-400 transition hover:text-zinc-100"
           (click)="onClose()"
@@ -18,100 +27,40 @@
       </div>
 
       @switch (type()) {
-        @case ('private') {
+        @case ('delete-playlist') {
           <div class="w-full flex flex-col items-center justify-center">
             <p class="text-zinc-400 mb-4">
-              {{ dialogConfig()?.text }}
-            </p>
-            <button
-              class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
-              (click)="authenticateWithGoogle()"
-            >
-              <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
-              <span>{{ dialogConfig()?.button }}</span>
-            </button>
-          </div>
-        }
-        @case ('logout') {
-          <div class="w-full flex flex-col items-center p-2 text-center">
-
-            <h3 class="text-zinc-100 font-semibold text-lg mb-1"></h3>
-            <p class="text-zinc-400 text-lg max-w-xs mb-6">
-              {{dialogConfig().text}}
+              ¿Estás seguro de que deseas eliminar la playlist? Perderás todos los videos que hayas guardado en ella.
             </p>
 
-            <div class="flex gap-3 w-full justify-center">
+            <div class="flex gap-4 w-full justify-center">
               <button
-                type="button"
+                class="py-2 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-base text-gray-100 transition flex items-center justify-center"
                 (click)="onClose()"
-                class="flex-1 sm:flex-none min-w-[100px] py-2 px-5 rounded-lg border border-zinc-700 bg-zinc-800 text-white font-medium text-sm transition-colors hover:bg-zinc-800 cursor-pointer focus:outline-none"
               >
-                {{dialogConfig().button}}
+                <span>Cancelar</span>
               </button>
-
               <button
-                type="button"
-                (click)="logout()"
-                class=" sm:flex-none px-4 min-w-[100px] rounded-lg bg-red-700 text-white font-medium text-sm transition-colors hover:bg-red-700 cursor-pointer"
+                class="py-2 px-4 rounded-lg border border-zinc-600 cursor-pointer text-base text-red-500 transition flex items-center justify-center"
+                (click)="onConfirm()"
               >
-                Confirmar
+                <span>Eliminar</span>
               </button>
             </div>
           </div>
         }
-        @case ('error') {
-          <div class="w-full flex flex-col items-center gap-4">
-            <span class="pi pi-exclamation-triangle text-red-400 text-4xl"></span>
-            <p class="text-zinc-300 text-center">
-              {{ dialogConfig()?.text }}
-            </p>
-            <button
-              (click)="onClose()"
-              class="py-2 px-6 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-zinc-100 transition hover:bg-zinc-700"
-            >
-              {{ dialogConfig()?.button }}
-            </button>
-          </div>
-        }
-        @case ('not-found') {
-          <div class="w-full flex flex-col items-center gap-4">
-            <span class="pi pi-exclamation-triangle text-yellow-400 text-4xl"></span>
-            <p class="text-zinc-300 text-center">
-              {{ dialogConfig()?.text }}
-            </p>
-            <button
-              (click)="onClose()"
-              class="py-2 px-6 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-zinc-100 transition hover:bg-zinc-700"
-            >
-              {{ dialogConfig()?.button }}
-            </button>
-          </div>
-        }
-        @case ('not-access') {
-          <div class="w-full flex flex-col items-center gap-4">
-            <span class="pi pi-exclamation-triangle text-yellow-400 text-4xl"></span>
-            <p class="text-zinc-300 text-center">
-              {{ dialogConfig()?.text }}
-            </p>
-            <button
-              (click)="onClose()"
-              class="py-2 px-6 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-zinc-100 transition hover:bg-zinc-700"
-            >
-              {{ dialogConfig()?.button }}
-            </button>
-          </div>
-        }
+        
         @case ('unauthorized') {
           <div class="w-full flex flex-col items-center justify-center">
             <p class="text-zinc-400 mb-4">
-              {{ dialogConfig()?.text }}
+              Es necesario que inicies sesión con tu cuenta de Google para poder acceder a la playlist.
             </p>
             <button
               class="py-4 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 w-full text-base text-gray-100 transition flex items-center justify-center"
               (click)="authenticateWithGoogle()"
             >
               <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
-              <span>{{ dialogConfig()?.button }}</span>
+              <span>Iniciar sesión"</span>
             </button>
           </div>
         }
