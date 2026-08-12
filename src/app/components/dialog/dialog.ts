@@ -1,7 +1,7 @@
 import { Component, signal, effect, OnInit, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
+import { Router } from '@angular/router';
 import { Dialog as DialogService } from '../../services/dialog';
 
 @Component({
@@ -12,9 +12,9 @@ import { Dialog as DialogService } from '../../services/dialog';
 })
 export class Dialog {
   private dialogService = inject(DialogService);
-  private http = inject(HttpClient);
   private youtubeService = inject(Youtube);
   private googleService = inject(Google);
+  private router = inject(Router);
 
   visible = this.dialogService.visible;
   type = this.dialogService.type;
@@ -32,8 +32,16 @@ export class Dialog {
     });
   }
 
-  onConfirm(){
-
+  onConfirmDelete(){
+    this.youtubeService.deletePlaylist(this.playlist()).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.onClose();
+        this.router.navigate(['/playlists']);
+        
+      },
+      error: (err) => console.error(err.message),
+    });
   }
 
   authenticateWithGoogle() {

@@ -13,10 +13,6 @@ export class Youtube {
     private http: HttpClient
   ) {}
 
-  getPlaylistExcel(listId: string): Observable<Blob> {
-    return this.http.get(this.apiUrl + listId + 'playlist/videos/excel', { responseType: 'blob' });
-  }
-
   savePlaylist(playlistId: string): Observable<any> {
     return this.http.post(this.apiUrl + 'playlist/save/' +  playlistId, { withCredentials: true })
   }
@@ -40,4 +36,9 @@ export class Youtube {
   saveVideosToPlaylist(playlistId: string, videos: string[]): Observable<any> {
     return this.http.post(this.apiUrl + 'playlist/' + playlistId + '/save/videos', { videos }, { withCredentials: true });
   }
+
+  deletePlaylist(playlistId: string): Observable<any> {
+    return this.http.delete(this.apiUrl + 'playlist/' + playlistId, { withCredentials: true });
+  }
+
 }

@@ -175,7 +175,7 @@ export class Playlist {
   }
 
   deletePlaylist(){
-    this.dialog.open('delete-playlist');
+    this.dialog.open('delete-playlist', this.playlist().id);
   }
 
   cancelSelection() {
