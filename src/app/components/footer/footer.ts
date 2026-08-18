@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Google } from "../../services/google";
 import { RouterLink } from "@angular/router";
 
 @Component({
@@ -7,4 +8,7 @@ import { RouterLink } from "@angular/router";
   templateUrl: './footer.html',
   styleUrl: './footer.css',
 })
-export class Footer {}
+export class Footer {
+  private googleService = inject(Google);
+  protected profile = this.googleService.profile;
+}

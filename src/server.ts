@@ -18,7 +18,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'https://*.googleusercontent.com', 'https://*.google.com', 'https://i.ytimg.com'],
         fontSrc: ["'self'"],
