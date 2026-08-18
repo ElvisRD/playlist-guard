@@ -1,28 +1,25 @@
-import { Component, inject, signal, effect, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { Google } from '../../services/google';
 import { Router } from '@angular/router';
 import { Youtube } from '../../services/youtube';
-import { Dialog } from '../../services/dialog';
 import { PlaylistSummary } from '../../models';
+import { SortDropdown } from '../../components/sort-dropdown/sort-dropdown';
 
 @Component({
   selector: 'app-playlists',
-  imports: [],
+  imports: [SortDropdown],
   templateUrl: './playlists.html',
   styleUrl: './playlists.css',
   host: {
     class: 'flex flex-1 flex-col w-full h-full',
   },
 })
-export class Playlists {
+export class Playlists implements OnInit {
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
   private router = inject(Router);
-  protected profile = toSignal(this.googleService.profile$, { initialValue: null });
-  private loading = this.googleService.loading;
+  protected profile = this.googleService.profile;
   searchQuery = signal('');
-  isOpenSelect = signal(false);
   selectFilter = signal('fecha');
   options: Record<string, string> = {
     fecha: 'Fecha',
@@ -32,16 +29,10 @@ export class Playlists {
   playlists = signal<PlaylistSummary[]>([]);
   playlistsLoading = signal(true);
 
-  constructor() {
-    effect(() => {
-      if (!this.loading()) {
-        if (!this.profile()) {
-          this.router.navigate(['']);
-        } else {
-          this.getPlaylists();
-        }
-      }
-    });
+  ngOnInit() {
+    if (this.profile()) {
+      this.getPlaylists();
+    }
   }
 
   getPlaylists() {
@@ -82,10 +73,6 @@ export class Playlists {
     return sorted;
   });
 
-  toggleDropdown() {
-    this.isOpenSelect.update((v) => !v);
-  }
-
   newPlaylist() {
     this.router.navigate(['']);
   }
@@ -97,7 +84,6 @@ export class Playlists {
 
   seleccionar(valor: string) {
     this.selectFilter.set(valor);
-    this.isOpenSelect.set(false);
   }
 
   openPlaylist(playlistId: string) {

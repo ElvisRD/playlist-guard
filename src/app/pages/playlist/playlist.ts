@@ -1,37 +1,34 @@
-import { Component, inject, signal, effect, computed } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
 import { Toast } from '../../services/toast';
 import { Playlist as PlaylistModel, VideoDiff } from '../../models';
+import { SortDropdown } from '../../components/sort-dropdown/sort-dropdown';
 
 @Component({
   selector: 'app-playlist',
-  imports: [FormsModule, NgClass],
+  imports: [FormsModule, NgClass, SortDropdown],
   templateUrl: './playlist.html',
   styleUrl: './playlist.css',
   host: {
     class: 'flex flex-1 flex-col w-full h-full',
   },
 })
-export class Playlist {
+export class Playlist implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private youtube = inject(Youtube);
   private googleService = inject(Google);
   private dialog = inject(Dialog);
   private toast = inject(Toast);
 
-  protected profile = toSignal(this.googleService.profile$, { initialValue: null });
-  private authLoading = this.googleService.loading;
+  protected profile = this.googleService.profile;
 
   playlist = signal<PlaylistModel | null>(null);
   searchQuery = signal('');
-  isOpenSelect = signal(false);
   selectFilter = signal('fecha');
   showDetailsVerify = signal(true);
   loading = signal(true);
@@ -48,20 +45,11 @@ export class Playlist {
   page = signal(1);
   pageSize = 6;
 
-  constructor() {
-    effect(() => {
-      if (!this.authLoading()) {
-        if (!this.profile()) {
-          this.router.navigate(['']);
-        } else {
-          const id = this.route.snapshot.paramMap.get('id');
-          if (id) {
-            this.getPlaylistData(id);
-            this.closeDiffs();
-          }
-        }
-      }
-    });
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.getPlaylistData(id);
+    }
   }
 
   setTab(tab: 'all' | 'new' | 'removed') {
@@ -100,14 +88,7 @@ export class Playlist {
       error: (error) => {
         this.loading.set(false);
         console.error(error);
-        switch (error.status) {
-          case 401:
-            this.dialog.open('unauthorized');
-            break;
-          default:
-            this.error = 'Error al cargar la playlist';
-            break;
-        }
+        this.error = 'Error al cargar la playlist';
       },
     });
   }
@@ -308,13 +289,8 @@ export class Playlist {
     this.page.set(1);
   }
 
-  toggleDropdown() {
-    this.isOpenSelect.update((v) => !v);
-  }
-
   seleccionar(valor: string) {
     this.selectFilter.set(valor);
-    this.isOpenSelect.set(false);
     this.page.set(1);
   }
 

@@ -43,51 +43,11 @@
         </button>
 
         <!-- select -->
-        <div class="relative w-full">
-          <button
-            type="button"
-            (click)="toggleDropdown()"
-            class="w-full bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-200 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between cursor-pointer transition-all hover:border-custom-purple focus:outline-none focus:border-custom-purple focus:ring-1 focus:ring-custom-purple"
-          >
-            <span class="text-sm sm:text-base">
-              <span class=" text-zinc-500">Ordenar:</span>
-              <span class="mx-2 text-zinc-300">{{ options[selectFilter()] }}</span>
-            </span>
-
-            <span
-              class="pi pi-chevron-down text-zinc-500 text-xs transition-transform duration-200"
-              [class.rotate-180]="isOpenSelect()"
-            ></span>
-          </button>
-
-          @if (isOpenSelect()) {
-            <div
-              class="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden"
-            >
-              <button
-                type="button"
-                (click)="seleccionar('fecha')"
-                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-custom-purple transition-colors cursor-pointer"
-              >
-                Fecha
-              </button>
-              <button
-                type="button"
-                (click)="seleccionar('ascendente')"
-                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-custom-purple transition-colors cursor-pointer"
-              >
-                Asc
-              </button>
-              <button
-                type="button"
-                (click)="seleccionar('descendente')"
-                class="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-custom-purple transition-colors cursor-pointer"
-              >
-                Desc
-              </button>
-            </div>
-          }
-        </div>
+        <app-sort-dropdown
+          [options]="options"
+          [selected]="selectFilter()"
+          (selectedChange)="seleccionar($event)"
+        />
       </div>
     </div>
     <div class="flex mt-8 sm:mt-10 lg:mt-12 w-full justify-center max-w-5xl">

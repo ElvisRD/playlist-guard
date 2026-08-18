@@ -1,5 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 import { Toast } from '../../services/toast';
@@ -21,7 +20,7 @@ export class Home {
   private youtubeService = inject(Youtube);
   private toastService = inject(Toast);
   private dialogService = inject(Dialog);
-  protected profile = toSignal(this.googleService.profile$, { initialValue: null });
+  protected profile = this.googleService.profile;
   playlist = signal<Playlist | null>(null);
   playlistUrl = '';
   loaderPlaylist = false;
@@ -71,17 +70,6 @@ export class Home {
       },
       error: (error) => {
         console.error('Error verifying playlist:', error);
-        switch (error.status) {
-          case 401:
-            this.dialogService.open('unauthorized');
-            break;
-          case 404:
-            this.toastService.show('not-found');
-            break;
-          default:
-            this.dialogService.open('error');
-            break;
-        }
       },
     });
   }

@@ -1,9 +1,9 @@
-import { Component, signal, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 import { Router } from '@angular/router';
 import { Dialog as DialogService } from '../../services/dialog';
-import { ToastText } from '../../models';
+import { Toast } from '../../services/toast';
 
 @Component({
   selector: 'app-dialog',
@@ -16,22 +16,11 @@ export class Dialog {
   private youtubeService = inject(Youtube);
   private googleService = inject(Google);
   private router = inject(Router);
+  private toast = inject(Toast);
 
   visible = this.dialogService.visible;
   type = this.dialogService.type;
   playlist = this.dialogService.playlist;
-
-  private dialogTexts: Record<string, ToastText> = {};
-  dialogConfig = signal<ToastText | null>(null);
-
-  constructor() {
-    effect(() => {
-      const currentType = this.type();
-      if (currentType && this.dialogTexts[currentType]) {
-        this.dialogConfig.set(this.dialogTexts[currentType]);
-      }
-    });
-  }
 
   onConfirmDelete() {
     const playlistId = this.playlist();
@@ -39,10 +28,13 @@ export class Dialog {
 
     this.youtubeService.deletePlaylist(playlistId).subscribe({
       next: () => {
+        this.toast.show('success', 'Playlist eliminada correctamente.');
         this.onClose();
         this.router.navigate(['/playlists']);
       },
-      error: (err) => console.error(err.message),
+      error: () => {
+        this.toast.show('error', 'No se pudo eliminar la playlist.');
+      },
     });
   }
 
@@ -51,8 +43,11 @@ export class Dialog {
     this.googleService.authenticateWithGoogle().subscribe({
       next: () => {
         this.googleService.loadProfile();
+        this.toast.show('success', 'Sesión iniciada correctamente.');
       },
-      error: (err) => console.error(err.message),
+      error: () => {
+        this.toast.show('error', 'No se pudo iniciar sesión.');
+      },
     });
   }
 

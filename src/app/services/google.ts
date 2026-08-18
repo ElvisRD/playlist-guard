@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, catchError, of, fromEvent, timeout } from 'rxjs';
@@ -14,6 +14,7 @@ export class Google {
   profile$ = this.profileSource.asObservable();
   private platformId = inject(PLATFORM_ID);
   loading = signal(true);
+  profile = signal<Profile | null>(null);
 
   constructor(private http: HttpClient) {
     if (isPlatformBrowser(this.platformId)) {
@@ -30,16 +31,20 @@ export class Google {
   }
 
   getProfile(): Observable<Profile> {
-    return this.http.get<Profile>(`${this.apiUrl}profile`, { withCredentials: true });
+    return this.http.get<Profile>(`${this.apiUrl}profile`);
   }
 
   loadProfile() {
     this.http
-      .get<Profile>(`${this.apiUrl}profile`, { withCredentials: true })
+      .get<Profile>(`${this.apiUrl}profile`)
       .pipe(
-        tap((profile) => this.profileSource.next(profile)),
+        tap((profile) => {
+          this.profileSource.next(profile);
+          this.profile.set(profile);
+        }),
         catchError(() => {
           this.profileSource.next(null);
+          this.profile.set(null);
           return of(null);
         }),
       )
@@ -50,10 +55,11 @@ export class Google {
 
   cleanProfile() {
     this.profileSource.next(null);
+    this.profile.set(null);
   }
 
   logout(): Observable<unknown> {
-    return this.http.get(`${this.apiUrl}logout`, { withCredentials: true }).pipe(
+    return this.http.get(`${this.apiUrl}logout`).pipe(
       tap(() => this.cleanProfile()),
       catchError((err) => {
         this.cleanProfile();
@@ -88,6 +94,7 @@ export class Google {
         .subscribe({
           next: (profile) => {
             this.profileSource.next(profile);
+            this.profile.set(profile);
             observer.next(profile);
             observer.complete();
           },
