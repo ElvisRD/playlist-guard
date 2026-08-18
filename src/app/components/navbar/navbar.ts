@@ -38,7 +38,12 @@ export class Navbar {
   }
 
   openDialogLogout() {
-    this.dialogService.open('logout');
+    this.googleService.logout().subscribe({
+      next: () => {
+        this.toastService.show('success', 'Sesión cerrada correctamente.');
+      },
+      error: (err) => console.error(err.message),
+    });
   }
 
   onImageError(event: Event) {
