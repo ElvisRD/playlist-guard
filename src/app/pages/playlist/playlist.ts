@@ -30,7 +30,7 @@ export class Playlist implements OnInit {
   playlist = signal<PlaylistModel | null>(null);
   searchQuery = signal('');
   selectFilter = signal('fecha');
-  showDetailsVerify = signal(true);
+  showDetailsVerify = signal(false);
   loading = signal(true);
   options: Record<string, string> = {
     fecha: 'Fecha',
@@ -74,7 +74,7 @@ export class Playlist implements OnInit {
     if (hours > 0) return rtf.format(-hours, 'hour');
     if (minutes > 0) return rtf.format(-minutes, 'minute');
 
-    return 'hace unos instantes';
+    return 'Hace unos instantes';
   });
 
   getPlaylistData(playlistId: string) {
@@ -295,6 +295,6 @@ export class Playlist implements OnInit {
   }
 
   openVideo(videoId: string) {
-    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank', 'noopener,noreferrer');
   }
 }

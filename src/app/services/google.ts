@@ -70,6 +70,11 @@ export class Google {
 
   private openAuthPopup(url: string): Observable<Profile> {
     return new Observable<Profile>((observer) => {
+      if (!url.startsWith('https://accounts.google.com/')) {
+        observer.error(new Error('Invalid auth URL'));
+        return;
+      }
+
       const w = 500;
       const h = 600;
       const left = (window.screen.width - w) / 2;
@@ -78,8 +83,13 @@ export class Google {
       const popup = window.open(
         url,
         'GoogleAuth',
-        `width=${w},height=${h},left=${left},top=${top}`,
+        `width=${w},height=${h},left=${left},top=${top},noopener,noreferrer`,
       );
+
+      if (!popup) {
+        observer.error(new Error('Popup blocked by browser'));
+        return;
+      }
 
       const messageSub = fromEvent<MessageEvent>(window, 'message')
         .pipe(
