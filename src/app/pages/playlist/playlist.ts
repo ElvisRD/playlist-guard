@@ -1,16 +1,17 @@
 import { Component, inject, signal, effect, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Youtube } from '../../services/youtube';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
-import { CommonModule } from '@angular/common';
 import { Toast } from '../../services/toast';
+import { Playlist as PlaylistModel, VideoDiff } from '../../models';
 
 @Component({
   selector: 'app-playlist',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, NgClass],
   templateUrl: './playlist.html',
   styleUrl: './playlist.css',
   host: {
@@ -28,7 +29,7 @@ export class Playlist {
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   private authLoading = this.googleService.loading;
 
-  playlist = signal<any>(null);
+  playlist = signal<PlaylistModel | null>(null);
   searchQuery = signal('');
   isOpenSelect = signal(false);
   selectFilter = signal('fecha');
@@ -39,10 +40,10 @@ export class Playlist {
     ascendente: 'Asc',
     descendente: 'Desc',
   };
-  activeTab = signal('all');
+  activeTab = signal<'all' | 'new' | 'removed'>('all');
   selectedIds = signal<Set<string>>(new Set());
   selectedCount = computed(() => this.selectedIds().size);
-  differences = signal<any>(null);
+  differences = signal<VideoDiff[] | null>(null);
   error: string | null = null;
   page = signal(1);
   pageSize = 6;
@@ -63,13 +64,15 @@ export class Playlist {
     });
   }
 
-  setTab(tab: string) {
+  setTab(tab: 'all' | 'new' | 'removed') {
     this.activeTab.set(tab);
     this.selectedIds.set(new Set());
   }
 
   timeAgo = computed(() => {
-    const dateInput = new Date(this.playlist().updatedAt);
+    const playlist = this.playlist();
+    if (!playlist) return '';
+    const dateInput = new Date(playlist.updatedAt);
     const now = new Date();
     const diffMs = now.getTime() - dateInput.getTime();
 
@@ -90,7 +93,6 @@ export class Playlist {
     this.loading.set(true);
     this.youtube.getPlaylistData(playlistId).subscribe({
       next: (res) => {
-        console.log(res);
         this.playlist.set(res);
         this.page.set(1);
         this.loading.set(false);
@@ -130,29 +132,29 @@ export class Playlist {
 
   selectedVideos = computed(() => {
     const ids = this.selectedIds();
-    return (this.differences() || []).filter((video: any) => ids.has(video.id));
+    return (this.differences() || []).filter((video) => ids.has(video.id));
   });
 
   addSelectedToPlaylist() {
     if (this.selectedCount() === 0) return;
 
-    const videosToAdd = this.selectedVideos().map(
-      ({ type, ...video }: { type: string; [key: string]: any }) => video,
-    );
+    const videosToAdd = this.selectedVideos().map(({ type, ...video }) => video);
 
-    this.youtube.saveVideosToPlaylist(this.playlist().id, videosToAdd).subscribe({
+    const playlist = this.playlist();
+    if (!playlist) return;
+
+    this.youtube.saveVideosToPlaylist(playlist.id, videosToAdd).subscribe({
       next: () => {
         this.toast.show('success', 'Videos agregados a la playlist correctamente');
 
-        const playlist = this.playlist();
-        const added = this.selectedVideos().map((video: any) => ({
+        const added = this.selectedVideos().map((video) => ({
           id: video.id,
           title: video.title,
           channelTitle: video.channelTitle,
           thumbnail: video.thumbnail,
           publishedAt: new Date().toISOString(),
         }));
-        const addedIds = new Set(added.map((video: any) => video.id));
+        const addedIds = new Set(added.map((video) => video.id));
 
         this.playlist.set({
           ...playlist,
@@ -162,10 +164,9 @@ export class Playlist {
         });
 
         this.differences.set(
-          (this.differences() || []).filter((video: any) => !addedIds.has(video.id)),
+          (this.differences() || []).filter((video) => !addedIds.has(video.id)),
         );
         this.selectedIds.set(new Set());
-
       },
       error: (error) => {
         console.error(error);
@@ -174,8 +175,11 @@ export class Playlist {
     });
   }
 
-  deletePlaylist(){
-    this.dialog.open('delete-playlist', this.playlist().id);
+  deletePlaylist() {
+    const playlist = this.playlist();
+    if (playlist) {
+      this.dialog.open('delete-playlist', playlist.id);
+    }
   }
 
   cancelSelection() {
@@ -186,10 +190,10 @@ export class Playlist {
     const currentList = this.selectableVideos();
     const updated = new Set(this.selectedIds());
 
-    if (currentList.every((v: any) => updated.has(v.id))) {
-      currentList.forEach((v: any) => updated.delete(v.id));
+    if (currentList.every((v) => updated.has(v.id))) {
+      currentList.forEach((v) => updated.delete(v.id));
     } else {
-      currentList.forEach((v: any) => updated.add(v.id));
+      currentList.forEach((v) => updated.add(v.id));
     }
 
     this.selectedIds.set(updated);
@@ -197,7 +201,7 @@ export class Playlist {
 
   isAllSelected = computed(() => {
     const currentList = this.selectableVideos();
-    return currentList.length > 0 && currentList.every((v: any) => this.selectedIds().has(v.id));
+    return currentList.length > 0 && currentList.every((v) => this.selectedIds().has(v.id));
   });
 
   selectableVideos = computed(() => this.filteredVideosDiff());
@@ -205,8 +209,8 @@ export class Playlist {
   diffStats = computed(() => {
     const videos = this.differences() || [];
     return {
-      new: videos.filter((v: any) => v.type === 'new').length,
-      removed: videos.filter((v: any) => v.type === 'removed').length,
+      new: videos.filter((v) => v.type === 'new').length,
+      removed: videos.filter((v) => v.type === 'removed').length,
     };
   });
 
@@ -216,7 +220,7 @@ export class Playlist {
     const filter = this.selectFilter();
 
     const filtered = query
-      ? videos.filter((video: any) => video.title.toLowerCase().includes(query))
+      ? videos.filter((video) => video.title.toLowerCase().includes(query))
       : videos;
 
     const sorted = [...filtered];
@@ -272,7 +276,7 @@ export class Playlist {
     const filter = this.activeTab();
 
     const filtered = query
-      ? videos.filter((video: any) => video.title.toLowerCase().includes(query))
+      ? videos.filter((video) => video.title.toLowerCase().includes(query))
       : videos;
 
     const sorted = [...filtered];
@@ -283,16 +287,14 @@ export class Playlist {
   verifyPlaylist() {
     this.showDetailsVerify.set(true);
 
-    const body = {
-      playlistId: this.playlist().id,
-    };
+    const playlist = this.playlist();
+    if (!playlist) return;
 
-    this.youtube.getVerifyPlaylist(body).subscribe({
-      next: (res: any) => {
+    this.youtube.getVerifyPlaylist({ playlistId: playlist.id }).subscribe({
+      next: (res) => {
         if (res.diff) {
           this.differences.set(res.diff.allVideosDiff);
         }
-        console.log(this.differences());
       },
       error: (error) => {
         console.error(error);

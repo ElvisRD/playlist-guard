@@ -3,13 +3,14 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, catchError, of, fromEvent, timeout } from 'rxjs';
 import { switchMap, filter } from 'rxjs/operators';
+import { Profile, AuthUrlResponse } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Google {
   private apiUrl = '/google-auth/';
-  private profileSource = new BehaviorSubject<any>(null);
+  private profileSource = new BehaviorSubject<Profile | null>(null);
   profile$ = this.profileSource.asObservable();
   private platformId = inject(PLATFORM_ID);
   loading = signal(true);
@@ -20,46 +21,49 @@ export class Google {
     }
   }
 
-  authenticateUser(): Observable<any> {
-    return this.http.get(this.apiUrl + 'auth-url');
+  authenticateUser(): Observable<AuthUrlResponse> {
+    return this.http.get<AuthUrlResponse>(`${this.apiUrl}auth-url`);
   }
 
-  authenticateWithGoogle(): Observable<any> {
-    return this.authenticateUser().pipe(switchMap((res: any) => this.openAuthPopup(res.url)));
+  authenticateWithGoogle(): Observable<Profile> {
+    return this.authenticateUser().pipe(switchMap((res) => this.openAuthPopup(res.url)));
   }
 
-  getProfile(): Observable<any> {
-    return this.http.get(this.apiUrl + 'profile', { withCredentials: true });
+  getProfile(): Observable<Profile> {
+    return this.http.get<Profile>(`${this.apiUrl}profile`, { withCredentials: true });
   }
 
-  loadProfile(){
-    this.http.get(this.apiUrl + 'profile', { withCredentials: true }).pipe(
-      tap(profile => this.profileSource.next(profile)),
-      catchError(() => {
-        this.profileSource.next(null);
-        return of(null);
-      })
-    ).subscribe({
-      complete: () => this.loading.set(false)
-    })
-  }  
+  loadProfile() {
+    this.http
+      .get<Profile>(`${this.apiUrl}profile`, { withCredentials: true })
+      .pipe(
+        tap((profile) => this.profileSource.next(profile)),
+        catchError(() => {
+          this.profileSource.next(null);
+          return of(null);
+        }),
+      )
+      .subscribe({
+        complete: () => this.loading.set(false),
+      });
+  }
 
-  cleanProfile(){
+  cleanProfile() {
     this.profileSource.next(null);
   }
 
-  logout(): Observable<any> {
-    return this.http.get(this.apiUrl + 'logout', { withCredentials: true }).pipe(
+  logout(): Observable<unknown> {
+    return this.http.get(`${this.apiUrl}logout`, { withCredentials: true }).pipe(
       tap(() => this.cleanProfile()),
       catchError((err) => {
         this.cleanProfile();
         return of(err);
-      })
+      }),
     );
   }
 
-  private openAuthPopup(url: string): Observable<any> {
-    return new Observable<any>((observer) => {
+  private openAuthPopup(url: string): Observable<Profile> {
+    return new Observable<Profile>((observer) => {
       const w = 500;
       const h = 600;
       const left = (window.screen.width - w) / 2;

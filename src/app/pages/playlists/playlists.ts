@@ -4,6 +4,7 @@ import { Google } from '../../services/google';
 import { Router } from '@angular/router';
 import { Youtube } from '../../services/youtube';
 import { Dialog } from '../../services/dialog';
+import { PlaylistSummary } from '../../models';
 
 @Component({
   selector: 'app-playlists',
@@ -11,17 +12,16 @@ import { Dialog } from '../../services/dialog';
   templateUrl: './playlists.html',
   styleUrl: './playlists.css',
   host: {
-    class: 'flex flex-1 flex-col w-full h-full'
-  }
+    class: 'flex flex-1 flex-col w-full h-full',
+  },
 })
 export class Playlists {
-
   private googleService = inject(Google);
   private youtubeService = inject(Youtube);
   private router = inject(Router);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
   private loading = this.googleService.loading;
-  searchQuery = signal('')
+  searchQuery = signal('');
   isOpenSelect = signal(false);
   selectFilter = signal('fecha');
   options: Record<string, string> = {
@@ -29,7 +29,7 @@ export class Playlists {
     ascendente: 'Asc',
     descendente: 'Desc',
   };
-  playlists = signal<any[]>([]);
+  playlists = signal<PlaylistSummary[]>([]);
   playlistsLoading = signal(true);
 
   constructor() {
@@ -47,7 +47,6 @@ export class Playlists {
   getPlaylists() {
     this.youtubeService.getPlaylists().subscribe({
       next: (res) => {
-        console.log(res)
         this.playlists.set(res.playlists);
       },
       error: (error) => {
@@ -63,7 +62,7 @@ export class Playlists {
     const filter = this.selectFilter();
 
     const filtered = query
-      ? playlists.filter((playlist: any) => playlist.title.toLowerCase().includes(query))
+      ? playlists.filter((playlist) => playlist.title.toLowerCase().includes(query))
       : playlists;
 
     const sorted = [...filtered];
@@ -84,10 +83,10 @@ export class Playlists {
   });
 
   toggleDropdown() {
-    this.isOpenSelect.update(v => !v);
+    this.isOpenSelect.update((v) => !v);
   }
 
-  newPlaylist(){
+  newPlaylist() {
     this.router.navigate(['']);
   }
 
@@ -101,8 +100,7 @@ export class Playlists {
     this.isOpenSelect.set(false);
   }
 
-  openPlaylist(playlistId: string){
-    this.router.navigate(['/playlist/', playlistId]) 
+  openPlaylist(playlistId: string) {
+    this.router.navigate(['/playlist/', playlistId]);
   }
-
 }

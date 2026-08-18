@@ -5,6 +5,7 @@ import { Google } from '../../services/google';
 import { Toast } from '../../services/toast';
 import { Dialog } from '../../services/dialog';
 import { NgClass } from '@angular/common';
+import { Playlist } from '../../models';
 
 @Component({
   selector: 'app-home',
@@ -12,8 +13,8 @@ import { NgClass } from '@angular/common';
   templateUrl: './home.html',
   styleUrl: './home.css',
   host: {
-    class: 'flex flex-1 flex-col w-full h-full'
-  }
+    class: 'flex flex-1 flex-col w-full h-full',
+  },
 })
 export class Home {
   private googleService = inject(Google);
@@ -21,28 +22,30 @@ export class Home {
   private toastService = inject(Toast);
   private dialogService = inject(Dialog);
   protected profile = toSignal(this.googleService.profile$, { initialValue: null });
-  playlist = signal<any>(null);
+  playlist = signal<Playlist | null>(null);
   playlistUrl = '';
   loaderPlaylist = false;
 
   benefits = [
-  {
-    icon: 'pi pi-history',
-    title: 'Historial e Identificación',
-    description: 'Descubre al instante el nombre de los videos privados o borrados de tu lista de reproducción.'
-  },
-  {
-    icon: 'pi pi-bell',
-    title: 'Alertas de Cambios',
-    description: 'Recibe notificaciones automáticas cuando YouTube modifique o elimine contenido de tus playlists.'
-  },
-  {
-    icon: 'pi pi-save',
-    title: 'Respaldo Seguro',
-    description: 'Guarda una copia fija del estado original de tu playlist para consultar la lista exacta cuando la necesites.'
-  }
-];
-
+    {
+      icon: 'pi pi-history',
+      title: 'Historial e Identificación',
+      description:
+        'Descubre al instante el nombre de los videos privados o borrados de tu lista de reproducción.',
+    },
+    {
+      icon: 'pi pi-bell',
+      title: 'Alertas de Cambios',
+      description:
+        'Recibe notificaciones automáticas cuando YouTube modifique o elimine contenido de tus playlists.',
+    },
+    {
+      icon: 'pi pi-save',
+      title: 'Respaldo Seguro',
+      description:
+        'Guarda una copia fija del estado original de tu playlist para consultar la lista exacta cuando la necesites.',
+    },
+  ];
 
   searchPlaylist() {
     const idList = this.playlistUrl.split('list=')[1]?.split('&')[0];
@@ -52,15 +55,14 @@ export class Home {
       return;
     }
 
-    if(!this.profile()) return this.dialogService.open('unauthorized');
-    
+    if (!this.profile()) return this.dialogService.open('unauthorized');
+
     this.verifyPlaylist(idList);
   }
 
   verifyPlaylist(idList: string) {
     this.youtubeService.verifyAccessPlaylist(idList).subscribe({
       next: (res) => {
-          console.log(res)
         if (res.hasAccess) {
           this.playlist.set(res.playlist);
         } else {
@@ -86,13 +88,13 @@ export class Home {
 
   savePlaylist(playlistId: string) {
     this.youtubeService.savePlaylist(playlistId).subscribe({
-      next: (res) => {
+      next: () => {
         this.toastService.show('success', 'La playlist fue guardada exitosamente.');
         this.playlist.set(null);
       },
       error: (error) => {
-        console.error(error)
-      }
-    })
+        console.error(error);
+      },
+    });
   }
 }

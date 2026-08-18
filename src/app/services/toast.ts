@@ -1,16 +1,17 @@
 import { Injectable, signal } from '@angular/core';
+import { ToastType } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Toast {
   visible = signal(false);
-  type = signal<string>('');
+  type = signal<ToastType | ''>('');
   title = signal<string>('');
   message = signal<string>('');
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  show(type: string, message?: string) {
+  show(type: ToastType, message?: string) {
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }

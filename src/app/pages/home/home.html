@@ -62,13 +62,13 @@
     <div class="w-full flex-1 flex flex-col  max-w-md mx-auto">
       <div class="flex flex-col bg-zinc-800 p-3 rounded-2xl gap-2">
         <img
-          [src]="playlist().thumbnail"
+          [src]="playlist()?.thumbnail"
           alt="Playlist Thumbnail"
           class="w-full rounded-lg object-cover"
         />
         <div class="flex w-full items-center justify-between gap-2">
           <h3 class="text-lg sm:text-xl font-semibold text-zinc-100 truncate">
-            {{ playlist().title }}
+            {{ playlist()?.title }}
           </h3>
           <div
             [ngClass]="
@@ -78,7 +78,7 @@
             "
             class="px-2.5 py-0.5 items-center flex gap-1.5 rounded-full shrink-0"
           >
-            @if (playlist().protect) {
+            @if (playlist()?.protect) {
               <span class="pi pi-check-circle"></span>
               <span class="hidden sm:inline">Protegida</span>
             } @else {
@@ -89,14 +89,14 @@
         </div>
         <div class="flex gap-2 items-center">
           <span class="text-zinc-400 pi pi-objects-column"></span>
-          <span class="text-zinc-400 text-sm">{{ playlist().totalVideos }} Videos</span>
+          <span class="text-zinc-400 text-sm">{{ playlist()?.totalVideos }} Videos</span>
         </div>
         <div class="w-full flex justify-center items-center">
           <button
-            (click)="savePlaylist(playlist().id)"
+            (click)="savePlaylist(playlist()!.id)"
             class="cursor-pointer rounded-full bg-custom-purple px-6 py-2.5 text-sm sm:text-base text-white font-semibold transition-all duration-200 hover:bg-custom-purple/80 hover:scale-[1.02] active:scale-[0.98] "
           >
-            <span class="transition-all duration-200 group-hover:text-white group-hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)]">{{ playlist().protect ? 'Actualizar Playlist' : 'Guardar Playlist' }}</span>
+            <span class="transition-all duration-200 group-hover:text-white group-hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)]">{{ playlist()?.protect ? 'Actualizar Playlist' : 'Guardar Playlist' }}</span>
           </button>
         </div>
       </div>

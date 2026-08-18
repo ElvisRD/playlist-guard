@@ -27,7 +27,7 @@
         <div class="w-full sm:w-md">
           <img
             class="w-full rounded-xl h-full object-cover"
-            [src]="playlist().thumbnail"
+            [src]="playlist()!.thumbnail"
             alt="image-playlist"
           />
         </div>
@@ -40,14 +40,14 @@
             >
               <span>COLECCION DESTACADA</span>
               <span>|</span>
-              <span>{{ playlist().totalVideos }} VIDEOS</span>
+              <span>{{ playlist()!.totalVideos }} VIDEOS</span>
             </div>
             <h1 class="text-3xl mt-2 sm:text-4xl mx-4 sm:mx-0 font-bold text-white truncate">
-              {{ playlist().title }}
+              {{ playlist()!.title }}
             </h1>
             <p class="text-base sm:text-lg mt-4 mx-4 sm:mx-0 text-zinc-500">
               {{
-                playlist().description ||
+                playlist()!.description ||
                   'Sin descripción proporcionada. Edita para añadir detalles de la colección.'
               }}
             </p>

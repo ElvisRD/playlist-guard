@@ -1,17 +1,18 @@
 import { Injectable, signal } from '@angular/core';
+import { DialogType } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Dialog {
   visible = signal(false);
-  type = signal<string>('');
-  playlist = signal<any>(null);
+  type = signal<DialogType | ''>('');
+  playlist = signal<string | null>(null);
   private onSaveCallback: (() => void) | null = null;
 
-  open(type: string, playlist?: any, onSave?: () => void) {
+  open(type: DialogType, playlistId?: string, onSave?: () => void) {
     this.type.set(type);
-    this.playlist.set(playlist ?? null);
+    this.playlist.set(playlistId ?? null);
     this.onSaveCallback = onSave ?? null;
     this.visible.set(true);
   }

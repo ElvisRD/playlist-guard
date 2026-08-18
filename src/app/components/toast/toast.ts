@@ -2,6 +2,7 @@ import { Component, signal, effect, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgClass } from '@angular/common';
 import { Toast as ToastService } from '../../services/toast';
+import { ToastText, ToastType } from '../../models';
 
 @Component({
   selector: 'app-toast',
@@ -17,8 +18,8 @@ export class Toast implements OnInit {
   type = this.toastService.type;
   message = this.toastService.message;
 
-  private toastTexts: Record<string, any> = {};
-  toastConfig = signal<any>(null);
+  private toastTexts: Record<ToastType, ToastText> = {} as Record<ToastType, ToastText>;
+  toastConfig = signal<ToastText | null>(null);
 
   constructor() {
     effect(() => {
@@ -30,7 +31,7 @@ export class Toast implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get<Record<string, any>>('/jsons/toastText.json').subscribe({
+    this.http.get<Record<ToastType, ToastText>>('/jsons/toastText.json').subscribe({
       next: (data) => {
         this.toastTexts = data;
         const currentType = this.type();
