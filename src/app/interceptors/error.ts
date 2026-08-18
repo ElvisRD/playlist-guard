@@ -12,7 +12,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      if (req.url.includes('/auth-url') || req.url.includes('/jsons/')) {
+      if (req.url.includes('/auth-url') || req.url.includes('/jsons/') || req.url.includes('/profile')) {
         return throwError(() => error);
       }
 
