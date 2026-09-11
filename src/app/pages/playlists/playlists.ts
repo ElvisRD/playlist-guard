@@ -42,6 +42,7 @@ export class Playlists implements OnInit {
       },
       error: (error) => {
         console.error('Error al obtener las playlists:', error);
+        this.playlistsLoading.set(false);
       },
       complete: () => this.playlistsLoading.set(false),
     });

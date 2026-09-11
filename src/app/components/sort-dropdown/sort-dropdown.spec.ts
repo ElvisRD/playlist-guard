@@ -5,7 +5,7 @@ describe('SortDropdown', () => {
   let component: SortDropdown;
   let fixture: ComponentFixture<SortDropdown>;
 
-  const testOptions: Record<string, string> = {
+  const options: Record<string, string> = {
     fecha: 'Fecha',
     ascendente: 'Asc',
     descendente: 'Desc',
@@ -17,9 +17,9 @@ describe('SortDropdown', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(SortDropdown);
-    fixture.componentRef.setInput('options', testOptions);
-    fixture.componentRef.setInput('selected', 'fecha');
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('options', options);
+    fixture.componentRef.setInput('selected', 'fecha');
     await fixture.whenStable();
   });
 
@@ -31,19 +31,27 @@ describe('SortDropdown', () => {
     expect(component.optionKeys()).toEqual(['fecha', 'ascendente', 'descendente']);
   });
 
-  it('should toggle dropdown', () => {
-    expect(component.isOpen()).toBeFalsy();
-    component.toggleDropdown();
-    expect(component.isOpen()).toBeTruthy();
-    component.toggleDropdown();
-    expect(component.isOpen()).toBeFalsy();
+  it('should render the selected label', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Fecha');
   });
 
-  it('should emit selectedChange on select', () => {
+  it('should toggle the dropdown with the button', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = compiled.querySelector<HTMLButtonElement>('button');
+    expect(component.isOpen()).toBe(false);
+    button?.click();
+    expect(component.isOpen()).toBe(true);
+    button?.click();
+    expect(component.isOpen()).toBe(false);
+  });
+
+  it('should emit the selected value and close the dropdown', () => {
     let emitted: string | undefined;
     component.selectedChange.subscribe((v) => (emitted = v));
-    component.select('ascendente');
-    expect(emitted).toBe('ascendente');
-    expect(component.isOpen()).toBeFalsy();
+    component.select('descendente');
+    expect(emitted).toBe('descendente');
+    expect(component.isOpen()).toBe(false);
   });
 });

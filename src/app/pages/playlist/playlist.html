@@ -3,9 +3,9 @@
     <div class="flex items-center justify-center min-h-screen">
       <div class="text-center">
         <div
-          class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-yellow-500 motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          class="w-12 h-12 border-4 border-zinc-600 border-t-custom-purple rounded-full animate-spin mx-auto"
         ></div>
-        <p class="mt-4 text-gray-400">Cargando playlist...</p>
+        <p class="mt-4 text-gray-400">Cargando datos de la playlist...</p>
       </div>
     </div>
   }
@@ -284,7 +284,8 @@
               <div
                 class="flex flex-wrap h-auto sm:h-10 items-center justify-between gap-2 sm:gap-3 rounded-lg mt-4"
               >
-                <label
+                @if(diffStats().new || diffStats().removed){
+                  <label
                   class="flex items-center gap-2.5 cursor-pointer text-sm text-slate-300 hover:text-white transition-colors"
                 >
                   <input
@@ -295,6 +296,7 @@
                   />
                   <span>Seleccionar Todos</span>
                 </label>
+                }
 
                 @if (selectedCount() > 0) {
                   <div class="flex items-center gap-2 sm:gap-3 animate-fade-in">

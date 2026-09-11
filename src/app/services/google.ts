@@ -83,7 +83,7 @@ export class Google {
       const popup = window.open(
         url,
         'GoogleAuth',
-        `width=${w},height=${h},left=${left},top=${top},noopener,noreferrer`,
+        `width=${w},height=${h},left=${left},top=${top}`,
       );
 
       if (!popup) {
