@@ -1,8 +1,8 @@
 import { Injectable, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap, catchError, of, fromEvent, timeout } from 'rxjs';
-import { switchMap, filter } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, timer } from 'rxjs';
+import { catchError, filter, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { Profile, AuthUrlResponse } from '../models';
 
 @Injectable({
@@ -91,15 +91,12 @@ export class Google {
         return;
       }
 
-      const messageSub = fromEvent<MessageEvent>(window, 'message')
+      const pollSub = timer(0, 2000)
         .pipe(
-          filter(
-            (event) =>
-              event.data?.type === 'auth-success' &&
-              event.origin === window.location.origin,
-          ),
-          timeout({ first: 120_000 }),
-          switchMap(() => this.getProfile()),
+          switchMap(() => this.getProfile().pipe(catchError(() => of(null)))),
+          filter((profile): profile is Profile => !!profile),
+          take(1),
+          timeout(120_000),
         )
         .subscribe({
           next: (profile) => {
@@ -112,7 +109,7 @@ export class Google {
         });
 
       return () => {
-        messageSub.unsubscribe();
+        pollSub.unsubscribe();
       };
     });
   }
