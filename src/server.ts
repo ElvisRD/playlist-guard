@@ -18,12 +18,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'https://accounts.google.com/gsi/client'],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'https://*.googleusercontent.com', 'https://*.google.com', 'https://i.ytimg.com'],
         fontSrc: ["'self'"],
-        connectSrc: ["'self'"],
-        frameSrc: ["'none'"],
+        connectSrc: ["'self'", 'https://accounts.google.com/gsi/'],
+        frameSrc: ['https://accounts.google.com/gsi/'],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
         formAction: ["'self'"],
@@ -31,6 +31,7 @@ app.use(
       },
     },
     crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }),
 );

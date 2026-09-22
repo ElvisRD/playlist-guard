@@ -1,9 +1,34 @@
-import { Injectable, PLATFORM_ID, inject, signal, computed } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal, InjectionToken, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, of, timer } from 'rxjs';
-import { catchError, filter, switchMap, take, tap, timeout } from 'rxjs/operators';
-import { Profile, AuthUrlResponse } from '../models';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { Profile } from '../models';
+
+export const GOOGLE_CLIENT_ID = new InjectionToken<string>('GOOGLE_CLIENT_ID');
+
+const GIS_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+const GIS_SCOPES = 'openid email profile';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        oauth2: {
+          initCodeClient(config: {
+            client_id: string;
+            scope: string;
+            ux_mode: 'popup';
+            callback: (response: { code?: string; error?: string }) => void;
+            error_callback: (response: {
+              type: 'popup_failed_to_open' | 'popup_closed' | 'unknown';
+            }) => void;
+          }): { requestCode(): void };
+        };
+      };
+    };
+  }
+}
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +38,9 @@ export class Google {
   private profileSource = new BehaviorSubject<Profile | null>(null);
   profile$ = this.profileSource.asObservable();
   private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
+  private clientId = inject(GOOGLE_CLIENT_ID, { optional: true }) ?? '';
+  private gisScriptPromise: Promise<void> | undefined;
   loading = signal(true);
   profile = signal<Profile | null>(null);
 
@@ -22,12 +50,88 @@ export class Google {
     }
   }
 
-  authenticateUser(): Observable<AuthUrlResponse> {
-    return this.http.get<AuthUrlResponse>(`${this.apiUrl}auth-url`);
+  private loadGisScript(): Promise<void> {
+    if (isPlatformBrowser(this.platformId) && window.google?.accounts?.oauth2) {
+      return Promise.resolve();
+    }
+    if (this.gisScriptPromise) {
+      return this.gisScriptPromise;
+    }
+    this.gisScriptPromise = new Promise<void>((resolve, reject) => {
+      if (!isPlatformBrowser(this.platformId)) {
+        reject(new Error('Google Identity Services requires a browser'));
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = GIS_SCRIPT_SRC;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('No se pudo cargar Google Identity Services'));
+      document.head.appendChild(script);
+    });
+    return this.gisScriptPromise;
   }
 
   authenticateWithGoogle(): Observable<Profile> {
-    return this.authenticateUser().pipe(switchMap((res) => this.openAuthPopup(res.url)));
+    return new Observable<Profile>((observer) => {
+      if (!isPlatformBrowser(this.platformId)) {
+        observer.error(new Error('Google sign-in requires a browser'));
+        return;
+      }
+      if (!this.clientId) {
+        observer.error(new Error('GOOGLE_CLIENT_ID is not configured'));
+        return;
+      }
+
+      const sendCode = (code: string) => {
+        this.http
+          .post(`${this.apiUrl}code`, { code })
+          .pipe(
+            switchMap(() => this.http.get<Profile>(`${this.apiUrl}profile`)),
+            tap((profile) => {
+              this.profileSource.next(profile);
+              this.profile.set(profile);
+            }),
+          )
+          .subscribe({
+            next: (profile) => {
+              observer.next(profile);
+              observer.complete();
+            },
+            error: (err) => observer.error(err),
+          });
+      };
+
+      this.loadGisScript()
+        .then(() => {
+          const client = window.google!.accounts.oauth2.initCodeClient({
+            client_id: this.clientId,
+            scope: GIS_SCOPES,
+            ux_mode: 'popup',
+            callback: (response) => {
+              if (response.error) {
+                observer.error(new Error(`Google auth error: ${response.error}`));
+                return;
+              }
+              if (response.code) {
+                this.ngZone.run(() => sendCode(response.code!));
+              }
+            },
+            error_callback: (errorResponse) => {
+              const message =
+                errorResponse.type === 'popup_closed'
+                  ? 'Google sign-in popup was closed'
+                  : errorResponse.type === 'popup_failed_to_open'
+                    ? 'Google sign-in popup could not be opened'
+                    : 'Google sign-in failed';
+              observer.error(new Error(message));
+            },
+          });
+          client.requestCode();
+        })
+        .catch((err) => observer.error(err));
+    });
   }
 
   getProfile(): Observable<Profile> {
@@ -49,7 +153,9 @@ export class Google {
         }),
       )
       .subscribe({
-        complete: () => this.loading.set(false),
+        complete: () => {
+          this.loading.set(false);
+        },
       });
   }
 
@@ -66,51 +172,5 @@ export class Google {
         return of(err);
       }),
     );
-  }
-
-  private openAuthPopup(url: string): Observable<Profile> {
-    return new Observable<Profile>((observer) => {
-      if (!url.startsWith('https://accounts.google.com/')) {
-        observer.error(new Error('Invalid auth URL'));
-        return;
-      }
-
-      const w = 500;
-      const h = 600;
-      const left = (window.screen.width - w) / 2;
-      const top = (window.screen.height - h) / 2;
-
-      const popup = window.open(
-        url,
-        'GoogleAuth',
-        `width=${w},height=${h},left=${left},top=${top}`,
-      );
-
-      if (!popup) {
-        observer.error(new Error('Popup blocked by browser'));
-        return;
-      }
-
-      const pollSub = timer(0, 2000)
-        .pipe(
-          switchMap(() => this.getProfile().pipe(catchError(() => of(null)))),
-          filter((profile): profile is Profile => !!profile),
-          take(1),
-          timeout(120_000),
-        )
-        .subscribe({
-          next: (profile) => {
-            this.profileSource.next(profile);
-            this.profile.set(profile);
-            observer.next(profile);
-            observer.complete();
-          },
-          error: (err) => observer.error(err),
-        });
-
-      return () => {
-        pollSub.unsubscribe();
-      };
-    });
   }
 }

@@ -54,10 +54,6 @@ export interface PlaylistsResponse {
   playlists: PlaylistSummary[];
 }
 
-export interface AuthUrlResponse {
-  url: string;
-}
-
 export type DialogType = 'delete-playlist' | 'unauthorized' | 'not-access' | 'error' | 'logout';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'not-found';
