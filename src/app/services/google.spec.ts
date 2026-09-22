@@ -34,6 +34,7 @@ function stubGoogleOAuth() {
   return {
     getCallbacks: () => ({ callback, errorCallback }),
     initCodeClient,
+    requestCode,
   };
 }
 
@@ -62,6 +63,7 @@ describe('Google service', () => {
   afterEach(() => {
     httpMock?.verify();
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   describe('profile management', () => {
@@ -126,15 +128,21 @@ describe('Google service', () => {
 
     it('should authenticate with the code returned by the Google popup', async () => {
       flushInitialProfile();
-      const { getCallbacks, initCodeClient } = stubGoogleOAuth();
+      const { getCallbacks, initCodeClient, requestCode } = stubGoogleOAuth();
 
       let result: Profile | undefined;
       service.authenticateWithGoogle().subscribe((res) => (result = res));
       await Promise.resolve();
 
       expect(initCodeClient).toHaveBeenCalledWith(
-        expect.objectContaining({ client_id: clientId, ux_mode: 'popup' }),
+        expect.objectContaining({
+          client_id: clientId,
+          scope: 'openid email profile',
+          ux_mode: 'popup',
+        }),
       );
+      expect(requestCode).toHaveBeenCalledTimes(1);
+
       getCallbacks().callback({ code: 'authorization-code' });
 
       httpMock.expectOne('/google-auth/code').flush({});
@@ -142,6 +150,39 @@ describe('Google service', () => {
 
       expect(result).toEqual(profile);
       expect(service.profile()).toEqual(profile);
+    });
+
+    it('should propagate the error when the code exchange fails', async () => {
+      flushInitialProfile();
+      const { getCallbacks } = stubGoogleOAuth();
+
+      let error: { status?: number } | undefined;
+      service.authenticateWithGoogle().subscribe({ error: (err) => (error = err) });
+      await Promise.resolve();
+
+      getCallbacks().callback({ code: 'invalid-code' });
+      httpMock
+        .expectOne('/google-auth/code')
+        .flush(null, { status: 500, statusText: 'Server Error' });
+
+      expect(error?.status).toBe(500);
+    });
+
+    it('should propagate the error when loading the profile fails after the code exchange', async () => {
+      flushInitialProfile();
+      const { getCallbacks } = stubGoogleOAuth();
+
+      let error: { status?: number } | undefined;
+      service.authenticateWithGoogle().subscribe({ error: (err) => (error = err) });
+      await Promise.resolve();
+
+      getCallbacks().callback({ code: 'authorization-code' });
+      httpMock.expectOne('/google-auth/code').flush({});
+      httpMock
+        .expectOne('/google-auth/profile')
+        .flush(null, { status: 401, statusText: 'Unauthorized' });
+
+      expect(error?.status).toBe(401);
     });
 
     it('should propagate an error when Google returns an error code', async () => {
@@ -168,6 +209,59 @@ describe('Google service', () => {
       getCallbacks().errorCallback({ type: 'popup_closed' });
 
       expect(error?.message).toBe('Google sign-in popup was closed');
+    });
+  });
+
+  describe('GIS script loading', () => {
+    beforeEach(() => configure());
+
+    it('should inject the GIS script when google is not present yet', async () => {
+      flushInitialProfile();
+      const appendSpy = vi.spyOn(document.head, 'appendChild');
+
+      service.authenticateWithGoogle().subscribe();
+      await Promise.resolve();
+
+      const injected = appendSpy.mock.calls[0]?.[0] as HTMLScriptElement | undefined;
+      expect(injected?.src).toBe('https://accounts.google.com/gsi/client');
+      expect(injected?.async).toBe(true);
+      expect(injected?.defer).toBe(true);
+    });
+
+    it('should propagate an error when the GIS script fails to load', async () => {
+      flushInitialProfile();
+      let onload: () => void = () => undefined;
+      let onerror: (event: Event) => void = () => undefined;
+      const fakeScript = {
+        setAttribute: vi.fn(),
+        src: '',
+        async: false,
+        defer: false,
+        set onload(fn: (() => void) | null) {
+          onload = fn ?? (() => undefined);
+        },
+        get onload() {
+          return onload;
+        },
+        set onerror(fn: ((event: Event) => void) | null) {
+          onerror = fn ?? (() => undefined);
+        },
+        get onerror() {
+          return onerror;
+        },
+      } as unknown as HTMLElement;
+
+      vi.spyOn(document, 'createElement').mockImplementation(() => fakeScript);
+      vi.spyOn(document.head, 'appendChild').mockImplementation(() => fakeScript);
+
+      let error: Error | undefined;
+      service.authenticateWithGoogle().subscribe({ error: (err) => (error = err) });
+      await Promise.resolve();
+
+      onerror?.(new Event('error'));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(error?.message).toBe('No se pudo cargar Google Identity Services');
     });
   });
 
