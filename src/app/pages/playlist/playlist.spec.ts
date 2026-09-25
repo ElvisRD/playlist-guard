@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { signal } from '@angular/core';
+import { isSignal, signal } from '@angular/core';
 import { Playlist } from './playlist';
 import type { Playlist as PlaylistModel, Profile, Video, VideoDiff } from '../../models';
 import { Google } from '../../services/google';
@@ -116,8 +116,44 @@ describe('Playlist', () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     component.getPlaylistData('PL1');
     expect(component.loading()).toBe(false);
-    expect(component.error).toBe('Error al cargar la playlist');
+    expect(component.error()).toBe('Error al cargar la playlist');
     expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it('should expose the error as a signal, required by the zoneless change detection', () => {
+    // A plain field assigned from an HTTP callback never marks the view dirty,
+    // so the template would keep showing the spinner after a failed load.
+    expect(isSignal(component.error)).toBe(true);
+  });
+
+  it('should render the error message after a failed load', async () => {
+    youtubeMock.getPlaylistData = vi.fn(() => throwError(() => new Error('Error'))) as never;
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    component.getPlaylistData('PL1');
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Error al cargar la playlist');
+    expect(compiled.textContent).not.toContain('Cargando datos de la playlist');
+    errorSpy.mockRestore();
+  });
+
+  it('should clear a previous error when the playlist is requested again', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    youtubeMock.getPlaylistData = vi.fn(() => throwError(() => new Error('Error'))) as never;
+    component.getPlaylistData('PL1');
+    expect(component.error()).not.toBeNull();
+
+    youtubeMock.getPlaylistData = vi.fn(() => of(basePlaylist)) as never;
+    component.getPlaylistData('PL1');
+    await fixture.whenStable();
+
+    expect(component.error()).toBeNull();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).not.toContain('Error al cargar la playlist');
     errorSpy.mockRestore();
   });
 

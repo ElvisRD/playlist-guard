@@ -41,7 +41,7 @@ export class Playlist implements OnInit {
   selectedIds = signal<Set<string>>(new Set());
   selectedCount = computed(() => this.selectedIds().size);
   differences = signal<VideoDiff[] | null>(null);
-  error: string | null = null;
+  error = signal<string | null>(null);
   page = signal(1);
   pageSize = 6;
 
@@ -79,6 +79,7 @@ export class Playlist implements OnInit {
 
   getPlaylistData(playlistId: string) {
     this.loading.set(true);
+    this.error.set(null);
     this.youtube.getPlaylistData(playlistId).subscribe({
       next: (res) => {
         this.playlist.set(res);
@@ -88,7 +89,7 @@ export class Playlist implements OnInit {
       error: (error) => {
         this.loading.set(false);
         console.error(error);
-        this.error = 'Error al cargar la playlist';
+        this.error.set('Error al cargar la playlist');
       },
     });
   }

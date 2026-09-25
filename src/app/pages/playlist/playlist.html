@@ -10,11 +10,11 @@
     </div>
   }
 
-  @if (error) {
+  @if (error()) {
     <div class="flex items-center justify-center min-h-screen">
       <div class="text-center px-4">
         <div class="text-red-500 text-6xl mb-4">!</div>
-        <p class="text-xl text-gray-300">{{ error }}</p>
+        <p class="text-xl text-gray-300">{{ error() }}</p>
       </div>
     </div>
   }

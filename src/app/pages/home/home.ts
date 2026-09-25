@@ -23,7 +23,6 @@ export class Home {
   protected profile = this.googleService.profile;
   playlist = signal<Playlist | null>(null);
   playlistUrl = '';
-  loaderPlaylist = false;
 
   benefits = [
     {
