@@ -32,10 +32,10 @@ export class Home {
         'Descubre al instante el nombre de los videos privados o borrados de tu lista de reproducción.',
     },
     {
-      icon: 'pi pi-bell',
-      title: 'Alertas de Cambios',
+      icon: 'pi pi-replay',
+      title: 'Restauración con un Click',
       description:
-        'Recibe notificaciones automáticas cuando YouTube modifique o elimine contenido de tus playlists.',
+        'Compará tu copia guardada con la playlist original, fijate qué videos te sacaron y volvé a agregarlos cuando quieras.',
     },
     {
       icon: 'pi pi-save',

@@ -66,8 +66,15 @@ describe('Home', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Historial e Identificación');
-    expect(compiled.textContent).toContain('Alertas de Cambios');
+    expect(compiled.textContent).toContain('Restauración con un Click');
     expect(compiled.textContent).toContain('Respaldo Seguro');
+  });
+
+  it('should not advertise automatic change alerts, which the app does not implement', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).not.toContain('Alertas de Cambios');
+    expect(compiled.textContent).not.toContain('notificaciones automáticas');
   });
 
   it('should show a not-found toast when the url has no list id', () => {
