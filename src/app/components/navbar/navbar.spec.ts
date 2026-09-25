@@ -1,12 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Navbar } from './navbar';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
 import { Toast } from '../../services/toast';
 import { Profile } from '../../models';
+
+@Component({ template: '' })
+class BlankPage {}
 
 describe('Navbar', () => {
   let component: Navbar;
@@ -29,7 +32,10 @@ describe('Navbar', () => {
     await TestBed.configureTestingModule({
       imports: [Navbar],
       providers: [
-        provideRouter([]),
+        provideRouter([
+          { path: '', component: BlankPage },
+          { path: 'playlists', component: BlankPage },
+        ]),
         { provide: Google, useValue: googleMock },
         { provide: Dialog, useValue: dialogMock },
         { provide: Toast, useValue: toastMock },
@@ -117,5 +123,73 @@ describe('Navbar', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Cerrar Sesión');
+  });
+
+  describe('active link', () => {
+    const activeClass = 'text-custom-purple';
+
+    const linkTo = (label: string) =>
+      Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('a')).find(
+        (a) => a.textContent?.trim() === label,
+      )!;
+
+    const login = () => {
+      googleMock.profile.set({
+        email: 'a@example.com',
+        name: 'User',
+        picture: 'https://example.com/a.png',
+      });
+      fixture.detectChanges();
+    };
+
+    it('should highlight "Inicio" on the home route', async () => {
+      const router = TestBed.inject(Router);
+      login();
+
+      await router.navigate(['/']);
+      fixture.detectChanges();
+
+      expect(linkTo('Inicio').classList).toContain(activeClass);
+      expect(linkTo('Mis playlists').classList).not.toContain(activeClass);
+      expect(linkTo('Inicio').getAttribute('aria-current')).toBe('page');
+    });
+
+    it('should move the highlight to "Mis playlists" on the playlists route', async () => {
+      const router = TestBed.inject(Router);
+      login();
+
+      await router.navigate(['/playlists']);
+      fixture.detectChanges();
+
+      expect(linkTo('Mis playlists').classList).toContain(activeClass);
+      expect(linkTo('Inicio').classList).not.toContain(activeClass);
+    });
+
+    it('should keep "Inicio" active while navigating back from playlists', async () => {
+      const router = TestBed.inject(Router);
+      login();
+
+      await router.navigate(['/playlists']);
+      await router.navigate(['/']);
+      fixture.detectChanges();
+
+      expect(linkTo('Inicio').classList).toContain(activeClass);
+      expect(linkTo('Mis playlists').classList).not.toContain(activeClass);
+    });
+
+    it('should animate the underline indicator through the active class', async () => {
+      const router = TestBed.inject(Router);
+      login();
+
+      const link = linkTo('Inicio');
+      expect(link.className).toContain('after:scale-x-0');
+      expect(link.className).toContain('after:transition-all');
+
+      await router.navigate(['/']);
+      fixture.detectChanges();
+
+      expect(link.className).toContain('after:scale-x-100');
+      expect(link.className).toContain('after:opacity-100');
+    });
   });
 });

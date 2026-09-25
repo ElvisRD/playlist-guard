@@ -2,13 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
 import { Toast } from '../../services/toast';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
 })
 export class Navbar {
   private googleService = inject(Google);
