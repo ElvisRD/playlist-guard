@@ -63,4 +63,9 @@ describe('Toast service', () => {
     vi.advanceTimersByTime(2000);
     expect(service.visible()).toBe(false);
   });
+
+  it('should be safe to close without an active toast', () => {
+    expect(() => service.close()).not.toThrow();
+    expect(service.visible()).toBe(false);
+  });
 });

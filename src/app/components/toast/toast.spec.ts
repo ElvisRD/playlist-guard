@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Toast } from './toast';
 import { Toast as ToastService } from '../../services/toast';
 import { signal } from '@angular/core';
@@ -21,7 +21,7 @@ describe('Toast Component', () => {
     await TestBed.configureTestingModule({
       imports: [Toast],
       providers: [
-        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: ToastService, useValue: toastServiceMock },
       ],
     }).compileComponents();
@@ -83,5 +83,35 @@ describe('Toast Component', () => {
   it('should call service close on close', () => {
     component.onClose();
     expect(toastServiceMock.close).toHaveBeenCalled();
+  });
+
+  it('should set the toast config from the loaded texts for the current type', () => {
+    toastServiceMock.type.set('success');
+    fixture.detectChanges();
+
+    const httpMock = TestBed.inject(HttpTestingController);
+    const req = httpMock.expectOne('/jsons/toastText.json');
+    req.flush({
+      success: { text: 'Acción exitosa' },
+      error: { text: 'Error al guardar' },
+    });
+
+    expect(component.toastConfig()).toEqual({ text: 'Acción exitosa' });
+    httpMock.verify();
+  });
+
+  it('should fall back to the loaded text when there is no direct message', () => {
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('');
+    fixture.detectChanges();
+
+    const httpMock = TestBed.inject(HttpTestingController);
+    const req = httpMock.expectOne('/jsons/toastText.json');
+    req.flush({
+      success: { text: 'Acción exitosa' },
+    });
+
+    expect(component.displayMessage()).toBe('Acción exitosa');
+    httpMock.verify();
   });
 });
