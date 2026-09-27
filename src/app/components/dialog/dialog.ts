@@ -42,11 +42,10 @@ export class Dialog {
     this.onClose();
     this.googleService.authenticateWithGoogle().subscribe({
       next: () => {
-        this.googleService.loadProfile();
         this.toast.show('success', 'Sesión iniciada correctamente.');
       },
-      error: () => {
-        this.toast.show('error', 'No se pudo iniciar sesión.');
+      error: (err) => {
+        this.toast.show('error', err?.message || 'No se pudo iniciar sesión.');
       },
     });
   }

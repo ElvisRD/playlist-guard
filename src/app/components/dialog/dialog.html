@@ -16,6 +16,9 @@
             @case ('unauthorized') {
               Iniciar sesión
             }
+            @case ('not-access') {
+              Sin acceso
+            }
           }
         </h2>
         <button
@@ -61,6 +64,20 @@
             >
               <img src="./google-icon.svg" alt="google-icon" class="w-5 h-5 mr-2" />
               <span>Iniciar sesión</span>
+            </button>
+          </div>
+        }
+
+        @case ('not-access') {
+          <div class="w-full flex flex-col items-center justify-center">
+            <p class="text-zinc-400 mb-4">
+              No tienes acceso a esta playlist. Es posible que sea privada o que el enlace no sea válido.
+            </p>
+            <button
+              class="py-2 px-4 rounded-lg border border-zinc-600 cursor-pointer bg-zinc-800 text-base text-gray-100 transition flex items-center justify-center"
+              (click)="onClose()"
+            >
+              <span>Entendido</span>
             </button>
           </div>
         }

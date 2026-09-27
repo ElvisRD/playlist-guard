@@ -110,18 +110,19 @@ describe('Dialog Component', () => {
     expect(googleMock.authenticateWithGoogle).toHaveBeenCalled();
   });
 
-  it('should show success toast after authentication', () => {
+  it('should show success toast and not refetch the profile after authentication', () => {
     component.authenticateWithGoogle();
 
     expect(toastMock.show).toHaveBeenCalledWith('success', 'Sesión iniciada correctamente.');
+    expect(googleMock.loadProfile).not.toHaveBeenCalled();
   });
 
   it('should show error toast on authentication failure', () => {
-    googleMock.authenticateWithGoogle = vi.fn(() => throwError(() => new Error('Failed'))) as never;
+    googleMock.authenticateWithGoogle = vi.fn(() => throwError(() => new Error('Auth fallido'))) as never;
 
     component.authenticateWithGoogle();
 
-    expect(toastMock.show).toHaveBeenCalledWith('error', 'No se pudo iniciar sesión.');
+    expect(toastMock.show).toHaveBeenCalledWith('error', 'Auth fallido');
   });
 
   it('should call service close on close', () => {
