@@ -41,8 +41,8 @@ describe('Dialog service', () => {
   });
 
   it('should reset type on next open', () => {
-    service.open('logout');
-    expect(service.type()).toBe('logout');
+    service.open('not-access');
+    expect(service.type()).toBe('not-access');
     service.open('unauthorized');
     expect(service.type()).toBe('unauthorized');
   });
@@ -66,7 +66,7 @@ describe('Dialog service', () => {
     const onSave = vi.fn();
     service.open('delete-playlist', 'PL123', onSave);
     service.close();
-    service.open('logout');
+    service.open('not-access');
     service.save();
     expect(onSave).not.toHaveBeenCalled();
   });

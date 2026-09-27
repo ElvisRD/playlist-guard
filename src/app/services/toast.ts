@@ -7,7 +7,6 @@ import { ToastType } from '../models';
 export class Toast {
   visible = signal(false);
   type = signal<ToastType | ''>('');
-  title = signal<string>('');
   message = signal<string>('');
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
