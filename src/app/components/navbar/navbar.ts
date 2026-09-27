@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Google } from '../../services/google';
 import { Dialog } from '../../services/dialog';
 import { Toast } from '../../services/toast';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +13,7 @@ export class Navbar {
   private googleService = inject(Google);
   private dialogService = inject(Dialog);
   private toastService = inject(Toast);
+  private router = inject(Router)
   protected profile = this.googleService.profile;
   protected loading = this.googleService.loading;
   hasNotification = signal(false);
@@ -29,10 +30,12 @@ export class Navbar {
   loginWithGoogle() {
     this.googleService.authenticateWithGoogle().subscribe({
       next: () => {
-        this.googleService.loadProfile();
         this.toastService.show('success', 'Sesión iniciada correctamente.');
       },
-      error: (err) => console.error(err.message),
+      error: (err) => {
+        console.error(err.message);
+        this.toastService.show('error', err?.message || 'No se pudo iniciar sesión.');
+      },
     });
   }
 
@@ -40,8 +43,12 @@ export class Navbar {
     this.googleService.logout().subscribe({
       next: () => {
         this.toastService.show('success', 'Sesión cerrada correctamente.');
+        this.router.navigate(['']);
       },
-      error: (err) => console.error(err.message),
+      error: (err) => {
+        console.error(err.message);
+        this.toastService.show('error', 'No se pudo cerrar sesión.');
+      },
     });
   }
 

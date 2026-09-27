@@ -116,7 +116,9 @@ export class Google {
               }
               if (response.code) {
                 this.ngZone.run(() => sendCode(response.code!));
+                return;
               }
+              observer.error(new Error('Google no devolvió un código de autorización'));
             },
             error_callback: (errorResponse) => {
               const message =
