@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Google } from '../services/google';
-import { map, take } from 'rxjs';
+import { map, take, skip } from 'rxjs';
 
 export const authGuard: CanActivateFn = () => {
   const google = inject(Google);
@@ -9,6 +9,7 @@ export const authGuard: CanActivateFn = () => {
 
   if (google.loading()) {
     return google.profile$.pipe(
+      skip(1),
       take(1),
       map((profile) => {
         if (profile) return true;

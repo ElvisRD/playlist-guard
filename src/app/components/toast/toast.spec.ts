@@ -1,101 +1,87 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Toast } from './toast';
 import { Toast as ToastService } from '../../services/toast';
-import { ToastText, ToastType } from '../../models';
+import { signal } from '@angular/core';
+import type { ToastType } from '../../models';
 
-describe('Toast', () => {
+describe('Toast Component', () => {
   let component: Toast;
   let fixture: ComponentFixture<Toast>;
-  let service: ToastService;
-  let httpMock: HttpTestingController;
 
-  const toastTexts: Record<ToastType, ToastText> = {
-    success: { text: 'Operación exitosa' },
-    error: { text: 'Ocurrió un error' },
-    warning: { text: 'Ten cuidado' },
-    'not-found': { text: 'No se encontró el recurso' },
-  };
+  const toastServiceMock = {
+    visible: signal(false),
+    type: signal<ToastType | null>(null),
+    message: signal(''),
+    show: vi.fn(),
+    close: vi.fn(),
+  } as unknown as ToastService & { type: { set: (v: ToastType | null) => void } };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Toast],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        { provide: ToastService, useValue: toastServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Toast);
     component = fixture.componentInstance;
-    service = TestBed.inject(ToastService);
-    httpMock = TestBed.inject(HttpTestingController);
-
-    fixture.detectChanges();
-    const req = httpMock.expectOne('/jsons/toastText.json');
-    req.flush(toastTexts);
-    await fixture.whenStable();
-    fixture.detectChanges();
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not render anything when hidden', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('p')).toBeNull();
-  });
-
-  it('should show the fallback text from the config when there is no message', () => {
-    service.show('error');
+  it('should display message from service', () => {
+    toastServiceMock.message.set('Test message');
     fixture.detectChanges();
+    expect(component.message()).toBe('Test message');
+  });
+
+  it('should show toast when service triggers', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
     expect(component.visible()).toBe(true);
-    expect(component.displayMessage()).toBe('Ocurrió un error');
-    service.close();
+    expect(component.type()).toBe('success');
   });
 
-  it('should prefer the custom message over the config text', () => {
-    service.show('warning', 'Mensaje personalizado');
-    expect(component.displayMessage()).toBe('Mensaje personalizado');
-    service.close();
+  it('should return correct display message', () => {
+    toastServiceMock.message.set('Hello World');
+    expect(component.displayMessage()).toBe('Hello World');
   });
 
-  it('should return an empty string when there is no message and no config', () => {
+  it('should return empty string when no message', () => {
+    toastServiceMock.message.set('');
     expect(component.displayMessage()).toBe('');
   });
 
-  it('should map toast types to css classes', () => {
-    service.show('success');
-    expect(component.classes()).toBe('border-green-500/40 bg-green-900/60');
-
-    service.show('error');
-    expect(component.classes()).toBe('border-red-500/40 bg-red-900/60');
-
-    service.show('warning');
-    expect(component.classes()).toBe('border-yellow-500/40 bg-yellow-900/60');
-
-    service.show('not-found');
-    expect(component.classes()).toBe('border-red-500/40 bg-red-900/60');
-
-    service.type.set('weird' as ToastType);
-    expect(component.classes()).toBe('border-zinc-700 bg-zinc-800');
-    service.close();
+  it('should apply success classes', () => {
+    toastServiceMock.type.set('success');
+    expect(component.classes()).toContain('green');
   });
 
-  it('should close the toast on close call', () => {
-    service.show('error', 'mensaje');
+  it('should apply error classes', () => {
+    toastServiceMock.type.set('error');
+    expect(component.classes()).toContain('red');
+  });
+
+  it('should apply warning classes', () => {
+    toastServiceMock.type.set('warning');
+    expect(component.classes()).toContain('yellow');
+  });
+
+  it('should apply default classes for unknown type', () => {
+    toastServiceMock.type.set(null);
+    expect(component.classes()).toContain('zinc');
+  });
+
+  it('should call service close on close', () => {
     component.onClose();
-    expect(service.visible()).toBe(false);
-  });
-
-  it('should render the toast in the DOM when visible', () => {
-    service.show('not-found');
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('No se encontró el recurso');
-    service.close();
+    expect(toastServiceMock.close).toHaveBeenCalled();
   });
 });

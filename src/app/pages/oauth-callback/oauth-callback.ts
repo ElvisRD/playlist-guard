@@ -8,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OauthCallback implements OnInit {
   ngOnInit() {
-    if (window.opener) {
-      window.opener.postMessage({ type: 'auth-success' }, window.location.origin);
-    }
+    const bc = new BroadcastChannel('auth');
+    bc.postMessage({ type: 'auth-success' });
+    bc.close();
     window.close();
   }
 }
