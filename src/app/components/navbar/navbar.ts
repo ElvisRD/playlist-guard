@@ -13,7 +13,7 @@ export class Navbar {
   private googleService = inject(Google);
   private dialogService = inject(Dialog);
   private toastService = inject(Toast);
-  private router = inject(Router)
+  private router = inject(Router);
   protected profile = this.googleService.profile;
   protected loading = this.googleService.loading;
   hasNotification = signal(false);
