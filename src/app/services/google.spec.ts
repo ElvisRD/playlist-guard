@@ -210,6 +210,45 @@ describe('Google service', () => {
 
       expect(error?.message).toBe('Google sign-in popup was closed');
     });
+
+    it('should propagate an error when the popup fails to open', async () => {
+      flushInitialProfile();
+      const { getCallbacks } = stubGoogleOAuth();
+
+      let error: Error | undefined;
+      service.authenticateWithGoogle().subscribe({ error: (err) => (error = err) });
+      await Promise.resolve();
+
+      getCallbacks().errorCallback({ type: 'popup_failed_to_open' });
+
+      expect(error?.message).toBe('Google sign-in popup could not be opened');
+    });
+
+    it('should propagate an error for unknown GIS errors', async () => {
+      flushInitialProfile();
+      const { getCallbacks } = stubGoogleOAuth();
+
+      let error: Error | undefined;
+      service.authenticateWithGoogle().subscribe({ error: (err) => (error = err) });
+      await Promise.resolve();
+
+      getCallbacks().errorCallback({ type: 'unknown' });
+
+      expect(error?.message).toBe('Google sign-in failed');
+    });
+
+    it('should propagate an error when the callback has neither code nor error', async () => {
+      flushInitialProfile();
+      const { getCallbacks } = stubGoogleOAuth();
+
+      let error: Error | undefined;
+      service.authenticateWithGoogle().subscribe({ error: (err) => (error = err) });
+      await Promise.resolve();
+
+      getCallbacks().callback({});
+
+      expect(error?.message).toBe('Google no devolvió un código de autorización');
+    });
   });
 
   describe('GIS script loading', () => {
