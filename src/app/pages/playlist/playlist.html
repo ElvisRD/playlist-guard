@@ -284,18 +284,16 @@
               <div
                 class="flex flex-wrap h-auto sm:h-10 items-center justify-between gap-2 sm:gap-3 rounded-lg mt-4"
               >
-                @if(diffStats().new || diffStats().removed){
-                  <label
-                  class="flex items-center gap-2.5 cursor-pointer text-sm text-slate-300 hover:text-white transition-colors"
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="isAllSelected()"
-                    (change)="toggleSelectAll()"
-                    class="checkbox-rounded"
-                  />
-                  <span>Seleccionar Todos</span>
-                </label>
+                @if ((activeTab() === 'new' && diffStats().new) || (activeTab() === 'removed' && diffStats().removed || activeTab() === 'all')) {
+                  <label class="flex items-center gap-2.5 cursor-pointer text-sm text-slate-300 hover:text-white transition-colors">
+                    <input
+                      type="checkbox"
+                      [checked]="isAllSelected()"
+                      (change)="toggleSelectAll()"
+                      class="checkbox-rounded"
+                    />
+                    <span>Seleccionar todos</span>
+                  </label>
                 }
 
                 @if (selectedCount() > 0) {
