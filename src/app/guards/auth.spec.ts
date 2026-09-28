@@ -88,4 +88,58 @@ describe('authGuard', () => {
     // Simulate profile loading with null
     profileSubject.next(null);
   });
+
+  it('should return true when profile is available', () => {
+    setup({ loading: false, profile });
+
+    let result: unknown;
+    TestBed.runInInjectionContext(() => {
+      result = authGuard({} as never, {} as never);
+    });
+
+    expect(result).toBe(true);
+  });
+
+  it('should return UrlTree when profile is null', () => {
+    const { router } = setup({ loading: false, profile: null });
+    const createUrlTreeSpy = vi.spyOn(router, 'createUrlTree').mockReturnValue({} as never);
+
+    let result: unknown;
+    TestBed.runInInjectionContext(() => {
+      result = authGuard({} as never, {} as never);
+    });
+
+    expect(result).toBeDefined();
+    expect(result).not.toBe(true);
+  });
+
+  it('should handle loading state correctly', async () => {
+    const { profileSubject } = setup({ loading: true, profile: null });
+
+    let result: unknown;
+    TestBed.runInInjectionContext(() => {
+      result = authGuard({} as never, {} as never);
+    });
+
+    expect(result).toBeDefined();
+    expect(typeof result).not.toBe('boolean');
+
+    profileSubject.next(profile);
+  });
+
+  it('should redirect when profile becomes null after loading', () => {
+    const { router, profileSubject } = setup({ loading: true, profile: null });
+    const createUrlTreeSpy = vi.spyOn(router, 'createUrlTree').mockReturnValue({} as never);
+
+    let result: unknown;
+    TestBed.runInInjectionContext(() => {
+      result = authGuard({} as never, {} as never);
+    });
+
+    expect(result).toBeDefined();
+
+    profileSubject.next(null);
+
+    expect(createUrlTreeSpy).toHaveBeenCalledWith(['']);
+  });
 });

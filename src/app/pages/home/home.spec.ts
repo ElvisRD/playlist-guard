@@ -138,4 +138,150 @@ describe('Home', () => {
     expect(errorSpy).toHaveBeenCalled();
     errorSpy.mockRestore();
   });
+
+  it('should show playlist card when playlist signal has value', () => {
+    component.playlist.set(playlist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Mi Playlist');
+    expect(compiled.textContent).toContain('10 Videos');
+  });
+
+  it('should show "Guardar Playlist" button when playlist is not protected', () => {
+    component.playlist.set({ ...playlist, protect: false });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Guardar Playlist');
+    expect(compiled.textContent).not.toContain('Actualizar Playlist');
+  });
+
+  it('should show "Actualizar Playlist" button when playlist is protected', () => {
+    component.playlist.set({ ...playlist, protect: true });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Actualizar Playlist');
+    expect(compiled.textContent).not.toContain('Guardar Playlist');
+  });
+
+  it('should show benefits section when no playlist is searched', () => {
+    component.playlist.set(null);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Historial e Identificación');
+    expect(compiled.textContent).toContain('Restauración con un Click');
+    expect(compiled.textContent).toContain('Respaldo Seguro');
+  });
+
+  it('should update playlistUrl on input change', () => {
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    input.value = 'https://www.youtube.com/playlist?list=PL456';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(component.playlistUrl).toBe('https://www.youtube.com/playlist?list=PL456');
+  });
+
+  it('should call searchPlaylist on button click', () => {
+    const accessResponse: AccessCheckResponse = { hasAccess: true, playlist };
+    youtubeMock.verifyAccessPlaylist = vi.fn(() => of(accessResponse)) as never;
+    component.playlistUrl = 'https://www.youtube.com/playlist?list=PL123';
+
+    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    button.click();
+    fixture.detectChanges();
+
+    expect(youtubeMock.verifyAccessPlaylist).toHaveBeenCalledWith('PL123');
+  });
+
+  it('should show "Protegida" badge when playlist is protected', () => {
+    component.playlist.set({ ...playlist, protect: true });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Protegida');
+  });
+
+  it('should show "Vulnerable" badge when playlist is not protected', () => {
+    component.playlist.set({ ...playlist, protect: false });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Vulnerable');
+  });
+
+  it('should show playlist thumbnail', () => {
+    component.playlist.set(playlist);
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="Playlist Thumbnail"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+    expect(img.src).toContain('thumb');
+  });
+
+  it('should show playlist title', () => {
+    component.playlist.set(playlist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Mi Playlist');
+  });
+
+  it('should show total videos count', () => {
+    component.playlist.set(playlist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('10 Videos');
+  });
+
+  it('should call savePlaylist on save button click', () => {
+    youtubeMock.savePlaylist = vi.fn(() => of({})) as never;
+    component.playlist.set(playlist);
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const saveButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Guardar Playlist'),
+    ) as HTMLButtonElement;
+    saveButton.click();
+    fixture.detectChanges();
+
+    expect(youtubeMock.savePlaylist).toHaveBeenCalledWith('PL123');
+  });
+
+  it('should show search input with placeholder', () => {
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(input).toBeTruthy();
+    expect(input.placeholder).toContain('Paste YouTube playlist link here');
+  });
+
+  it('should show "VERIFICACIÓN INTELIGENTE" badge', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('VERIFICACIÓN INTELIGENTE');
+  });
+
+  it('should show "YouTube PlaylistGuard" title', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('YouTube PlaylistGuard');
+  });
+
+  it('should show search instruction text', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Introduce la URL de la playlist para buscar sus datos.');
+  });
+
+  it('should show feature badges', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Detección al instante');
+    expect(compiled.textContent).toContain('Protección de datos');
+    expect(compiled.textContent).toContain('Acceso gratuito');
+  });
 });

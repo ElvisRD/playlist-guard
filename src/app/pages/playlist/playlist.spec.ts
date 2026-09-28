@@ -385,4 +385,619 @@ describe('Playlist', () => {
     );
     openSpy.mockRestore();
   });
+
+  it('should show loading spinner when loading is true', () => {
+    component.playlist.set(null);
+    component.loading.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Cargando datos de la playlist');
+  });
+
+  it('should show error message when error signal has value', () => {
+    component.playlist.set(null);
+    component.loading.set(false);
+    component.error.set('Error de prueba');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Error de prueba');
+  });
+
+  it('should show pagination when totalPages > 1', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Paginación de videos"]')).toBeTruthy();
+  });
+
+  it('should hide pagination when totalPages <= 1', () => {
+    component.playlist.set(basePlaylist);
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Paginación de videos"]')).toBeFalsy();
+  });
+
+  it('should disable prev button on first page', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const prevButton = nav.querySelector('button') as HTMLButtonElement;
+    expect(prevButton.disabled).toBe(true);
+  });
+
+  it('should disable next button on last page', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.page.set(2);
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const buttons = nav.querySelectorAll('button');
+    const nextButton = buttons[buttons.length - 1] as HTMLButtonElement;
+    expect(nextButton.disabled).toBe(true);
+  });
+
+  it('should navigate to specific page on page number click', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const pageButtons = nav.querySelectorAll('button');
+    const page2Button = Array.from(pageButtons).find(
+      (btn) => (btn as HTMLButtonElement).textContent?.trim() === '2',
+    ) as HTMLButtonElement;
+    page2Button?.click();
+    fixture.detectChanges();
+
+    expect(component.page()).toBe(2);
+  });
+
+  it('should show pagination when totalPages > 1', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Paginación de videos"]')).toBeTruthy();
+  });
+
+  it('should hide pagination when totalPages <= 1', () => {
+    component.playlist.set(basePlaylist);
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Paginación de videos"]')).toBeFalsy();
+  });
+
+  it('should disable prev button on first page', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const prevButton = nav.querySelector('button') as HTMLButtonElement;
+    expect(prevButton.disabled).toBe(true);
+  });
+
+  it('should disable next button on last page', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.page.set(2);
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const buttons = nav.querySelectorAll('button');
+    const nextButton = buttons[buttons.length - 1] as HTMLButtonElement;
+    expect(nextButton.disabled).toBe(true);
+  });
+
+  it('should navigate to specific page on page number click', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const pageButtons = nav.querySelectorAll('button');
+    const page2Button = Array.from(pageButtons).find(
+      (btn) => (btn as HTMLButtonElement).textContent?.trim() === '2',
+    ) as HTMLButtonElement;
+    page2Button?.click();
+    fixture.detectChanges();
+
+    expect(component.page()).toBe(2);
+  });
+
+  it('should display videos in grid when playlist has videos', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Alpha');
+    expect(compiled.textContent).toContain('Beta');
+    expect(compiled.textContent).toContain('Gamma');
+  });
+
+  it('should show "Sin resultados" when filtered videos is empty', () => {
+    component.playlist.set(basePlaylist);
+    component.searchQuery.set('xyz-no-existe');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Sin resultados para esta búsqueda');
+  });
+
+  it('should show pagination when totalPages > 1', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Paginación de videos"]')).toBeTruthy();
+  });
+
+  it('should hide pagination when totalPages <= 1', () => {
+    component.playlist.set(basePlaylist);
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('nav[aria-label="Paginación de videos"]')).toBeFalsy();
+  });
+
+  it('should disable prev button on first page', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const prevButton = nav.querySelector('button') as HTMLButtonElement;
+    expect(prevButton.disabled).toBe(true);
+  });
+
+  it('should disable next button on last page', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.page.set(2);
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const buttons = nav.querySelectorAll('button');
+    const nextButton = buttons[buttons.length - 1] as HTMLButtonElement;
+    expect(nextButton.disabled).toBe(true);
+  });
+
+  it('should navigate to specific page on page number click', () => {
+    const manyVideos: Video[] = Array.from({ length: 7 }, (_, i) => ({
+      id: `v${i}`,
+      title: `Video ${i}`,
+      channelTitle: `Canal ${i}`,
+      thumbnail: `t${i}`,
+      publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
+    }));
+    component.playlist.set({ ...basePlaylist, videos: manyVideos });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector(
+      'nav[aria-label="Paginación de videos"]',
+    ) as HTMLElement;
+    const pageButtons = nav.querySelectorAll('button');
+    const page2Button = Array.from(pageButtons).find(
+      (btn) => (btn as HTMLButtonElement).textContent?.trim() === '2',
+    ) as HTMLButtonElement;
+    page2Button?.click();
+    fixture.detectChanges();
+
+    expect(component.page()).toBe(2);
+  });
+
+  it('should show verification details when verifyPlaylist is called', () => {
+    component.playlist.set(basePlaylist);
+    youtubeMock.getVerifyPlaylist = vi.fn(() => of({ diff: { allVideosDiff: diffs } })) as never;
+
+    component.verifyPlaylist();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('VERIFICACIÓN: SE DETECTARON');
+  });
+
+  it('should display diff stats (new/removed counts)', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('2 VIDEOS NUEVOS');
+    expect(compiled.textContent).toContain('1 VIDEOS ELIMINADOS');
+  });
+
+  it('should switch between tabs (all/new/removed)', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const tabs = fixture.nativeElement.querySelectorAll('button');
+    const newTab = Array.from(tabs).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Nuevos'),
+    ) as HTMLButtonElement;
+    newTab.click();
+    fixture.detectChanges();
+
+    expect(component.activeTab()).toBe('new');
+  });
+
+  it('should show empty state when no diffs match filter', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set([]);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Sin resultados para esta búsqueda');
+  });
+
+  it('should show "Añadir" button for new videos', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    component.setTab('new');
+    component.toggleSelect('v1');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Añadir');
+  });
+
+  it('should show "Eliminar" button for removed videos', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    component.setTab('removed');
+    component.toggleSelect('v2');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Eliminar');
+  });
+
+  it('should show selected count in action button', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    component.toggleSelect('v1');
+    component.toggleSelect('v4');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('(2)');
+  });
+
+  it('should show "Seleccionar todos" checkbox', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Seleccionar todos');
+  });
+
+  it('should show "Cancelar" button when videos are selected', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    component.toggleSelect('v1');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Cancelar');
+  });
+
+  it('should show "Nuevo" badge for new videos', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Nuevo');
+  });
+
+  it('should show "Eliminado" badge for removed videos', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Eliminado');
+  });
+
+  it('should show video thumbnail in diff list', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="Alpha"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show video title in diff list', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Alpha');
+  });
+
+  it('should show channel title in diff list', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Canal A');
+  });
+
+  it('should show "Última Actualización" with time ago', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Última Actualización');
+  });
+
+  it('should show "Verificar" button', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Verificar');
+  });
+
+  it('should show "Eliminar" button in header', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Eliminar');
+  });
+
+  it('should show playlist description', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Descripción');
+  });
+
+  it('should show default description when playlist has no description', () => {
+    component.playlist.set({ ...basePlaylist, description: '' });
+    component.loading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Sin descripción proporcionada');
+  });
+
+  it('should show "COLECCION DESTACADA" label', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('COLECCION DESTACADA');
+  });
+
+  it('should show total videos in header', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('3 VIDEOS');
+  });
+
+  it('should show search input for videos', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector('input[placeholder="Buscar video"]') as HTMLInputElement;
+    expect(input).toBeTruthy();
+  });
+
+  it('should show sort dropdown', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Fecha');
+  });
+
+  it('should show "Videos de la playlist" heading', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Videos de la playlist');
+  });
+
+  it('should show video card with title', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Alpha');
+  });
+
+  it('should show video card with channel title', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Canal A');
+  });
+
+  it('should show video thumbnail in grid', () => {
+    component.playlist.set(basePlaylist);
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="Alpha"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show back button in diff view', () => {
+    component.playlist.set(basePlaylist);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.pi-arrow-left')).toBeTruthy();
+  });
+
+  it('should show diff search input', () => {
+    component.playlist.set(basePlaylist);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector('input[placeholder="Buscar"]') as HTMLInputElement;
+    expect(input).toBeTruthy();
+  });
+
+  it('should show "Todos" tab', () => {
+    component.playlist.set(basePlaylist);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Todos');
+  });
+
+  it('should show "Nuevos" tab with count', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Nuevos');
+  });
+
+  it('should show "Eliminados" tab with count', () => {
+    component.playlist.set(basePlaylist);
+    component.differences.set(diffs);
+    component.showDetailsVerify.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Eliminados');
+  });
 });

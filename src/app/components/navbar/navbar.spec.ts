@@ -190,4 +190,223 @@ describe('Navbar', () => {
 
     expect(img.src).toContain('data:image/svg+xml');
   });
+
+  it('should show mobile menu when mobileMenuOpen is true', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Inicio');
+    expect(compiled.textContent).toContain('Mis playlists');
+    expect(compiled.textContent).toContain('Cerrar Sesión');
+  });
+
+  it('should close mobile menu on overlay click', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const overlay = fixture.nativeElement.querySelector('.bg-black\\/40') as HTMLElement;
+    overlay.click();
+    fixture.detectChanges();
+
+    expect(component.mobileMenuOpen()).toBe(false);
+  });
+
+  it('should close mobile menu when navigation link is clicked', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const links = fixture.nativeElement.querySelectorAll('a');
+    const homeLink = Array.from(links).find((link) =>
+      (link as HTMLAnchorElement).textContent?.includes('Inicio'),
+    ) as HTMLAnchorElement;
+    homeLink.click();
+    fixture.detectChanges();
+
+    expect(component.mobileMenuOpen()).toBe(false);
+  });
+
+  it('should show hamburger menu button on mobile', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const hamburger = fixture.nativeElement.querySelector('.pi-bars') as HTMLElement;
+    expect(hamburger).toBeTruthy();
+  });
+
+  it('should show profile picture on mobile', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="Test User"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show "Cerrar Sesión" button on mobile', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Cerrar Sesión');
+  });
+
+  it('should show "Inicio" link in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Inicio');
+  });
+
+  it('should show "Mis playlists" link in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Mis playlists');
+  });
+
+  it('should show "Cerrar Sesión" button in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Cerrar Sesión');
+  });
+
+  it('should show PlaylistGuard logo', () => {
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('PlaylistGuard');
+  });
+
+  it('should show shield icon', () => {
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="shield"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show "Inicio" link in desktop nav when logged in', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Inicio');
+  });
+
+  it('should show "Mis playlists" link in desktop nav when logged in', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Mis playlists');
+  });
+
+  it('should show Google icon in login button', () => {
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="Google"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show user name in profile section', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Test User');
+  });
+
+  it('should show profile picture in desktop nav', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="Test User"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show "Cerrar Sesión" text in desktop nav', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Cerrar Sesión');
+  });
+
+  it('should call openDialogLogout on logout button click', () => {
+    googleMock.profile.set(profile);
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const logoutButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Cerrar Sesión'),
+    ) as HTMLButtonElement;
+    logoutButton.click();
+    fixture.detectChanges();
+
+    expect(googleMock.logout).toHaveBeenCalled();
+  });
+
+  it('should call loginWithGoogle on login button click', () => {
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const loginButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Iniciar Sesión'),
+    ) as HTMLButtonElement;
+    loginButton.click();
+    fixture.detectChanges();
+
+    expect(googleMock.authenticateWithGoogle).toHaveBeenCalled();
+  });
+
+  it('should show mobile menu overlay', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const overlay = fixture.nativeElement.querySelector('.bg-black\\/40') as HTMLElement;
+    expect(overlay).toBeTruthy();
+  });
+
+  it('should show mobile menu container', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const menu = fixture.nativeElement.querySelector('.animate-slide-down') as HTMLElement;
+    expect(menu).toBeTruthy();
+  });
+
+  it('should show divider in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const divider = fixture.nativeElement.querySelector('.border-t') as HTMLElement;
+    expect(divider).toBeTruthy();
+  });
+
+  it('should show home icon in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const icon = fixture.nativeElement.querySelector('.pi-home') as HTMLElement;
+    expect(icon).toBeTruthy();
+  });
+
+  it('should show list icon in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const icon = fixture.nativeElement.querySelector('.pi-list') as HTMLElement;
+    expect(icon).toBeTruthy();
+  });
+
+  it('should show sign-out icon in mobile menu', () => {
+    component.mobileMenuOpen.set(true);
+    fixture.detectChanges();
+
+    const icon = fixture.nativeElement.querySelector('.pi-sign-out') as HTMLElement;
+    expect(icon).toBeTruthy();
+  });
 });

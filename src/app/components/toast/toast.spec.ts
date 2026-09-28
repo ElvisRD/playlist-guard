@@ -114,4 +114,145 @@ describe('Toast Component', () => {
     expect(component.displayMessage()).toBe('Acción exitosa');
     httpMock.verify();
   });
+
+  it('should show success toast with correct styling', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Success!');
+    expect(compiled.querySelector('.green')).toBeTruthy();
+  });
+
+  it('should show error toast with correct styling', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('error');
+    toastServiceMock.message.set('Error!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Error!');
+    expect(compiled.querySelector('.red')).toBeTruthy();
+  });
+
+  it('should show warning toast with correct styling', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('warning');
+    toastServiceMock.message.set('Warning!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Warning!');
+    expect(compiled.querySelector('.yellow')).toBeTruthy();
+  });
+
+  it('should show toast with icon', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.pi-check-circle')).toBeTruthy();
+  });
+
+  it('should show close button', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.pi-times')).toBeTruthy();
+  });
+
+  it('should close toast on close button click', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const closeButton = fixture.nativeElement.querySelector('.pi-times') as HTMLElement;
+    closeButton.click();
+    fixture.detectChanges();
+
+    expect(toastServiceMock.close).toHaveBeenCalled();
+  });
+
+  it('should show toast container when visible', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.fixed')).toBeTruthy();
+  });
+
+  it('should hide toast container when not visible', () => {
+    toastServiceMock.visible.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.fixed')).toBeFalsy();
+  });
+
+  it('should show toast message', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Test message');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Test message');
+  });
+
+  it('should apply correct classes for success type', () => {
+    toastServiceMock.type.set('success');
+    const classes = component.classes();
+    expect(classes).toContain('green');
+    expect(classes).toContain('border-green-500');
+  });
+
+  it('should apply correct classes for error type', () => {
+    toastServiceMock.type.set('error');
+    const classes = component.classes();
+    expect(classes).toContain('red');
+    expect(classes).toContain('border-red-500');
+  });
+
+  it('should apply correct classes for warning type', () => {
+    toastServiceMock.type.set('warning');
+    const classes = component.classes();
+    expect(classes).toContain('yellow');
+    expect(classes).toContain('border-yellow-500');
+  });
+
+  it('should apply default classes for unknown type', () => {
+    toastServiceMock.type.set(null);
+    const classes = component.classes();
+    expect(classes).toContain('zinc');
+  });
+
+  it('should show toast with animation', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.animate-fade-in')).toBeTruthy();
+  });
+
+  it('should show toast with slide animation', () => {
+    toastServiceMock.visible.set(true);
+    toastServiceMock.type.set('success');
+    toastServiceMock.message.set('Success!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.animate-slide-up')).toBeTruthy();
+  });
 });

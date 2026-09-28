@@ -129,6 +129,141 @@ describe('Dialog Component', () => {
     component.onClose();
     expect(dialogServiceMock.close).toHaveBeenCalled();
   });
+
+  it('should show delete confirmation dialog', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('delete-playlist');
+    dialogServiceMock.playlist.set('PL123');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Eliminar Playlist');
+    expect(compiled.textContent).toContain('¿Estás seguro de que deseas eliminar la playlist?');
+  });
+
+  it('should show unauthorized dialog when type is "unauthorized"', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('unauthorized');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Iniciar sesión');
+    expect(compiled.textContent).toContain('Es necesario que inicies sesión con tu cuenta de Google');
+  });
+
+  it('should show not-access dialog when type is "not-access"', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('not-access');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Sin acceso');
+    expect(compiled.textContent).toContain('No tienes acceso a esta playlist');
+  });
+
+  it('should call onConfirmDelete when delete button is clicked', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('delete-playlist');
+    dialogServiceMock.playlist.set('PL123');
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const deleteButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Eliminar'),
+    ) as HTMLButtonElement;
+    deleteButton.click();
+    fixture.detectChanges();
+
+    expect(youtubeMock.deletePlaylist).toHaveBeenCalledWith('PL123');
+  });
+
+  it('should close dialog when cancel button is clicked', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('delete-playlist');
+    dialogServiceMock.playlist.set('PL123');
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const cancelButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Cancelar'),
+    ) as HTMLButtonElement;
+    cancelButton.click();
+    fixture.detectChanges();
+
+    expect(dialogServiceMock.close).toHaveBeenCalled();
+  });
+
+  it('should call authenticateWithGoogle when login button is clicked', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('unauthorized');
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const loginButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Iniciar sesión'),
+    ) as HTMLButtonElement;
+    loginButton.click();
+    fixture.detectChanges();
+
+    expect(googleMock.authenticateWithGoogle).toHaveBeenCalled();
+  });
+
+  it('should close dialog when "Entendido" button is clicked', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('not-access');
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll('button');
+    const entendidoButton = Array.from(buttons).find((btn) =>
+      (btn as HTMLButtonElement).textContent?.includes('Entendido'),
+    ) as HTMLButtonElement;
+    entendidoButton.click();
+    fixture.detectChanges();
+
+    expect(dialogServiceMock.close).toHaveBeenCalled();
+  });
+
+  it('should show Google icon in unauthorized dialog', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('unauthorized');
+    fixture.detectChanges();
+
+    const img = fixture.nativeElement.querySelector('img[alt="google-icon"]') as HTMLImageElement;
+    expect(img).toBeTruthy();
+  });
+
+  it('should show close button in dialog header', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('delete-playlist');
+    fixture.detectChanges();
+
+    const closeButton = fixture.nativeElement.querySelector('.pi-times') as HTMLElement;
+    expect(closeButton).toBeTruthy();
+  });
+
+  it('should navigate to /playlists after successful deletion', () => {
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('delete-playlist');
+    dialogServiceMock.playlist.set('PL123');
+    fixture.detectChanges();
+
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    component.onConfirmDelete();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/playlists']);
+  });
+
+  it('should show error toast when deletion fails', () => {
+    youtubeMock.deletePlaylist = vi.fn(() => throwError(() => new Error('Failed'))) as never;
+    dialogServiceMock.visible.set(true);
+    dialogServiceMock.type.set('delete-playlist');
+    dialogServiceMock.playlist.set('PL123');
+    fixture.detectChanges();
+
+    component.onConfirmDelete();
+
+    expect(toastMock.show).toHaveBeenCalledWith('error', 'No se pudo eliminar la playlist.');
+  });
 });
 
 function throwError<T>(error: () => Error) {
