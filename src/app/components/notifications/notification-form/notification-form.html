@@ -1,0 +1,57 @@
+<div class="rounded-xl border border-zinc-700 bg-zinc-800 p-6 shadow-lg">
+  <h2 class="mb-4 text-lg font-bold text-zinc-100">Suscribirse a Notificaciones</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="email" class="mb-1 block text-sm font-medium text-zinc-300">
+        Email
+      </label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="tu@email.com"
+        class="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-custom-purple focus:ring-1 focus:ring-custom-purple"
+      />
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+        <p class="mt-1 text-sm text-red-400">
+          @if (form.get('email')?.errors?.['required']) {
+            El email es obligatorio.
+          } @else if (form.get('email')?.errors?.['email']) {
+            Ingresa un email válido.
+          }
+        </p>
+      }
+    </div>
+
+    <div>
+      <label for="playlistIds" class="mb-1 block text-sm font-medium text-zinc-300">
+        Playlists (opcional)
+      </label>
+      <input
+        id="playlistIds"
+        type="text"
+        formControlName="playlistIds"
+        placeholder="PL1, PL2, PL3 (separadas por coma)"
+        class="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-custom-purple focus:ring-1 focus:ring-custom-purple"
+      />
+      <p class="mt-1 text-xs text-zinc-500">
+        Deja vacío para monitorear todas las playlists
+      </p>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="loading"
+      class="flex w-full items-center justify-center gap-2 rounded-full bg-custom-purple px-8 py-2.5 text-sm font-semibold text-white/90 transition hover:bg-custom-purple/80 hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      @if (loading) {
+        <span class="pi pi-spin pi-spinner"></span>
+      }
+      @if (!loading) {
+        <span class="pi pi-bell"></span>
+      }
+      {{ loading ? 'Suscribiendo...' : 'Suscribirse' }}
+    </button>
+  </form>
+</div>

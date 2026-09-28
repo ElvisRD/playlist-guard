@@ -61,3 +61,18 @@ export type ToastType = 'success' | 'error' | 'warning' | 'not-found';
 export interface ToastText {
   text: string;
 }
+
+export interface NotificationSubscription {
+  id: string;
+  userId: string;
+  email: string;
+  playlistIds: string[] | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubscribeRequest {
+  email: string;
+  playlistIds?: string[];
+}

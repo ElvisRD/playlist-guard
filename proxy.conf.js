@@ -1,6 +1,6 @@
 const PROXY_CONFIG = [
   {
-    context: ['/youtube', '/google-auth'],
+    context: ['/youtube', '/google-auth', '/notifications'],
     target: 'http://localhost:3000',
     secure: false,
     changeOrigin: true,

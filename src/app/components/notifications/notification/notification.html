@@ -1,0 +1,57 @@
+<div class="min-h-screen bg-zinc-900 py-8">
+  <div class="mx-auto max-w-2xl px-4">
+    <h1 class="mb-8 text-3xl font-bold text-zinc-100">Notificaciones</h1>
+
+    @if (loading()) {
+      <div class="flex justify-center py-12">
+        <div class="h-10 w-10 animate-spin rounded-full border-4 border-zinc-600 border-t-custom-purple"></div>
+      </div>
+    } @else {
+      <!-- Estado actual -->
+      <app-notification-status
+        [subscription]="subscription()"
+        (refresh)="loadStatus()"
+      />
+
+      <!-- Formulario (solo si no está suscrito) -->
+      @if (!subscription()) {
+        <div class="mt-6">
+          <app-notification-form
+            (subscribed)="onSubscribed($event)"
+          />
+        </div>
+      }
+
+      <!-- Acciones (solo si está suscrito) -->
+      @if (subscription()) {
+        <div class="mt-6 flex flex-wrap gap-4">
+          <button
+            (click)="sendTestEmail()"
+            [disabled]="testEmailLoading"
+            class="flex items-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-custom-purple hover:text-custom-purple disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            @if (testEmailLoading) {
+              <span class="pi pi-spin pi-spinner"></span>
+            } @else {
+              <span class="pi pi-envelope"></span>
+            }
+            {{ testEmailLoading ? 'Enviando...' : 'Enviar correo de prueba' }}
+          </button>
+
+          <button
+            (click)="unsubscribe()"
+            [disabled]="unsubscribeLoading"
+            class="flex items-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-red-500 transition hover:border-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            @if (unsubscribeLoading) {
+              <span class="pi pi-spin pi-spinner"></span>
+            } @else {
+              <span class="pi pi-trash"></span>
+            }
+            {{ unsubscribeLoading ? 'Cancelando...' : 'Cancelar suscripción' }}
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

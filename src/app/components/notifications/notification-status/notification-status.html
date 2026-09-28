@@ -1,0 +1,54 @@
+<div class="rounded-xl border border-zinc-700 bg-zinc-800 p-6 shadow-lg">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-lg font-bold text-zinc-100">Estado de Suscripción</h2>
+    <button
+      class="cursor-pointer text-sm text-zinc-400 transition hover:text-zinc-100"
+      (click)="onRefresh()"
+    >
+      <span class="pi pi-refresh"></span>
+    </button>
+  </div>
+
+  @if (subscription(); as sub) {
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span
+          class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
+          [class.bg-green-600/20]="sub.isActive"
+          [class.text-green-200/80]="sub.isActive"
+          [class.bg-red-600/20]="!sub.isActive"
+          [class.text-red-200/80]="!sub.isActive"
+        >
+          @if (sub.isActive) {
+            <span class="mr-1 pi pi-check-circle"></span>
+            Suscrito
+          } @else {
+            <span class="mr-1 pi pi-times-circle"></span>
+            No suscrito
+          }
+        </span>
+      </div>
+
+      <div class="text-sm text-zinc-400">
+        <p><span class="font-medium text-zinc-300">Email:</span> {{ sub.email }}</p>
+        <p>
+          <span class="font-medium text-zinc-300">Playlists monitoreadas:</span>
+          @if (sub.playlistIds && sub.playlistIds.length > 0) {
+            {{ sub.playlistIds.join(', ') }}
+          } @else {
+            Todas las playlists
+          }
+        </p>
+        <p>
+          <span class="font-medium text-zinc-300">Creada:</span>
+          {{ sub.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+        </p>
+      </div>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center py-4">
+      <span class="pi pi-bell-slash text-4xl text-zinc-600 mb-3"></span>
+      <p class="text-zinc-500 text-center">No tienes una suscripción activa</p>
+    </div>
+  }
+</div>
