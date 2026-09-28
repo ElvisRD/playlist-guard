@@ -265,10 +265,10 @@ describe('Home', () => {
     expect(compiled.textContent).toContain('VERIFICACIÓN INTELIGENTE');
   });
 
-  it('should show "YouTube PlaylistGuard" title', () => {
+  it('should show problem-oriented headline', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('YouTube PlaylistGuard');
+    expect(compiled.textContent).toContain('¿Perdiste videos de tus playlists sin saberlo?');
   });
 
   it('should show search instruction text', () => {
