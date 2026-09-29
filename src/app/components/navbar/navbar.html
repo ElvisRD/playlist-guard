@@ -25,65 +25,82 @@
       >
         Mis playlists
       </a>
-      <a
-        routerLink="/notifications"
-        routerLinkActive="text-custom-purple bg-custom-purple/10 after:scale-x-100 after:opacity-100"
-        ariaCurrentWhenActive="page"
-        class="relative cursor-pointer rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors duration-300 hover:bg-white/5 after:absolute after:bottom-1 after:left-3 after:right-3 sm:after:left-4 sm:after:right-4 after:h-0.5 after:rounded-full after:bg-current after:opacity-0 after:scale-x-0 after:origin-center after:transition-all after:duration-300 after:ease-[cubic-bezier(0.22,1,0.36,1)]"
-      >
-        Notificaciones
-      </a>
     }
   </div>
 
   <div class="flex gap-2 sm:gap-4 items-center shrink-0">
     @if (profile()) {
-      <!-- <button class="flex cursor-pointer relative p-2 rounded-full">
-        @if(hasNotification()){
-           <div class="w-2 h-2 absolute right-2 rounded-full bg-red-300">
+      <div class="relative">
+        <button
+          class="flex cursor-pointer items-center gap-2"
+          (click)="toggleUserMenu()"
+        >
+          <div
+            class="rounded-full border size-8 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
+          >
+            <img
+              [src]="profile()!.picture"
+              [alt]="profile()!.name || 'Profile'"
+              referrerpolicy="no-referrer"
+              (error)="onImageError($event)"
+              class="size-full rounded-full"
+            />
+          </div>
+          <span class="hidden sm:block text-sm">{{ profile()!.name }}</span>
+          <span class="pi pi-chevron-down text-xs text-zinc-400"></span>
+        </button>
+
+        @if (userMenuOpen()) {
+          <div
+            class="fixed inset-0 z-20"
+            (click)="closeUserMenu()"
+          ></div>
+          <div
+            class="absolute right-0 top-full mt-2 z-30 w-56 rounded-xl bg-zinc-800 border border-zinc-700 shadow-2xl overflow-hidden animate-slide-down"
+          >
+            <div class="flex flex-col p-2">
+              <a
+                routerLink="/"
+                routerLinkActive="text-custom-purple! bg-custom-purple/10 before:scale-y-100 before:opacity-100"
+                [routerLinkActiveOptions]="{ exact: true }"
+                ariaCurrentWhenActive="page"
+                (click)="closeUserMenu()"
+                class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer sm:hidden before:absolute before:left-0.5 before:top-1/2 before:w-0.5 before:h-5 before:-translate-y-1/2 before:rounded-full before:bg-custom-purple before:opacity-0 before:scale-y-0 before:origin-center before:transition-all before:duration-300 before:ease-[cubic-bezier(0.22,1,0.36,1)]"
+              >
+                <span class="pi pi-home"></span>
+                Inicio
+              </a>
+              <a
+                routerLink="/playlists"
+                routerLinkActive="text-custom-purple! bg-custom-purple/10 before:scale-y-100 before:opacity-100"
+                ariaCurrentWhenActive="page"
+                (click)="closeUserMenu()"
+                class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer sm:hidden before:absolute before:left-0.5 before:top-1/2 before:w-0.5 before:h-5 before:-translate-y-1/2 before:rounded-full before:bg-custom-purple before:opacity-0 before:scale-y-0 before:origin-center before:transition-all before:duration-300 before:ease-[cubic-bezier(0.22,1,0.36,1)]"
+              >
+                <span class="pi pi-list"></span>
+                Mis playlists
+              </a>
+              <button
+                (click)="navigateTo('/notifications')"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer w-full text-left"
+              >
+                <span class="pi pi-bell"></span>
+                Notificaciones
+              </button>
+            </div>
+            <div class="border-t border-zinc-700"></div>
+            <div class="flex flex-col p-2">
+              <button
+                (click)="closeUserMenu(); openDialogLogout()"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition cursor-pointer w-full text-left"
+              >
+                <span class="pi pi-sign-out"></span>
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
         }
-        <span class="pi pi-bell text-xl"></span>
-      </button> -->
-      <button
-        class="hidden sm:flex gap-2 items-center cursor-pointer"
-        (click)="openDialogLogout()"
-      >
-        <div
-          class="rounded-full border size-6 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
-        >
-          <img
-            [src]="profile()!.picture"
-            [alt]="profile()!.name || 'Profile'"
-            referrerpolicy="no-referrer"
-            (error)="onImageError($event)"
-            class="size-full rounded-full"
-          />
-        </div>
-        <span class="text-sm">Cerrar Sesión</span>
-      </button>
-      <button
-        class="sm:hidden flex items-center cursor-pointer p-1"
-        (click)="openDialogLogout()"
-      >
-        <div
-          class="rounded-full border size-8 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
-        >
-          <img
-            [src]="profile()!.picture"
-            [alt]="profile()!.name || 'Profile'"
-            referrerpolicy="no-referrer"
-            (error)="onImageError($event)"
-            class="size-full rounded-full"
-          />
-        </div>
-      </button>
-      <button
-        class="sm:hidden flex items-center justify-center cursor-pointer p-2 rounded-lg hover:bg-white/10 transition"
-        (click)="toggleMobileMenu()"
-      >
-        <span class="pi pi-bars text-xl"></span>
-      </button>
+      </div>
     } @else if (!loading()) {
       <button
         (click)="loginWithGoogle()"
@@ -95,57 +112,3 @@
     }
   </div>
 </nav>
-
-@if (mobileMenuOpen()) {
-  <div
-    class="fixed inset-0 z-20 bg-black/40 sm:hidden"
-    (click)="closeMobileMenu()"
-  ></div>
-  <div
-    class="fixed top-16 right-4 z-30 sm:hidden w-56 rounded-xl bg-zinc-800 border border-zinc-700 shadow-2xl overflow-hidden animate-slide-down"
-  >
-    <div class="flex flex-col p-2">
-      <a
-        routerLink="/"
-        routerLinkActive="text-custom-purple! bg-custom-purple/10 before:scale-y-100 before:opacity-100"
-        [routerLinkActiveOptions]="{ exact: true }"
-        ariaCurrentWhenActive="page"
-        (click)="closeMobileMenu()"
-        class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer before:absolute before:left-0.5 before:top-1/2 before:w-0.5 before:h-5 before:-translate-y-1/2 before:rounded-full before:bg-custom-purple before:opacity-0 before:scale-y-0 before:origin-center before:transition-all before:duration-300 before:ease-[cubic-bezier(0.22,1,0.36,1)]"
-      >
-        <span class="pi pi-home"></span>
-        Inicio
-      </a>
-      <a
-        routerLink="/playlists"
-        routerLinkActive="text-custom-purple! bg-custom-purple/10 before:scale-y-100 before:opacity-100"
-        ariaCurrentWhenActive="page"
-        (click)="closeMobileMenu()"
-        class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer before:absolute before:left-0.5 before:top-1/2 before:w-0.5 before:h-5 before:-translate-y-1/2 before:rounded-full before:bg-custom-purple before:opacity-0 before:scale-y-0 before:origin-center before:transition-all before:duration-300 before:ease-[cubic-bezier(0.22,1,0.36,1)]"
-      >
-        <span class="pi pi-list"></span>
-        Mis playlists
-      </a>
-      <a
-        routerLink="/notifications"
-        routerLinkActive="text-custom-purple! bg-custom-purple/10 before:scale-y-100 before:opacity-100"
-        ariaCurrentWhenActive="page"
-        (click)="closeMobileMenu()"
-        class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer before:absolute before:left-0.5 before:top-1/2 before:w-0.5 before:h-5 before:-translate-y-1/2 before:rounded-full before:bg-custom-purple before:opacity-0 before:scale-y-0 before:origin-center before:transition-all before:duration-300 before:ease-[cubic-bezier(0.22,1,0.36,1)]"
-      >
-        <span class="pi pi-bell"></span>
-        Notificaciones
-      </a>
-    </div>
-    <div class="border-t border-zinc-700"></div>
-    <div class="flex flex-col p-2">
-      <button
-        (click)="closeMobileMenu(); openDialogLogout()"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition cursor-pointer w-full text-left"
-      >
-        <span class="pi pi-sign-out"></span>
-        Cerrar Sesión
-      </button>
-    </div>
-  </div>
-}

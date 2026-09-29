@@ -17,14 +17,19 @@ export class Navbar {
   protected profile = this.googleService.profile;
   protected loading = this.googleService.loading;
   hasNotification = signal(false);
-  mobileMenuOpen = signal(false);
+  userMenuOpen = signal(false);
 
-  toggleMobileMenu() {
-    this.mobileMenuOpen.update((v) => !v);
+  toggleUserMenu() {
+    this.userMenuOpen.update((v) => !v);
   }
 
-  closeMobileMenu() {
-    this.mobileMenuOpen.set(false);
+  closeUserMenu() {
+    this.userMenuOpen.set(false);
+  }
+
+  navigateTo(route: string) {
+    this.closeUserMenu();
+    this.router.navigate([route]);
   }
 
   loginWithGoogle() {
