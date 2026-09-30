@@ -82,11 +82,19 @@
     </header>
 
     <main>
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-5">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-5">
         @if (!showDetailsVerify()) {
-          <h2 class="text-3xl font-bold sm:text-4xl text-center sm:text-start">
-            Videos de la playlist
-          </h2>
+          <div class="relative flex items-center justify-center sm:justify-start">
+            <button
+              (click)="goBack()"
+              class="absolute left-0 sm:static flex items-center justify-center rounded-full text-xl text-zinc-400 hover:text-custom-purple w-8 h-8 transition-colors cursor-pointer"
+            >
+              <span class="pi pi-arrow-left"></span>
+            </button>
+            <h2 class="text-3xl ml-1 sm:ml-1 font-bold sm:text-4xl text-center sm:text-start">
+              Videos de la playlist
+            </h2>
+          </div>
           <div class="flex w-full mt-4 gap-2 sm:gap-4 flex-col xs:flex-row justify-between">
             <div class="flex relative w-full">
               <span

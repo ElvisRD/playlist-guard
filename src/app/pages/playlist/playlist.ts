@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { Youtube } from '../../services/youtube';
@@ -20,6 +20,7 @@ import { SortDropdown } from '../../components/sort-dropdown/sort-dropdown';
 })
 export class Playlist implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private youtube = inject(Youtube);
   private googleService = inject(Google);
   private dialog = inject(Dialog);
@@ -297,5 +298,9 @@ export class Playlist implements OnInit {
 
   openVideo(videoId: string) {
     window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank', 'noopener,noreferrer');
+  }
+
+  goBack() {
+    this.router.navigate(['/playlists']);
   }
 }
