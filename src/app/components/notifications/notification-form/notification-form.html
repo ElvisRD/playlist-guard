@@ -24,20 +24,50 @@
       }
     </div>
 
-    <div>
-      <label for="playlistIds" class="mb-1 block text-sm font-medium text-zinc-300">
-        Playlists (opcional)
+    <div class="relative">
+      <label class="mb-1 block text-sm font-medium text-zinc-300">
+        Playlists
       </label>
-      <input
-        id="playlistIds"
-        type="text"
-        formControlName="playlistIds"
-        placeholder="PL1, PL2, PL3 (separadas por coma)"
-        class="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-custom-purple focus:ring-1 focus:ring-custom-purple"
-      />
-      <p class="mt-1 text-xs text-zinc-500">
-        Deja vacío para monitorear todas las playlists
-      </p>
+      <button
+        type="button"
+        (click)="toggleDropdown()"
+        class="flex w-full items-center justify-between rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-zinc-100 outline-none transition focus:border-custom-purple focus:ring-1 focus:ring-custom-purple"
+      >
+        <span class="text-sm">
+          @if (selectedCount === 0) {
+            Seleccionar playlists
+          } @else if (selectedCount === playlists().length) {
+            Todas las playlists ({{ selectedCount }})
+          } @else {
+            {{ selectedCount }} playlist(s) seleccionada(s)
+          }
+        </span>
+        <span class="pi pi-chevron-down text-xs text-zinc-400"></span>
+      </button>
+
+      @if (dropdownOpen()) {
+        <div
+          class="fixed inset-0 z-10"
+          (click)="closeDropdown()"
+        ></div>
+        <div class="absolute z-20 mt-1 w-full rounded-xl border border-zinc-700 bg-zinc-800 shadow-xl max-h-60 overflow-y-auto">
+          @for (playlist of playlists(); track playlist.id) {
+            <label
+              class="flex items-center gap-3 px-4 py-2.5 hover:bg-zinc-700/50 cursor-pointer transition-colors"
+            >
+              <input
+                type="checkbox"
+                [checked]="isSelected(playlist.id)"
+                (change)="togglePlaylist(playlist.id)"
+                class="w-4 h-4 rounded border-zinc-600 bg-zinc-900 text-custom-purple focus:ring-custom-purple focus:ring-offset-0"
+              />
+              <span class="text-sm text-zinc-100 truncate">{{ playlist.title }}</span>
+            </label>
+          } @empty {
+            <p class="px-4 py-3 text-sm text-zinc-500">No tienes playlists guardadas</p>
+          }
+        </div>
+      }
     </div>
 
     <button

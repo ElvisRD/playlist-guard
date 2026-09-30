@@ -1,8 +1,9 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Notification } from '../../../services/notification';
-import { NotificationSubscription } from '../../../models';
+import { Youtube } from '../../../services/youtube';
+import { NotificationSubscription, PlaylistSummary } from '../../../models';
 
 @Component({
   selector: 'app-notification-form',
@@ -10,18 +11,65 @@ import { NotificationSubscription } from '../../../models';
   templateUrl: './notification-form.html',
   styleUrl: './notification-form.css',
 })
-export class NotificationForm {
+export class NotificationForm implements OnInit {
   private fb = inject(FormBuilder);
   private notificationService = inject(Notification);
+  private youtubeService = inject(Youtube);
 
   subscribed = output<NotificationSubscription>();
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    playlistIds: [''],
   });
 
   loading = false;
+  playlists = signal<PlaylistSummary[]>([]);
+  selectedPlaylists = signal<Set<string>>(new Set());
+  dropdownOpen = signal(false);
+
+  ngOnInit() {
+    this.loadPlaylists();
+  }
+
+  loadPlaylists() {
+    this.youtubeService.getPlaylists().subscribe({
+      next: (res) => {
+        this.playlists.set(res.playlists);
+        // By default, all playlists are selected
+        const allIds = new Set(res.playlists.map((p) => p.id));
+        this.selectedPlaylists.set(allIds);
+      },
+      error: (err) => {
+        console.error('Error al cargar playlists:', err);
+      },
+    });
+  }
+
+  toggleDropdown() {
+    this.dropdownOpen.update((v) => !v);
+  }
+
+  closeDropdown() {
+    this.dropdownOpen.set(false);
+  }
+
+  togglePlaylist(playlistId: string) {
+    const updated = new Set(this.selectedPlaylists());
+    if (updated.has(playlistId)) {
+      updated.delete(playlistId);
+    } else {
+      updated.add(playlistId);
+    }
+    this.selectedPlaylists.set(updated);
+  }
+
+  isSelected(playlistId: string): boolean {
+    return this.selectedPlaylists().has(playlistId);
+  }
+
+  get selectedCount(): number {
+    return this.selectedPlaylists().size;
+  }
 
   onSubmit() {
     if (this.form.invalid) {
@@ -30,10 +78,7 @@ export class NotificationForm {
     }
 
     const email = this.form.value.email!;
-    const playlistIdsRaw = this.form.value.playlistIds;
-    const playlistIds = playlistIdsRaw
-      ? playlistIdsRaw.split(',').map((id) => id.trim()).filter(Boolean)
-      : undefined;
+    const playlistIds = Array.from(this.selectedPlaylists());
 
     this.loading = true;
     this.notificationService.subscribe(email, playlistIds).subscribe({
