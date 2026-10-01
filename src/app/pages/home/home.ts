@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { Youtube } from '../../services/youtube';
-import { Google } from '../../services/google';
-import { Toast } from '../../services/toast';
-import { Dialog } from '../../services/dialog';
+import { Youtube } from '../../services/youtube/youtube';
+import { Google } from '../../services/google/google';
+import { Toast } from '../../services/toast/toast';
+import { Dialog } from '../../services/dialog/dialog';
 import { NgClass } from '@angular/common';
 import { Playlist } from '../../models';
 

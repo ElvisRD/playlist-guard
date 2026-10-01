@@ -1,7 +1,7 @@
 import { Component, signal, effect, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgClass } from '@angular/common';
-import { Toast as ToastService } from '../../services/toast';
+import { Toast as ToastService } from '../../services/toast/toast';
 import { ToastText, ToastType } from '../../models';
 
 @Component({

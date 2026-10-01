@@ -3,9 +3,9 @@ import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Component, signal } from '@angular/core';
 import { Navbar } from './navbar';
-import { Google } from '../../services/google';
-import { Dialog } from '../../services/dialog';
-import { Toast } from '../../services/toast';
+import { Google } from '../../services/google/google';
+import { Dialog } from '../../services/dialog/dialog';
+import { Toast } from '../../services/toast/toast';
 import type { Profile } from '../../models';
 
 @Component({ template: '' })
@@ -80,18 +80,18 @@ describe('Navbar', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle mobile menu', () => {
-    expect(component.mobileMenuOpen()).toBe(false);
-    component.toggleMobileMenu();
-    expect(component.mobileMenuOpen()).toBe(true);
-    component.toggleMobileMenu();
-    expect(component.mobileMenuOpen()).toBe(false);
+  it('should toggle user menu', () => {
+    expect(component.userMenuOpen()).toBe(false);
+    component.toggleUserMenu();
+    expect(component.userMenuOpen()).toBe(true);
+    component.toggleUserMenu();
+    expect(component.userMenuOpen()).toBe(false);
   });
 
-  it('should close mobile menu', () => {
-    component.toggleMobileMenu();
-    component.closeMobileMenu();
-    expect(component.mobileMenuOpen()).toBe(false);
+  it('should close user menu', () => {
+    component.toggleUserMenu();
+    component.closeUserMenu();
+    expect(component.userMenuOpen()).toBe(false);
   });
 
   it('should render the login button when logged out and not loading', () => {
@@ -108,6 +108,7 @@ describe('Navbar', () => {
 
   it('should render the user and logout button when logged in', () => {
     googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
     expect(text()).toContain('Cerrar Sesión');
     expect(text()).not.toContain('Iniciar Sesión');
@@ -131,6 +132,7 @@ describe('Navbar', () => {
       'Sesión iniciada correctamente.',
     );
 
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
     expect(text()).toContain('Cerrar Sesión');
     expect(text()).not.toContain('Iniciar Sesión');
@@ -191,8 +193,9 @@ describe('Navbar', () => {
     expect(img.src).toContain('data:image/svg+xml');
   });
 
-  it('should show mobile menu when mobileMenuOpen is true', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show user menu when userMenuOpen is true', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -201,36 +204,38 @@ describe('Navbar', () => {
     expect(compiled.textContent).toContain('Cerrar Sesión');
   });
 
-  it('should close mobile menu on overlay click', () => {
-    component.mobileMenuOpen.set(true);
+  it('should close user menu on overlay click', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
-    const overlay = fixture.nativeElement.querySelector('.bg-black\\/40') as HTMLElement;
+    const overlay = fixture.nativeElement.querySelector('.fixed.inset-0') as HTMLElement;
     overlay.click();
     fixture.detectChanges();
 
-    expect(component.mobileMenuOpen()).toBe(false);
+    expect(component.userMenuOpen()).toBe(false);
   });
 
-  it('should close mobile menu when navigation link is clicked', () => {
-    component.mobileMenuOpen.set(true);
+  it('should close user menu when navigation link is clicked', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
-    const links = fixture.nativeElement.querySelectorAll('a');
+    const links = fixture.nativeElement.querySelectorAll('.absolute a');
     const homeLink = Array.from(links).find((link) =>
       (link as HTMLAnchorElement).textContent?.includes('Inicio'),
     ) as HTMLAnchorElement;
     homeLink.click();
     fixture.detectChanges();
 
-    expect(component.mobileMenuOpen()).toBe(false);
+    expect(component.userMenuOpen()).toBe(false);
   });
 
-  it('should show hamburger menu button on mobile', () => {
+  it('should show user menu toggle button', () => {
     googleMock.profile.set(profile);
     fixture.detectChanges();
 
-    const hamburger = fixture.nativeElement.querySelector('.pi-bars') as HTMLElement;
+    const hamburger = fixture.nativeElement.querySelector('.pi-chevron-down') as HTMLElement;
     expect(hamburger).toBeTruthy();
   });
 
@@ -244,30 +249,34 @@ describe('Navbar', () => {
 
   it('should show "Cerrar Sesión" button on mobile', () => {
     googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Cerrar Sesión');
   });
 
-  it('should show "Inicio" link in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show "Inicio" link in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Inicio');
   });
 
-  it('should show "Mis playlists" link in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show "Mis playlists" link in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Mis playlists');
   });
 
-  it('should show "Cerrar Sesión" button in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show "Cerrar Sesión" button in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -329,6 +338,7 @@ describe('Navbar', () => {
 
   it('should show "Cerrar Sesión" text in desktop nav', () => {
     googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -337,6 +347,7 @@ describe('Navbar', () => {
 
   it('should call openDialogLogout on logout button click', () => {
     googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const buttons = fixture.nativeElement.querySelectorAll('button');
@@ -362,48 +373,54 @@ describe('Navbar', () => {
     expect(googleMock.authenticateWithGoogle).toHaveBeenCalled();
   });
 
-  it('should show mobile menu overlay', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show user menu overlay', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
-    const overlay = fixture.nativeElement.querySelector('.bg-black\\/40') as HTMLElement;
+    const overlay = fixture.nativeElement.querySelector('.fixed.inset-0') as HTMLElement;
     expect(overlay).toBeTruthy();
   });
 
-  it('should show mobile menu container', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show user menu container', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const menu = fixture.nativeElement.querySelector('.animate-slide-down') as HTMLElement;
     expect(menu).toBeTruthy();
   });
 
-  it('should show divider in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show divider in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const divider = fixture.nativeElement.querySelector('.border-t') as HTMLElement;
     expect(divider).toBeTruthy();
   });
 
-  it('should show home icon in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show home icon in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const icon = fixture.nativeElement.querySelector('.pi-home') as HTMLElement;
     expect(icon).toBeTruthy();
   });
 
-  it('should show list icon in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show list icon in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const icon = fixture.nativeElement.querySelector('.pi-list') as HTMLElement;
     expect(icon).toBeTruthy();
   });
 
-  it('should show sign-out icon in mobile menu', () => {
-    component.mobileMenuOpen.set(true);
+  it('should show sign-out icon in user menu', () => {
+    googleMock.profile.set(profile);
+    component.userMenuOpen.set(true);
     fixture.detectChanges();
 
     const icon = fixture.nativeElement.querySelector('.pi-sign-out') as HTMLElement;

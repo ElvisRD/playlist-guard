@@ -6,7 +6,7 @@ import {
   PlaylistsResponse,
   Playlist,
   VerifyPlaylistResponse,
-} from '../models';
+} from '../../models';
 
 @Injectable({
   providedIn: 'root',

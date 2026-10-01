@@ -3,10 +3,10 @@ import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { Home } from './home';
-import { Google } from '../../services/google';
-import { Youtube } from '../../services/youtube';
-import { Toast } from '../../services/toast';
-import { Dialog } from '../../services/dialog';
+import { Google } from '../../services/google/google';
+import { Youtube } from '../../services/youtube/youtube';
+import { Toast } from '../../services/toast/toast';
+import { Dialog } from '../../services/dialog/dialog';
 import type { AccessCheckResponse, Playlist, Profile } from '../../models';
 
 describe('Home', () => {
@@ -265,16 +265,16 @@ describe('Home', () => {
     expect(compiled.textContent).toContain('VERIFICACIÓN INTELIGENTE');
   });
 
-  it('should show problem-oriented headline', () => {
+  it('should show headline', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('¿Perdiste videos de tus playlists sin saberlo?');
+    expect(compiled.textContent).toContain('YouTube PlaylistGuard');
   });
 
-  it('should show search instruction text', () => {
+  it('should show description text', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Introduce la URL de la playlist para buscar sus datos.');
+    expect(compiled.textContent).toContain('PlaylistGuard detecta cambios en tus playlists de YouTube en segundos.');
   });
 
   it('should show feature badges', () => {

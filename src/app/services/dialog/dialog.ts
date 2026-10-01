@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { DialogType } from '../models';
+import { DialogType } from '../../models';
 
 @Injectable({
   providedIn: 'root',

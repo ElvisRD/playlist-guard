@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { Footer } from './footer';
-import { Google } from '../../services/google';
+import { Google } from '../../services/google/google';
 import { Profile } from '../../models';
 
 describe('Footer', () => {

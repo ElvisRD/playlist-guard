@@ -4,10 +4,10 @@ import { of, throwError } from 'rxjs';
 import { isSignal, signal } from '@angular/core';
 import { Playlist } from './playlist';
 import type { Playlist as PlaylistModel, Profile, Video, VideoDiff } from '../../models';
-import { Google } from '../../services/google';
-import { Youtube } from '../../services/youtube';
-import { Dialog } from '../../services/dialog';
-import { Toast } from '../../services/toast';
+import { Google } from '../../services/google/google';
+import { Youtube } from '../../services/youtube/youtube';
+import { Dialog } from '../../services/dialog/dialog';
+import { Toast } from '../../services/toast/toast';
 
 describe('Playlist', () => {
   let component: Playlist;
@@ -158,6 +158,7 @@ describe('Playlist', () => {
   });
 
   it('should return an empty time ago without a playlist', () => {
+    fixture.detectChanges();
     component.playlist.set(null);
     expect(component.timeAgo()).toBe('');
   });
@@ -193,6 +194,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
 
     expect(component.totalPages()).toBe(2);
@@ -336,6 +338,7 @@ describe('Playlist', () => {
   });
 
   it('should not open the delete dialog without a playlist', () => {
+    fixture.detectChanges();
     component.playlist.set(null);
     component.deletePlaylist();
     expect(dialogMock.open).not.toHaveBeenCalled();
@@ -387,6 +390,7 @@ describe('Playlist', () => {
   });
 
   it('should show loading spinner when loading is true', () => {
+    fixture.detectChanges();
     component.playlist.set(null);
     component.loading.set(true);
     fixture.detectChanges();
@@ -396,6 +400,7 @@ describe('Playlist', () => {
   });
 
   it('should show error message when error signal has value', () => {
+    fixture.detectChanges();
     component.playlist.set(null);
     component.loading.set(false);
     component.error.set('Error de prueba');
@@ -413,6 +418,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -438,6 +444,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -457,6 +464,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.page.set(2);
     component.loading.set(false);
@@ -478,6 +486,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -503,6 +512,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -528,6 +538,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -547,6 +558,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.page.set(2);
     component.loading.set(false);
@@ -568,6 +580,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -612,6 +625,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -637,6 +651,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -656,6 +671,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.page.set(2);
     component.loading.set(false);
@@ -677,6 +693,7 @@ describe('Playlist', () => {
       thumbnail: `t${i}`,
       publishedAt: `2024-01-0${i + 1}T00:00:00Z`,
     }));
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, videos: manyVideos });
     component.loading.set(false);
     fixture.detectChanges();
@@ -882,6 +899,7 @@ describe('Playlist', () => {
   });
 
   it('should show default description when playlist has no description', () => {
+    fixture.detectChanges();
     component.playlist.set({ ...basePlaylist, description: '' });
     component.loading.set(false);
     fixture.detectChanges();

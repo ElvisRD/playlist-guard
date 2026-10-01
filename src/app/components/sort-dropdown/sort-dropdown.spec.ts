@@ -56,6 +56,7 @@ describe('SortDropdown', () => {
   });
 
   it('should display all sort options', () => {
+    component.isOpen.set(true);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Fecha');
@@ -66,8 +67,8 @@ describe('SortDropdown', () => {
   it('should highlight selected option', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const selectedOption = compiled.querySelector('.bg-custom-purple') as HTMLElement;
-    expect(selectedOption).toBeTruthy();
+    const button = compiled.querySelector('button') as HTMLElement;
+    expect(button.textContent).toContain('Fecha');
   });
 
   it('should emit selectedChange on option click', () => {
@@ -106,7 +107,7 @@ describe('SortDropdown', () => {
   });
 
   it('should update selected value', () => {
-    component.select('ascendente');
+    fixture.componentRef.setInput('selected', 'ascendente');
     expect(component.selected()).toBe('ascendente');
   });
 

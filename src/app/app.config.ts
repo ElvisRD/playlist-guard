@@ -6,7 +6,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { credentialsInterceptor } from './interceptors/credentials';
 import { errorInterceptor } from './interceptors/error';
-import { GOOGLE_CLIENT_ID } from './services/google';
+import { GOOGLE_CLIENT_ID } from './services/google/google';
 
 export const appConfig: ApplicationConfig = {
   providers: [

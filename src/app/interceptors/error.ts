@@ -2,8 +2,8 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Dialog } from '../services/dialog';
-import { Toast } from '../services/toast';
+import { Dialog } from '../services/dialog/dialog';
+import { Toast } from '../services/toast/toast';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);

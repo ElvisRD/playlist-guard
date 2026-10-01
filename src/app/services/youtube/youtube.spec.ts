@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { Youtube } from './youtube';
+import { Youtube } from '../youtube/youtube';
 import {
   AccessCheckResponse,
   Playlist,
   PlaylistsResponse,
   VerifyPlaylistResponse,
-} from '../models';
+} from '../../models';
 
 describe('Youtube service', () => {
   let service: Youtube;

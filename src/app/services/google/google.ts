@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { Profile } from '../models';
+import { Profile } from '../../models';
 
 export const GOOGLE_CLIENT_ID = new InjectionToken<string>('GOOGLE_CLIENT_ID');
 

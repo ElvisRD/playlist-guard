@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { Youtube } from '../../services/youtube';
-import { Google } from '../../services/google';
+import { Youtube } from '../../services/youtube/youtube';
+import { Google } from '../../services/google/google';
 import { Router } from '@angular/router';
-import { Dialog as DialogService } from '../../services/dialog';
-import { Toast } from '../../services/toast';
+import { Dialog as DialogService } from '../../services/dialog/dialog';
+import { Toast } from '../../services/toast/toast';
 
 @Component({
   selector: 'app-dialog',

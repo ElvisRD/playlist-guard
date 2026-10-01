@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Observable } from 'rxjs';
 import { authGuard } from './auth';
-import { Google } from '../services/google';
+import { Google } from '../services/google/google';
 import type { Profile } from '../models';
 
 describe('authGuard', () => {
@@ -138,6 +138,7 @@ describe('authGuard', () => {
 
     expect(result).toBeDefined();
 
+    (result as Observable<unknown>).subscribe();
     profileSubject.next(null);
 
     expect(createUrlTreeSpy).toHaveBeenCalledWith(['']);

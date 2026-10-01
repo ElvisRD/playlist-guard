@@ -3,10 +3,10 @@ import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { signal } from '@angular/core';
 import { Dialog } from './dialog';
-import { Dialog as DialogService } from '../../services/dialog';
-import { Youtube } from '../../services/youtube';
-import { Google } from '../../services/google';
-import { Toast } from '../../services/toast';
+import { Dialog as DialogService } from '../../services/dialog/dialog';
+import { Youtube } from '../../services/youtube/youtube';
+import { Google } from '../../services/google/google';
+import { Toast } from '../../services/toast/toast';
 
 describe('Dialog Component', () => {
   let component: Dialog;
@@ -34,6 +34,8 @@ describe('Dialog Component', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    youtubeMock.deletePlaylist = vi.fn(() => of({})) as never;
+    googleMock.authenticateWithGoogle = vi.fn(() => of({})) as never;
 
     await TestBed.configureTestingModule({
       imports: [Dialog],

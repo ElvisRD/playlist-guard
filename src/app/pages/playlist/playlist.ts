@@ -2,10 +2,10 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
-import { Youtube } from '../../services/youtube';
-import { Google } from '../../services/google';
-import { Dialog } from '../../services/dialog';
-import { Toast } from '../../services/toast';
+import { Youtube } from '../../services/youtube/youtube';
+import { Google } from '../../services/google/google';
+import { Dialog } from '../../services/dialog/dialog';
+import { Toast } from '../../services/toast/toast';
 import { Playlist as PlaylistModel, VideoDiff } from '../../models';
 import { SortDropdown } from '../../components/sort-dropdown/sort-dropdown';
 

@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Notification } from '../../../services/notification';
-import { NotificationStatus } from '../notification-status/notification-status';
-import { NotificationForm } from '../notification-form/notification-form';
-import { NotificationSubscription } from '../../../models';
-import { Dialog } from '../../../services/dialog';
-import { Toast } from '../../../services/toast';
+import { Notification } from '../../services/notification/notification';
+import { NotificationStatus } from '../../components/notifications/notification-status/notification-status';
+import { NotificationForm } from '../../components/notifications/notification-form/notification-form';
+import { NotificationSubscription } from '../../models';
+import { Dialog } from '../../services/dialog/dialog';
+import { Toast } from '../../services/toast/toast';
 
 @Component({
   selector: 'app-notification',

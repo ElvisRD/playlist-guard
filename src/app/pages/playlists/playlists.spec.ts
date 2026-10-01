@@ -3,8 +3,8 @@ import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { Playlists } from './playlists';
-import { Google } from '../../services/google';
-import { Youtube } from '../../services/youtube';
+import { Google } from '../../services/google/google';
+import { Youtube } from '../../services/youtube/youtube';
 import type { PlaylistSummary, Profile } from '../../models';
 
 describe('Playlists', () => {

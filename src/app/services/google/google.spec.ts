@@ -3,7 +3,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Google, GOOGLE_CLIENT_ID } from './google';
-import { Profile } from '../models';
+import { Profile } from '../../models';
 
 type CodeClientCallback = (response: { code?: string; error?: string }) => void;
 type ErrorCallback = (response: { type: string }) => void;

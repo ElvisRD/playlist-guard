@@ -1,8 +1,8 @@
 import { Component, inject, output, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Notification } from '../../../services/notification';
-import { Youtube } from '../../../services/youtube';
+import { Notification } from '../../../services/notification/notification';
+import { Youtube } from '../../../services/youtube/youtube';
 import { NotificationSubscription, PlaylistSummary } from '../../../models';
 
 @Component({

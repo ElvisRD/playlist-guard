@@ -8,8 +8,8 @@ import {
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { errorInterceptor } from './error';
-import { Dialog } from '../services/dialog';
-import { Toast } from '../services/toast';
+import { Dialog } from '../services/dialog/dialog';
+import { Toast } from '../services/toast/toast';
 
 describe('errorInterceptor', () => {
   let http: HttpClient;

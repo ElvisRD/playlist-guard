@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { Google } from '../../services/google';
-import { Dialog } from '../../services/dialog';
-import { Toast } from '../../services/toast';
+import { Google } from '../../services/google/google';
+import { Dialog } from '../../services/dialog/dialog';
+import { Toast } from '../../services/toast/toast';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({

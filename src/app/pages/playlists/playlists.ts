@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { Google } from '../../services/google';
+import { Google } from '../../services/google/google';
 import { Router } from '@angular/router';
-import { Youtube } from '../../services/youtube';
+import { Youtube } from '../../services/youtube/youtube';
 import { PlaylistSummary } from '../../models';
 import { SortDropdown } from '../../components/sort-dropdown/sort-dropdown';
 

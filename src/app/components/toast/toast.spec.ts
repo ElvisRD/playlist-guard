@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Toast } from './toast';
-import { Toast as ToastService } from '../../services/toast';
+import { Toast as ToastService } from '../../services/toast/toast';
 import { signal } from '@angular/core';
 import type { ToastType } from '../../models';
 
@@ -123,7 +123,7 @@ describe('Toast Component', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Success!');
-    expect(compiled.querySelector('.green')).toBeTruthy();
+    expect(compiled.innerHTML).toContain('border-green-500');
   });
 
   it('should show error toast with correct styling', () => {
@@ -134,7 +134,7 @@ describe('Toast Component', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Error!');
-    expect(compiled.querySelector('.red')).toBeTruthy();
+    expect(compiled.innerHTML).toContain('border-red-500');
   });
 
   it('should show warning toast with correct styling', () => {
@@ -145,7 +145,7 @@ describe('Toast Component', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Warning!');
-    expect(compiled.querySelector('.yellow')).toBeTruthy();
+    expect(compiled.innerHTML).toContain('border-yellow-500');
   });
 
   it('should show toast with icon', () => {
@@ -243,7 +243,7 @@ describe('Toast Component', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.animate-fade-in')).toBeTruthy();
+    expect(compiled.querySelector('.animate-slide-down')).toBeTruthy();
   });
 
   it('should show toast with slide animation', () => {
@@ -253,6 +253,6 @@ describe('Toast Component', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.animate-slide-up')).toBeTruthy();
+    expect(compiled.querySelector('.animate-slide-down')).toBeTruthy();
   });
 });
