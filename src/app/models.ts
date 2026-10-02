@@ -29,6 +29,32 @@ export interface Profile {
   email: string;
   name: string;
   picture: string;
+  isAdmin?: boolean;
+}
+
+export interface AdminUser {
+  sub: string;
+  name: string;
+  email: string;
+}
+
+export interface AllowedUser {
+  id: string;
+  userId: string;
+  email: string;
+  reason?: string;
+  createdBy?: string;
+  createdAt?: string;
+}
+
+export interface UsersResponse {
+  data: AdminUser[];
+  total: number;
+}
+
+export interface AllowedUsersResponse {
+  data: AllowedUser[];
+  total: number;
 }
 
 export interface VideoDiff {
@@ -68,6 +94,7 @@ export interface NotificationSubscription {
   email: string;
   playlistIds: string[] | null;
   isActive: boolean;
+  status: 'pending' | 'approved' | 'rejected';
   createdAt: string;
   updatedAt: string;
 }

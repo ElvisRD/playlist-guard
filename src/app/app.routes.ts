@@ -6,6 +6,7 @@ import { Privacy } from './pages/privacy/privacy';
 import { Terms } from './pages/terms/terms';
 import { NotificationComponent } from './pages/notification/notification';
 import { authGuard } from './guards/auth';
+import { adminGuard } from './guards/admin';
 import { Admin } from './pages/admin/admin';
 
 export const routes: Routes = [
@@ -14,7 +15,7 @@ export const routes: Routes = [
   { path: 'playlist/:id', component: Playlist, canActivate: [authGuard] },
   { path: 'notifications', component: NotificationComponent, canActivate: [authGuard] },
   { path: 'privacidad', component: Privacy },
-  { path: 'admin', component: Admin },
+  { path: 'admin', component: Admin, canActivate: [adminGuard] },
   { path: 'terminos', component: Terms },
   { path: '**', redirectTo: '' },
 ];
