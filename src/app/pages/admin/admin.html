@@ -1,3 +1,168 @@
-<div class="flex-1 bg-zinc-850 text-white">
+<div class="flex-1 w-full bg-zinc-900 px-4 py-8 sm:px-6 lg:px-16">
+  <!-- Header -->
+  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex size-12 items-center justify-center rounded-2xl bg-custom-purple/10 text-custom-purple">
+        <span class="pi pi-bell text-xl"></span>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-zinc-100 sm:text-3xl">Solicitudes de notificaciones</h1>
+        <p class="text-sm text-zinc-500">Aprobá o rechazá las suscripciones pendientes</p>
+      </div>
+    </div>
 
+    @if (!loading() && !error()) {
+      <span class="inline-flex w-fit items-center gap-2 rounded-full border border-zinc-700 bg-zinc-850 px-4 py-1.5 text-sm text-zinc-400">
+        <span class="pi pi-clock text-yellow-400"></span>
+        {{ subscriptions().length }} pendientes
+      </span>
+    }
+  </div>
+
+  <!-- Toolbar -->
+  <div class="mb-6 flex items-center justify-between gap-4">
+    <div class="relative w-full max-w-sm">
+      <span class="pi pi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></span>
+      <input
+        type="text"
+        placeholder="Buscar por email..."
+        (input)="onSearchChange($event)"
+        class="w-full rounded-xl border border-zinc-700 bg-zinc-850 py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-custom-purple focus:ring-2 focus:ring-custom-purple/30"
+      />
+    </div>
+    <button
+      (click)="load()"
+      class="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-850 px-4 py-2.5 text-sm text-zinc-300 transition hover:border-custom-purple hover:text-custom-purple"
+    >
+      <span class="pi pi-refresh"></span>
+      <span class="hidden sm:inline">Actualizar</span>
+    </button>
+  </div>
+
+  @if (loading()) {
+    <!-- Skeleton -->
+    <div class="overflow-hidden rounded-2xl border border-zinc-800">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="flex items-center gap-4 border-b border-zinc-800 bg-zinc-850 p-4 last:border-0">
+          <div class="flex-1 space-y-2">
+            <div class="h-3.5 w-1/3 animate-pulse rounded bg-zinc-700"></div>
+            <div class="h-3 w-1/2 animate-pulse rounded bg-zinc-800"></div>
+          </div>
+          <div class="h-9 w-24 animate-pulse rounded-xl bg-zinc-700"></div>
+          <div class="h-9 w-24 animate-pulse rounded-xl bg-zinc-700"></div>
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="flex flex-col items-center gap-4 rounded-2xl border border-zinc-800 bg-zinc-850 py-16 text-center">
+      <div class="flex size-14 items-center justify-center rounded-full bg-red-500/10 text-red-400">
+        <span class="pi pi-times-circle text-2xl"></span>
+      </div>
+      <p class="text-zinc-400">No se pudieron cargar las solicitudes.</p>
+      <button
+        (click)="load()"
+        class="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:border-custom-purple hover:text-custom-purple"
+      >
+        <span class="pi pi-refresh"></span>
+        Reintentar
+      </button>
+    </div>
+  } @else if (filtered().length === 0) {
+    <div class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-700 py-16 text-center">
+      <span class="pi pi-inbox text-4xl text-zinc-600"></span>
+      <p class="text-zinc-500">No hay solicitudes pendientes</p>
+    </div>
+  } @else {
+    <!-- Desktop: tabla -->
+    <div class="hidden overflow-hidden rounded-2xl border border-zinc-800 md:block">
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="bg-zinc-800/80 text-xs uppercase tracking-wider text-zinc-500">
+            <th class="px-5 py-3.5 font-semibold">Email</th>
+            <th class="px-5 py-3.5 font-semibold">Playlists</th>
+            <th class="px-5 py-3.5 font-semibold">Fecha</th>
+            <th class="px-5 py-3.5 font-semibold">Estado</th>
+            <th class="px-5 py-3.5 text-right font-semibold">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-800">
+          @for (sub of filtered(); track sub.id) {
+            <tr class="bg-zinc-850 transition-colors hover:bg-zinc-800/50">
+              <td class="px-5 py-4 font-medium text-zinc-100">{{ sub.email }}</td>
+              <td class="px-5 py-4 text-zinc-400">
+                {{ sub.playlistIds?.length ?? 0 }} playlist(s)
+              </td>
+              <td class="px-5 py-4 text-zinc-400">{{ formatDate(sub.createdAt) }}</td>
+              <td class="px-5 py-4">
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-500/10 px-2.5 py-1 text-xs font-medium text-yellow-400">
+                  <span class="size-1.5 rounded-full bg-yellow-400"></span>
+                  Pendiente
+                </span>
+              </td>
+              <td class="px-5 py-4">
+                <div class="flex justify-end gap-2">
+                  <button
+                    (click)="approve(sub)"
+                    [disabled]="isProcessing(sub.id)"
+                    class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-400 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    @if (isProcessing(sub.id)) {
+                      <span class="pi pi-spin pi-spinner"></span>
+                    } @else {
+                      <span class="pi pi-check"></span>
+                    }
+                    Aprobar
+                  </button>
+                  <button
+                    (click)="reject(sub)"
+                    [disabled]="isProcessing(sub.id)"
+                    class="inline-flex items-center gap-1.5 rounded-xl bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-400 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <span class="pi pi-times"></span>
+                    Rechazar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile: cards -->
+    <div class="flex flex-col gap-3 md:hidden">
+      @for (sub of filtered(); track sub.id) {
+        <div class="flex flex-col gap-4 rounded-2xl border border-zinc-800 bg-zinc-850 p-4">
+          <div class="min-w-0">
+            <p class="truncate font-medium text-zinc-100">{{ sub.email }}</p>
+            <p class="text-xs text-zinc-500">
+              {{ sub.playlistIds?.length ?? 0 }} playlist(s) · {{ formatDate(sub.createdAt) }}
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              (click)="approve(sub)"
+              [disabled]="isProcessing(sub.id)"
+              class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-400 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              @if (isProcessing(sub.id)) {
+                <span class="pi pi-spin pi-spinner"></span>
+              } @else {
+                <span class="pi pi-check"></span>
+              }
+              Aprobar
+            </button>
+            <button
+              (click)="reject(sub)"
+              [disabled]="isProcessing(sub.id)"
+              class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-400 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <span class="pi pi-times"></span>
+              Rechazar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>
