@@ -11,7 +11,6 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class Navbar {
   private googleService = inject(Google);
-  private dialogService = inject(Dialog);
   private toastService = inject(Toast);
   private router = inject(Router);
   protected profile = this.googleService.profile;

@@ -3,7 +3,7 @@
 >
   <div>
     <a class="flex gap-2 items-center" routerLink="/">
-      <img class="w-6 h-6" src="./shield-check.svg" alt="shield">
+      <img class="w-6 h-6" src="./shield-check.svg" alt="shield" />
       <span class="text-lg sm:text-xl font-bold tracking-tight shrink-0">PlaylistGuard</span>
     </a>
   </div>
@@ -33,10 +33,7 @@
   <div class="flex gap-2 sm:gap-4 items-center shrink-0">
     @if (profile()) {
       <div class="relative">
-        <button
-          class="flex cursor-pointer items-center gap-2"
-          (click)="toggleUserMenu()"
-        >
+        <button class="flex cursor-pointer items-center gap-2" (click)="toggleUserMenu()">
           <div
             class="rounded-full border size-8 sm:size-9 border-zinc-300/30 bg-white/10 text-sm font-medium transition hover:bg-white/20 shrink-0"
           >
@@ -53,10 +50,7 @@
         </button>
 
         @if (userMenuOpen()) {
-          <div
-            class="fixed inset-0 z-20"
-            (click)="closeUserMenu()"
-          ></div>
+          <div class="fixed inset-0 z-20" (click)="closeUserMenu()"></div>
           <div
             class="absolute right-0 top-full mt-2 z-30 w-56 rounded-xl bg-zinc-800 border border-zinc-700 shadow-2xl overflow-hidden animate-slide-down"
           >
@@ -82,13 +76,17 @@
                 <span class="pi pi-list"></span>
                 Mis playlists
               </a>
-              <button
-                (click)="navigateTo('/admin')"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer w-full text-left"
-              >
-                <span class="pi pi-clipboard"></span>
-                Administración
-              </button>
+
+              @if (profile()?.isAdmin) {
+                <button
+                  (click)="navigateTo('/admin')"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer w-full text-left"
+                >
+                  <span class="pi pi-clipboard"></span>
+                  Administración
+                </button>
+              }
+
               <button
                 (click)="navigateTo('/notifications')"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-100 hover:bg-white/10 transition-colors duration-300 cursor-pointer w-full text-left"

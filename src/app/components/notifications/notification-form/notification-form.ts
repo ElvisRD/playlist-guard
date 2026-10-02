@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Notification } from '../../../services/notification/notification';
 import { Youtube } from '../../../services/youtube/youtube';
 import { NotificationSubscription, PlaylistSummary } from '../../../models';
+import { Toast } from '../../../services/toast/toast';
 
 @Component({
   selector: 'app-notification-form',
@@ -15,6 +16,7 @@ export class NotificationForm implements OnInit {
   private fb = inject(FormBuilder);
   private notificationService = inject(Notification);
   private youtubeService = inject(Youtube);
+  private toastService = inject(Toast);
 
   subscribed = output<NotificationSubscription>();
 
@@ -77,10 +79,16 @@ export class NotificationForm implements OnInit {
       return;
     }
 
+    if(this.selectedPlaylists().size === 0) {
+      this.toastService.show('warning', 'Debes seleccionar al menos una playlist.');
+      return;
+    }
+
     const email = this.form.value.email!;
     const playlistIds = Array.from(this.selectedPlaylists());
 
-    this.loading = true;
+
+    /* this.loading = true;
     this.notificationService.subscribe(email, playlistIds).subscribe({
       next: (subscription) => {
         this.loading = false;
@@ -96,6 +104,6 @@ export class NotificationForm implements OnInit {
           alert('Ocurrió un error. Por favor, intenta nuevamente.');
         }
       },
-    });
+    }); */
   }
 }
