@@ -90,7 +90,7 @@
             <tr class="bg-zinc-850 transition-colors hover:bg-zinc-800/50">
               <td class="px-5 py-4 font-medium text-zinc-100">{{ sub.email }}</td>
               <td class="px-5 py-4 text-zinc-400">
-                {{ sub.playlistIds?.length ?? 0 }} playlist(s)
+                {{ playlistCount(sub) }} playlist(s)
               </td>
               <td class="px-5 py-4 text-zinc-400">{{ formatDate(sub.createdAt) }}</td>
               <td class="px-5 py-4">
@@ -136,7 +136,7 @@
           <div class="min-w-0">
             <p class="truncate font-medium text-zinc-100">{{ sub.email }}</p>
             <p class="text-xs text-zinc-500">
-              {{ sub.playlistIds?.length ?? 0 }} playlist(s) · {{ formatDate(sub.createdAt) }}
+              {{ playlistCount(sub) }} playlist(s) · {{ formatDate(sub.createdAt) }}
             </p>
           </div>
           <div class="flex gap-2">

@@ -117,4 +117,18 @@ export class Admin implements OnInit {
       year: 'numeric',
     });
   }
+
+  playlistCount(sub: NotificationSubscription): number {
+    const value = sub.playlistIds as unknown;
+    if (Array.isArray(value)) return value.length;
+    if (typeof value === 'string' && value.length > 0) {
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed.length : 0;
+      } catch {
+        return value.replace(/[{}"]/g, '').split(',').filter(Boolean).length;
+      }
+    }
+    return 0;
+  }
 }

@@ -10,13 +10,15 @@
       <!-- Estado actual -->
       <app-notification-status
         [subscription]="subscription()"
+        [playlists]="playlists()"
         (refresh)="loadStatus()"
       />
 
-      <!-- Formulario (solo si no está suscrito) -->
-      @if (!subscription()) {
+      @if (subscription() && playlistAvailable()) {
         <div class="mt-6">
           <app-notification-form
+            [subscription]="subscription()"
+            [playlists]="playlistAvailable()"
             (subscribed)="onSubscribed($event)"
           />
         </div>
@@ -28,7 +30,7 @@
           <button
             (click)="sendTestEmail()"
             [disabled]="testEmailLoading"
-            class="flex items-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-custom-purple hover:text-custom-purple disabled:cursor-not-allowed disabled:opacity-50"
+            class="flex items-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-custom-purple hover:text-custom-purple disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             @if (testEmailLoading) {
               <span class="pi pi-spin pi-spinner"></span>
@@ -41,7 +43,7 @@
           <button
             (click)="unsubscribe()"
             [disabled]="unsubscribeLoading"
-            class="flex items-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-red-500 transition hover:border-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+            class="flex items-center gap-2 rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-red-500 transition hover:border-red-500 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             @if (unsubscribeLoading) {
               <span class="pi pi-spin pi-spinner"></span>
