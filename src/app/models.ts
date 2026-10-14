@@ -90,9 +90,10 @@ export interface ToastText {
 
 export interface NotificationSubscription {
   id: string;
-  userId: string;
+  name: string;
   email: string;
   playlistIds: string[] | null;
+  totalVideos: number;
   isActive: boolean;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: string;

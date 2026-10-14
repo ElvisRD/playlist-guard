@@ -14,7 +14,7 @@
         (refresh)="loadStatus()"
       />
 
-      @if (subscription() && playlistAvailable()) {
+      @if (playlistAvailable()) {
         <div class="mt-6">
           <app-notification-form
             [subscription]="subscription()"
@@ -50,7 +50,8 @@
             } @else {
               <span class="pi pi-trash"></span>
             }
-            {{ unsubscribeLoading ? 'Cancelando...' : 'Cancelar suscripción' }}
+
+            {{ unsubscribeLoading ? 'Cancelando...' : textUnsubscribe() }}
           </button>
         </div>
       }

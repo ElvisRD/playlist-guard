@@ -61,10 +61,10 @@ export class NotificationComponent implements OnInit {
   }
 
   getAvailablePlaylists() {
-  const subIds = this.subscription()?.playlistIds || [];
-  const available = this.playlists().filter((playlist) => !subIds.includes(playlist.id));
-  this.playlistAvailable.set(available);
-}
+    const subIds = this.subscription()?.playlistIds || [];
+    const available = this.playlists().filter((playlist) => !subIds.includes(playlist.id));
+    this.playlistAvailable.set(available);
+  }
 
   onSubscribed(subscription: NotificationSubscription) {
     this.notificationService.subscription.set(subscription);
@@ -85,6 +85,15 @@ export class NotificationComponent implements OnInit {
     });
   }
 
+  textUnsubscribe() {
+    const sub = this.subscription();
+    if (sub && sub.status === 'approved') {
+      return 'Cancelar suscripción';
+    }
+
+    return 'Cancelar solicitud de suscripción';
+  }
+
   unsubscribe() {
     const sub = this.subscription();
     if (!sub) return;
@@ -101,20 +110,5 @@ export class NotificationComponent implements OnInit {
         this.toast.show('error', 'No se pudo cancelar la suscripción.');
       },
     });
-
-    /* this.dialogService.open('delete-playlist', sub.id, () => {
-      this.unsubscribeLoading = true;
-      this.notificationService.unsubscribe(sub.id).subscribe({
-        next: () => {
-          this.unsubscribeLoading = false;
-          this.notificationService.subscription.set(null);
-          this.toast.show('success', 'Suscripción cancelada correctamente.');
-        },
-        error: () => {
-          this.unsubscribeLoading = false;
-          this.toast.show('error', 'No se pudo cancelar la suscripción.');
-        },
-      });
-    }); */
   }
 }

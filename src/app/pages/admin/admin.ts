@@ -28,7 +28,7 @@ export class Admin implements OnInit {
     const all = this.subscriptions();
     if (!query) return all;
     return all.filter(
-      (s) => s.email.toLowerCase().includes(query) || s.userId.toLowerCase().includes(query),
+      (s) => s.email.toLowerCase().includes(query)
     );
   });
 
@@ -38,7 +38,6 @@ export class Admin implements OnInit {
     this.searchInput
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe((value) => this.search.set(value));
-
     this.load();
   }
 
